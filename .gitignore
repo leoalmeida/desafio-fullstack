@@ -367,3 +367,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+ejb-module/target/ejb-module-0.0.1-SNAPSHOT.jar
