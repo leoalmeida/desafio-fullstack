@@ -1,4 +1,0 @@
-com\example\ejb\entity\Beneficio$BeneficioBuilder.class
-com\example\ejb\entity\Beneficio.class
-com\example\ejb\exception\BusinessException.class
-com\example\ejb\BeneficioEjbService.class
