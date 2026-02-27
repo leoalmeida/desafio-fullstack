@@ -12,6 +12,7 @@
 	<artifactId>backend-module</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>backend-module</name>
+	<packaging>jar</packaging>
 	<description>Módulo Spring Boot backend para criar APIs de benefícios</description>
 	<properties>
 		<java.version>17</java.version>
