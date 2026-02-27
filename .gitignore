@@ -6,6 +6,9 @@
 # User-specific files
 dist
 target
+.mvn
+mvnw
+mvnw.cmd
 *.angular
 *.rsuser
 *.suo
