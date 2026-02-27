@@ -1,18 +1,5 @@
 services:
-  mongo_db:
-    image: mongo:8.0.5
-    restart: unless-stopped
-    env_file: ./.env
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${{ secrets.MONGODB_USER }}
-      - MONGO_INITDB_ROOT_PASSWORD=${{ secrets.MONGODB_PASSWORD }}
-    ports:
-      - ${{ secrets.MONGODB_LOCAL_PORT }}:${{ secrets.MONGODB_DOCKER_PORT }}
-    volumes:
-      - db:/data/db
-  app:
-    depends_on:
-      - mongo_db
+  backend-module:
     build: ./
     restart: on-failure
     env_file: ./.env
@@ -20,12 +7,13 @@ services:
       - ${{ secrets.SPRING_LOCAL_PORT }}:${{ secrets.SPRING_DOCKER_PORT }}
     environment: 
       SPRING_APPLICATION_JSON: '{
-          "spring.data.mongodb.uri" : "mongodb://${{ secrets.MONGODB_USER }}:${{ secrets.MONGODB_PASSWORD }}@mongo_db:${{ secrets.MONGODB_DOCKER_PORT }}/${{ secrets.MONGODB_DATABASE }}?authSource=admin"
+          "spring.datasource.url" : "{{ secrets.DB_URL }}",
+          "spring.datasource.username" : "${{ secrets.DB_USERNAME }}",
+          "spring.datasource.password" : "${{ secrets.DB_PASSWORD }}",
+          "spring.datasource.driver-class-name" : "${{ secrets.DB_DRIVER }}"
         }'
     volumes:
       - .m2:/root/.m2
     stdin_open: true
     tty: true
 
-volumes:
-  db:
