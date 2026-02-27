@@ -1,5 +1,7 @@
 package com.example.backend.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,20 +28,22 @@ import jakarta.persistence.OptimisticLockException;
  * Implementação do serviço responsável pelo gerenciamento de beneficios.
  */
 @Service
-@RequiredArgsConstructor
 public class BeneficioServiceImpl implements BeneficioService {
 
-    @Autowired
-    private ObjectsValidator<Beneficio> validador;
+    private static final Logger logger = LoggerFactory.getLogger(BeneficioServiceImpl.class);
 
-    @Autowired
-    private BeneficioRepository repository;
-    
-    @Autowired
-    private BeneficioEjbService ejbService;
+    private final BeneficioRepository repository;
+    private final BeneficioEjbService ejbService;
+    private final ObjectsValidator<Beneficio> validador;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private ModelMapper modelMapper;
+
+    public BeneficioServiceImpl(BeneficioRepository repository,BeneficioEjbService ejbService,ObjectsValidator<Beneficio> validador, ModelMapper modelMapper) {
+        this.repository = repository;
+        this.ejbService = ejbService;
+        this.validador = validador;
+        this.modelMapper = modelMapper;
+    }
 
     /**
      * Cria um novo benefício no sistema.
@@ -84,6 +88,7 @@ public class BeneficioServiceImpl implements BeneficioService {
         
         try{
             ejbService.transfer(dto.getFromId(), dto.getToId(), dto.getValor());
+            logger.info("Transferência realizada com sucesso entre benefícios ID={}, ID={}", dto.getFromId(), dto.getToId());
         } catch (OptimisticLockException e) {
             throw new BusinessException("Erro ao realizar transferência de benefício.");
         }
@@ -200,6 +205,8 @@ public class BeneficioServiceImpl implements BeneficioService {
             throw new BusinessException("Beneficio não encontrado para remoção.");
         }
         repository.deleteById(beneficioId);
+        logger.info("Benefício removido: ID={}", beneficioId);
+
     }
 
     private BeneficioDto fillDto(Beneficio entity) {

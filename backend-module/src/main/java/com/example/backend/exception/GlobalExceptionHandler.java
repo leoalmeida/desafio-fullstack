@@ -3,6 +3,8 @@ package com.example.backend.exception;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityNotFoundException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cglib.proxy.UndeclaredThrowableException;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +31,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     
     @Resource
     private MessageSource messageSource;
+
+    //private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     
     private HttpHeaders headers(){
         HttpHeaders headers = new HttpHeaders();

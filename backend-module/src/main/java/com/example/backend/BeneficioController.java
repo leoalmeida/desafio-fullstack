@@ -30,8 +30,11 @@ import org.springframework.http.ResponseEntity;
 @Tag(name = "Benefícios", description = "Endpoint de gestão de benefícios bancários")
 public class BeneficioController {
 
-    @Autowired
-    private BeneficioService beneficioService;
+    private final BeneficioService beneficioService;
+
+    public BeneficioController(BeneficioService service) {
+        this.beneficioService = service;
+    }
 
     @Operation(summary = "Listar todos os benefícios", description = "Retorna uma lista com todos os benefícios cadastrados no sistema")
     @ApiResponses(value = {
