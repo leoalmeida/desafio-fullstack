@@ -31,7 +31,9 @@ import com.example.backend.factory.TestFactory;
 import com.example.backend.exception.BusinessException;
 import com.example.backend.repository.*;
 import com.example.backend.util.ObjectsValidator;
+import com.example.ejb.BeneficioEjbService;
 import com.example.backend.dto.BeneficioDto;
+import com.example.backend.dto.TransferenciaDTO;
 
 /**
  * Testes para o serviço de beneficios.
@@ -41,6 +43,9 @@ public class BeneficioServiceTest {
 
     @Mock
     private BeneficioRepository repository;
+
+    @Mock
+    private BeneficioEjbService ejbService;
 
     @Mock
     private ObjectsValidator<Beneficio> validator;
@@ -259,7 +264,6 @@ public class BeneficioServiceTest {
     public void deveGerarBusinessException_quandoIdBeneficioInvalido() {
         Long idInvalido = -1L;
 
-        // Configura o mock
         doThrow(NoSuchElementException.class)
                 .when(repository).deleteById(idInvalido);
     
@@ -273,6 +277,31 @@ public class BeneficioServiceTest {
         // Verifica se o método do repositório foi chamado
         verify(repository, times(1)).findById(idInvalido);
         verify(repository, times(0)).deleteById(idInvalido);
+    }
+
+    @Test
+    public void deveRealizarTransferencia_quandoDadosValidos() {
+        //Given
+        Beneficio mockBeneficio1 = mock(Beneficio.class);
+        Beneficio mockBeneficio2 = mock(Beneficio.class);
+        Beneficio mockBeneficio3 = mock(Beneficio.class);
+        doReturn(Arrays.asList(mockBeneficio1, mockBeneficio2, mockBeneficio3))
+            .when(repository).findAll();
+
+        TransferenciaDTO dto = mock(TransferenciaDTO.class);
+        dto.setFromId(1L);
+        dto.setToId(2L);
+        dto.setValor(new BigDecimal(100.00));
+        
+        // Configura o mock para o serviço EJB
+        doNothing().when(ejbService).transfer(dto.getFromId(), dto.getToId(), dto.getValor());
+
+         // Executa o método
+        service.realizarTransferencia(dto);
+
+        // Verifica o resultado
+        verify(ejbService, times(1)).transfer(dto.getFromId(), dto.getToId(), dto.getValor());
+        
     }
 
 }

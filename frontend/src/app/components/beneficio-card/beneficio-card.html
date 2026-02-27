@@ -1,0 +1,39 @@
+<mat-card [class]="{created: beneficio().ativo,
+                    cancelled: !beneficio().ativo}"
+        class="cardButton" appearance="outlined">
+  <mat-card-title class="title">{{beneficio().nome}}</mat-card-title>
+  <span class="statusbar">{{beneficio().id}}</span>
+    <mat-card-content class="description">
+      <p>
+        {{beneficio().descricao}}
+      </p>
+    </mat-card-content>
+    <mat-card-subtitle class="category">Valor: {{beneficio().valor}}</mat-card-subtitle>           
+    <mat-divider></mat-divider>
+    <mat-card-actions class="actionbar">
+      <mat-slide-toggle [(ngModel)]="beneficio().ativo" (change)="onAlterarStatus(confirmDialog, beneficio())">Status:</mat-slide-toggle>
+      <button mat-flat-button color="primary" (click)="onRealizarTransferencia(beneficio())">
+        <mat-icon>swap_horiz</mat-icon>
+        Transferir
+      </button>
+      <button mat-flat-button color="warn" (click)="onUpdateBeneficio(beneficio())">
+        <mat-icon>edit</mat-icon>
+        Editar
+      </button>
+      <button mat-flat-button color="danger" (click)="onRemoverBeneficio(confirmDialog, beneficio())">
+        <mat-icon>delete</mat-icon>
+        Excluir
+      </button>
+    </mat-card-actions> 
+</mat-card>
+
+<ng-template #confirmDialog>
+    <h1 mat-dialog-title>Confirma?</h1>
+    <div mat-dialog-content>
+      <p class="selected-option" #message>{{message}}</p>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-flat-button [mat-dialog-close]="false">Cancelar</button>
+        <button mat-flat-button color="primary" [mat-dialog-close]="true">Confirmar</button>
+    </div>
+</ng-template>

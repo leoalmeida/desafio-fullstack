@@ -23,6 +23,10 @@ public interface BeneficioService {
     BeneficioDto buscarBeneficioPorId(@NonNull Long id);
     
     List<BeneficioDto> buscarTodosBeneficios();
+
+    List<BeneficioDto> filtrarBeneficiosPorStatus(boolean ativo);
+
+    List<BeneficioDto> filtrarBeneficiosPorNome(String nome);
     
     void removerBeneficio(@NonNull Long BeneficioId);
     

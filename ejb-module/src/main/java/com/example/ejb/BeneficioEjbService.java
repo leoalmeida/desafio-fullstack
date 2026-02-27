@@ -11,12 +11,14 @@ import com.example.ejb.exception.BusinessException;
 @Stateless
 public class BeneficioEjbService {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "pu")
     private EntityManager em;
 
-    /* Método deve transferir um valor de um benefício para outro, garantindo que o saldo do benefício 
-        de origem não fique negativo. */ 
-    public void transfer(Long fromId, Long toId, BigDecimal amount) {
+    /**
+     * Método deve transferir um valor de um benefício para outro, 
+     *  garantindo que o saldo do benefício de origem não fique negativo. 
+    */ 
+    public void transfer( Long fromId, Long toId, BigDecimal amount) throws IllegalArgumentException, BusinessException {
         if (fromId == null || toId == null) {
             throw new IllegalArgumentException("IDs de origem e destino são obrigatórios");
         }
@@ -28,10 +30,10 @@ public class BeneficioEjbService {
         }
 
         /*
-         * Consulta de Benefícios:
-         *  Solicitação utilizando "pessimistic write lock" nas entidades envolvidas para evitar race condition. 
-         *  O lock é solicitado em ordem para evitar deadlocks, garantindo que as transferências 
-         *  não se intercalem e causem perdas de dados ou permitam o saldo ficar negativo. 
+         * Consulta dos Benefícios:
+         *  Solicitação utilizando "pessimistic write lock" nas entidades envolvidas evitando race condition. 
+         *  O lock é solicitado em ordem para evitar deadlocks e garantir que as transferências 
+         *  não se intercalem, causando perdas de dados ou permitindo saldo ficar negativo. 
          */
         Beneficio from;
         Beneficio to;
@@ -47,19 +49,17 @@ public class BeneficioEjbService {
         if (from == null || to == null) {
             throw new IllegalArgumentException("Registro de benefício não encontrado");
         }
-
         if (!from.getAtivo()) {
             throw new BusinessException("Benefício de origem foi cancelado.");
         }
         if (!to.getAtivo()) {
             throw new BusinessException("Benefício de destino foi cancelado.");
         }
-
         if (from.getValor().compareTo(amount) < 0) {
             throw new BusinessException("Saldo insuficiente para transferência.");
         }
 
-        /* Validação de saldo suficiente para transferência */
+        /* Validação de saldo insuficiente para transferência entre benefícios*/
         BigDecimal newFrom = from.getValor().subtract(amount);
         if (newFrom.compareTo(BigDecimal.ZERO) < 0) {
             throw new BusinessException("Saldo insuficiente para transferência");

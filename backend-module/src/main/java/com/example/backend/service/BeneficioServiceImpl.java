@@ -41,6 +41,13 @@ public class BeneficioServiceImpl implements BeneficioService {
     @Autowired
     private ModelMapper modelMapper;
 
+    /**
+     * Cria um novo benefício no sistema.
+     * Valida os dados fornecidos antes de persistir no banco de dados.
+     * 
+     * @param dto Dados do benefício a ser criado
+     * @return BeneficioDto com os dados do benefício criado, incluindo ID gerado
+     */
     @Override
     @Transactional
     public BeneficioDto criarBeneficio(@NonNull BeneficioDto dto) {
@@ -52,11 +59,20 @@ public class BeneficioServiceImpl implements BeneficioService {
         return modelMapper.map(entityOut, BeneficioDto.class);
     }
 
+    /**
+     * Realiza uma transferência de valor entre dois benefícios.
+     * Valida saldo suficiente e status ativo dos benefícios.
+     * Utiliza o serviço EJB com locking pessimista para evitar condições de corrida.
+     * 
+     * @param dto Dados da transferência contendo ID de origem, destino e valor
+     * @throws IllegalArgumentException se os dados forem inválidos
+     * @throws BusinessException se ocorrer erro na operação
+     */
     @Override
     @Transactional
     public void realizarTransferencia(@NonNull TransferenciaDTO dto) {
         // Validação básica dos dados de transferência
-        if (null == dto.getFromId() || null == dto.getToId()) {
+        if (null == dto || null == dto.getFromId() || null == dto.getToId()) {
             throw new IllegalArgumentException("Benefícios de origem e destino são obrigatórios.");
         }
         if (dto.getFromId().equals(dto.getToId())) {
@@ -73,6 +89,14 @@ public class BeneficioServiceImpl implements BeneficioService {
         }
     }
 
+    /**
+     * Altera o status (ativo/cancelado) de um benefício existente.
+     * 
+     * @param id Identificador único do benefício
+     * @param status Novo status a ser definido (true = ativo, false = cancelado)
+     * @return BeneficioDto atualizado com o novo status
+     * @throws BusinessException se o benefício não for encontrado
+     */
     @Override
     @Transactional
     public BeneficioDto alterarStatusBeneficio(@NonNull Long id, boolean status) {
@@ -81,6 +105,15 @@ public class BeneficioServiceImpl implements BeneficioService {
         return modelMapper.map(repository.save(entity), BeneficioDto.class);
     }
 
+    /**
+     * Atualiza os dados de um benefício existente.
+     * Valida os dados fornecidos antes de persistir as alterações.
+     * 
+     * @param id Identificador único do benefício a ser atualizado
+     * @param dto Novos dados do benefício
+     * @return BeneficioDto com os dados atualizados
+     * @throws BusinessException se o benefício não for encontrado
+     */
     @Override
     @Transactional
     public BeneficioDto alterarBeneficio(@NonNull Long id, @NonNull BeneficioDto dto) {
@@ -92,7 +125,15 @@ public class BeneficioServiceImpl implements BeneficioService {
         }        
     }
 
+    /**
+     * Busca um benefício específico pelo seu identificador único.
+     * 
+     * @param id Identificador único do benefício
+     * @return BeneficioDto com os dados do benefício encontrado
+     * @throws BusinessException se o benefício não for encontrado
+     */
     @Override
+    @Transactional(readOnly = true)
     public BeneficioDto buscarBeneficioPorId(@NonNull Long id) {
         return repository.findById(id)
                     .map(this::fillDto)
@@ -100,18 +141,54 @@ public class BeneficioServiceImpl implements BeneficioService {
     }
 
 
+    /**
+     * Retorna uma lista de todos os benefícios cadastrados no sistema.
+     * 
+     * @return Lista contendo BeneficioDtos de todos os benefícios
+     */
     @Override
+    @Transactional(readOnly = true)
     public List<BeneficioDto> buscarTodosBeneficios() {
         return repository.findAll().stream()
                     .map(this::fillDto)
                     .collect(Collectors.toList());
     }
 
-    private BeneficioDto fillDto(Beneficio entity){
-        BeneficioDto dtoOut = modelMapper.map(entity, BeneficioDto.class);
-        return dtoOut;
+    /**
+     * Filtra benefícios pelo status (ativo ou cancelado).
+     * Útil para listar benefícios ativos ou inativos.
+     * 
+     * @param ativo Status de filtro (true = ativos, false = cancelados)
+     * @return Lista de BeneficioDtos que correspondem ao status informado
+     */
+    @Transactional(readOnly = true)
+    public List<BeneficioDto> filtrarBeneficiosPorStatus(boolean ativo) {
+        return repository.searchByStatus(ativo).stream()
+                .map(this::fillDto)
+                .collect(Collectors.toList());
     }
 
+    /**
+     * Filtra benefícios pelo nome usando busca parcial.
+     * Útil para realizar buscas por nome ou parte do nome do benefício.
+     * 
+     * @param nome Nome ou parte do nome a ser pesquisado
+     * @return Lista de BeneficioDtos que correspondem ao critério de busca
+     */
+    @Transactional(readOnly = true)
+    public List<BeneficioDto> filtrarBeneficiosPorNome(String nome) {
+        return repository.searchByNome(nome).stream()
+                .map(this::fillDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Remove um benefício do sistema.
+     * Valida se o benefício existe antes de proceder com a remoção.
+     * 
+     * @param beneficioId Identificador único do benefício a ser removido
+     * @throws BusinessException se o benefício não for encontrado ou ID for inválido
+     */
     @Override
     @Transactional
     public void removerBeneficio(@NonNull Long beneficioId) {
@@ -124,5 +201,8 @@ public class BeneficioServiceImpl implements BeneficioService {
         }
         repository.deleteById(beneficioId);
     }
-    
+
+    private BeneficioDto fillDto(Beneficio entity) {
+        return modelMapper.map(entity, BeneficioDto.class);
+    }
 }

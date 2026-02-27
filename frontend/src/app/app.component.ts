@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, Signal, signal } from '@angular/core';
-import { TitleService } from './title.service';
-import { TokenStorageService } from './token-storage.service';
-import { LoadingIndicator } from './loading-indicator/loading-indicator';
+import { TitleService } from './services/title.service';
+import { TokenStorageService } from './services/token-storage.service';
+import { LoadingIndicator } from './components/loading-indicator/loading-indicator';
 import {  RouterOutlet } from '@angular/router';
-import { Toolbar } from './toolbar/toolbar';
+import { Toolbar } from './components/toolbar/toolbar';
 
 @Component({
   selector: 'app-root',

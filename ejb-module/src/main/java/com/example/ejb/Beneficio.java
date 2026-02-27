@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -30,7 +31,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Beneficio {
+public class Beneficio implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

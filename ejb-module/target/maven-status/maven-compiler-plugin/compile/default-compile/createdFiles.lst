@@ -1,3 +1,4 @@
+com\example\ejb\exception\BusinessException.class
 com\example\ejb\BeneficioEjbService.class
 com\example\ejb\Beneficio.class
 com\example\ejb\Beneficio$BeneficioBuilder.class

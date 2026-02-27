@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Solicitar Transferência</h2>
+<mat-dialog-content>
+    <form [formGroup]="formTransferencia">
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Origem</mat-label>
+            <input matInput formControlName="fromId" required>
+            @if(formTransferencia.get('fromId')?.hasError('required')) {
+            <mat-error>Benefício de origem é obrigatório</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Destino</mat-label>
+            <textarea matInput formControlName="toId" rows="3" required></textarea>
+            @if(formTransferencia.get('toId')?.hasError('required')) {
+            <mat-error>Benefício de destino é obrigatório</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Valor</mat-label>
+            <input matInput type="number" formControlName="valor" required step="0.01">
+            @if(formTransferencia.get('valor')?.hasError('required')) {
+            <mat-error>Valor é obrigatório</mat-error>
+            }
+            @if(formTransferencia.get('valor')?.hasError('min')) {
+            <mat-error>Valor deve ser maior que zero</mat-error>
+            }
+        </mat-form-field>
+</form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!formTransferencia.valid">
+    Transferir
+    </button>
+</mat-dialog-actions>

@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { BeneficioList } from './beneficios/beneficio-list/beneficio-list';
-import { BeneficioDetails } from './beneficios/beneficio-details/beneficio-details';
-import { LoginPage } from './login/login-page';
-import { canActivateUser } from './can-activate-user';
+import { BeneficioList } from './components/beneficio-list/beneficio-list';
+import { BeneficioDetails } from './components/beneficio-details/beneficio-details';
+import { LoginPage } from './components/login/login-page';
+import { canActivateUser } from './guards/can-activate-user';
 
 export const routes: Routes = [
   {
