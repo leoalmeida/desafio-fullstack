@@ -1,0 +1,35 @@
+<mat-toolbar class="shadow">
+   <div fxShow="true" fxHide.gt-sm="true">
+      <button matIconButton
+               (click)="sidenav.toggle()">
+         <mat-icon>menu</mat-icon>
+      </button>
+   </div>
+   <img alt="Votacao" class="brand-logo" src="/assets/logo.png" alt="logo" aria-hidden="true" title="Votação App">
+   <p class="head-title">{{title()}}</p>
+   <span class="fill-remaining-space"></span>
+   @if(loggedUser) {
+      <div fxShow="true" fxHide.lt-md="true">
+         <ul class="nav-links">
+            <a mat-button [routerLink]="['/beneficio/new']">Criar Benefício</a>
+         </ul>
+      </div>
+      <section>
+         <button matButton="elevated">
+            <span class="logged-user">
+               {{loggedUser}}
+            </span>
+            <span class="avatar-user">
+               <img src="" alt="{{loggedUser}}" class="img-avatar-user">
+            </span>
+         </button>
+      </section>
+   }
+</mat-toolbar>
+<mat-sidenav #sidenav mode="over" [(opened)]="opened" >
+  <div>
+      @for(route of routes; track $index){
+         <a mat-button [routerLink]="route.path">{{route.title}}</a>
+      }
+   </div>
+</mat-sidenav>

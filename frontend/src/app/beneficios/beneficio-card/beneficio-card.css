@@ -1,0 +1,157 @@
+.example-card {
+  max-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: none;
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.dev/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
+
+.selectable {
+    display: flex;
+    align-items: center
+}
+
+.statusbar{
+  width: 100%;
+  text-align: center;  
+  margin-bottom: 12px;
+  color: rgb(255, 255, 255);
+  border-radius: var(--mat-button-toggle-shape, var(--mat-sys-corner-extra-large));
+}
+
+.statusnew {
+  background-color: rgb(251, 248, 151);
+}
+
+.statusopen {
+  background-color: rgb(48, 129, 48);
+}
+
+.statusclosed {
+ background-color: rgb(111, 53, 53);
+}
+
+.registered {
+  width: 100%;
+  text-align: center;
+  padding: 0 12px;
+  line-height: var(--mat-button-toggle-height, 40px);
+  color: var(--mat-button-toggle-text-color, var(--mat-sys-on-surface));
+  background-color:rosybrown;
+  border: solid 1px var(--mat-button-toggle-divider-color, var(--mat-sys-outline));
+  border-radius: var(--mat-button-toggle-shape, var(--mat-sys-corner-extra-large));
+  font-weight: var(--mat-button-toggle-label-text-weight, var(--mat-sys-label-large-weight));
+  letter-spacing: var(--mat-button-toggle-label-text-tracking, var(--mat-sys-label-large-tracking));
+}
+
+.cardButton {
+  text-align: inherit;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: none;
+}
+
+.cardButton.open,.cardButton.created{
+  cursor: pointer;
+  background: var(--accent-color);
+  transition: transform 0.2s ease;
+  transition: background-color 0.2s ease;
+}
+
+.cardButton.open:hover,.cardButton.created:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.cardButton {
+  background-color: #b4fcb5;
+}
+
+.cardButton.created {
+  background-color: #e7e7e7;
+}
+
+.cardButton.closed {
+  background-color: #f5bab5;
+}
+
+.cardButton.cancelled {
+  background-color: #00000044;
+}
+
+
+.title {
+  font-size: 1.3rem;
+  margin: 0 0 0.5rem 0;
+  color:var(--primary-color);
+  font-weight: bold;
+}
+
+.description{
+  font-size: 1rem;
+  margin: 0.6rem 0;
+}
+
+.category{
+  margin: 0.3rem 0;
+  font-size: 0.8rem;
+  text-align: right;
+  font-weight: bold;
+}
+
+.description, .category {
+  color: #666;
+}
+
+.actionbar {
+  display: flex;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.toggleGroup {
+  width: 100%;
+}
+.toggleButton {
+  width: 50%;
+}
+
+.selected-option{
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: #b4fccb;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 0.8rem;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .description {
+    font-size: 0.8rem;
+  }
+
+  .category {
+    font-size: 0.9rem;
+  }
+}

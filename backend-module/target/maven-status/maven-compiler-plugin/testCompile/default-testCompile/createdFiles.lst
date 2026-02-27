@@ -1,0 +1,6 @@
+com\example\backend\BackendApplicationTests.class
+com\example\backend\BeneficioControllerTest.class
+com\example\backend\factory\TestFactory.class
+com\example\backend\repository\BeneficioRepositoryIntegrationTest.class
+com\example\backend\service\BeneficioServiceTest.class
+com\example\backend\SmokeTest.class

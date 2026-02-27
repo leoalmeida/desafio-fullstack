@@ -1,0 +1,17 @@
+:host {
+  --content-padding: 10px;
+}
+main {
+  display: block;
+  position: relative;
+}
+
+.main-container {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.content-container {
+  padding: var(--content-padding);
+}
