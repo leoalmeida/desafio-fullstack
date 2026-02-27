@@ -6,6 +6,9 @@
 # User-specific files
 dist
 target
+.mvn
+mvnw
+mvnw.cmd
 *.angular
 *.rsuser
 *.suo
@@ -364,3 +367,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+ejb-module/target/ejb-module-0.0.1-SNAPSHOT.jar
