@@ -23,10 +23,10 @@ jobs:
         node-version: [22]
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4 # Action to checkout your repository code
+        uses: actions/checkout@v6 # Action to checkout your repository code
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }} # Specify the Node.js version suitable for your Angular project
 
