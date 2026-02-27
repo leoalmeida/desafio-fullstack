@@ -18,6 +18,7 @@ import com.example.backend.exception.BusinessException;
 import com.example.backend.repository.Beneficio;
 import com.example.backend.repository.BeneficioRepository;
 import com.example.backend.util.ObjectsValidator;
+import com.example.ejb.BeneficioEjbService;
 
 import jakarta.persistence.OptimisticLockException;
 
@@ -33,6 +34,9 @@ public class BeneficioServiceImpl implements BeneficioService {
 
     @Autowired
     private BeneficioRepository repository;
+    
+    @Autowired
+    private BeneficioEjbService ejbService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -49,6 +53,7 @@ public class BeneficioServiceImpl implements BeneficioService {
     }
 
     @Override
+    @Transactional
     public void realizarTransferencia(@NonNull TransferenciaDTO dto) {
         // Validação básica dos dados de transferência
         if (null == dto.getFromId() || null == dto.getToId()) {
@@ -60,27 +65,9 @@ public class BeneficioServiceImpl implements BeneficioService {
         if (dto.getValor() == null || dto.getValor().signum() <= 0) {
             throw new IllegalArgumentException("Valor de transferência deve ser positivo.");
         }
-
-        // Implementação da transferência de benefício
-        Beneficio fromBeneficio = repository.findById(dto.getFromId()).orElseThrow(() -> new BusinessException("Benefício de origem não encontrado."));
-        Beneficio toBeneficio = repository.findById(dto.getToId()).orElseThrow(() -> new BusinessException("Benefício de destino não encontrado."));
         
-        if (!fromBeneficio.getAtivo()) {
-            throw new BusinessException("Benefício de origem foi cancelado.");
-        }
-        if (!toBeneficio.getAtivo()) {
-            throw new BusinessException("Benefício de destino foi cancelado.");
-        }
-
-        if (fromBeneficio.getValor().compareTo(dto.getValor()) < 0) {
-            throw new BusinessException("Saldo insuficiente para transferência.");
-        }
-
-        fromBeneficio.setValor(fromBeneficio.getValor().subtract(dto.getValor()));
-        toBeneficio.setValor(toBeneficio.getValor().add(dto.getValor()));
         try{
-            repository.save(fromBeneficio);
-            repository.save(toBeneficio);
+            ejbService.transfer(dto.getFromId(), dto.getToId(), dto.getValor());
         } catch (OptimisticLockException e) {
             throw new BusinessException("Erro ao realizar transferência de benefício.");
         }

@@ -27,6 +27,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<!-- EJB Module --> 
+		<dependency>
+            <groupId>com.example</groupId>
+            <artifactId>ejb-module</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
 		<!-- JPA + H2 (exemplo banco em memória para rodar os testes) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -37,7 +44,6 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
 		<!-- Testes -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

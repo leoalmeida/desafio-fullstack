@@ -7,6 +7,7 @@ import com.example.backend.dto.TransferenciaDTO;
 import com.example.backend.service.BeneficioService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/v1/beneficios")
+@Tag(name = "Benefícios", description = "Endpoint de gestão de benefícios bancários")
 public class BeneficioController {
 
     @Autowired

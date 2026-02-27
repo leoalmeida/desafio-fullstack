@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+/* Manipulador global de exceções para a aplicação. */
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     

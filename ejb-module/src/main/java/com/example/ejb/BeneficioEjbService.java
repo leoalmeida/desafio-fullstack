@@ -5,6 +5,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.math.BigDecimal;
 
+import com.example.ejb.exception.BusinessException;
+
+/* Serviço EJB para operações de negócio relacionadas a Benefícios. */
 @Stateless
 public class BeneficioEjbService {
 
@@ -45,24 +48,29 @@ public class BeneficioEjbService {
             throw new IllegalArgumentException("Registro de benefício não encontrado");
         }
 
-        if (!from.getAtivo() || !to.getAtivo()) {
-            throw new IllegalStateException("Ambos os benefícios devem estar ativos para transferência");
+        if (!from.getAtivo()) {
+            throw new BusinessException("Benefício de origem foi cancelado.");
+        }
+        if (!to.getAtivo()) {
+            throw new BusinessException("Benefício de destino foi cancelado.");
+        }
+
+        if (from.getValor().compareTo(amount) < 0) {
+            throw new BusinessException("Saldo insuficiente para transferência.");
         }
 
         /* Validação de saldo suficiente para transferência */
         BigDecimal newFrom = from.getValor().subtract(amount);
         if (newFrom.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalStateException("Saldo insuficiente para transferência");
+            throw new BusinessException("Saldo insuficiente para transferência");
         }
 
         from.setValor(newFrom);
         to.setValor(to.getValor().add(amount));
 
-        try{
-            em.merge(from);
-            em.merge(to);
-        } catch (OptimisticLockException e) {
-            throw new RuntimeException("Erro ao realizar transferência: " + e.getMessage(), e);
-        }
+        em.merge(from);
+        em.merge(to);
+        em.flush();
+    
     }
 }

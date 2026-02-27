@@ -2,6 +2,7 @@ package com.example.backend.exception;
 
 import java.util.Date;
 
+/* Classe de modelo para representar erros de resposta. */
 public class ResponseError {
     private Date timestamp = new Date();
     private String status = "error";
