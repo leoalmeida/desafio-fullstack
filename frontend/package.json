@@ -1,0 +1,49 @@
+{
+  "name": "app-frontend",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --port 3001 ",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "lint": "ng lint"
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/cdk": "^21.2.0-next",
+    "@angular/common": "^21.2.0-next",
+    "@angular/compiler": "^21.2.0-next",
+    "@angular/core": "^21.2.0-next",
+    "@angular/forms": "^21.2.0-next",
+    "@angular/material": "^21.2.0-next",
+    "@angular/platform-browser": "^21.2.0-next",
+    "@angular/router": "^21.2.0-next",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.16.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.2.0-next",
+    "@angular/cli": "^21.2.0-next",
+    "@angular/compiler-cli": "^21.2.0-next",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.8.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.9.2"
+  }
+}

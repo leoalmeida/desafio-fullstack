@@ -1,0 +1,19 @@
+<app-searchbar (messageEvent)="handleMessage($event)"/>
+
+ <div class="container">
+   <h2>Gestão de Benefícios</h2>
+   <div class="actions">
+      <button mat-raised-button color="primary" (click)="onCreateBeneficio()">
+         <mat-icon>add</mat-icon>
+         Criar Benefício
+      </button>
+   </div>
+   <section class="results">
+      @for(beneficio of filteredBeneficioList(); track beneficio.nome){
+      <app-beneficio-card [beneficio]="beneficio"></app-beneficio-card>
+      }
+      @empty {
+      <div class="not-found">Nenhum benefício disponível</div>
+      }
+   </section>
+</div>

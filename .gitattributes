@@ -1,7 +1,10 @@
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
+/mvnw text eol=lf
+*.cmd text eol=crlf
 * text=auto
+
 
 ###############################################################################
 # Set default behavior for command prompt diff.

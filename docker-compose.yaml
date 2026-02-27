@@ -1,0 +1,19 @@
+services:
+  backend-module:
+    build: ./
+    restart: on-failure
+    env_file: ./.env
+    ports:
+      - ${{ secrets.SPRING_LOCAL_PORT }}:${{ secrets.SPRING_DOCKER_PORT }}
+    environment: 
+      SPRING_APPLICATION_JSON: '{
+          "spring.datasource.url" : "{{ secrets.DB_URL }}",
+          "spring.datasource.username" : "${{ secrets.DB_USERNAME }}",
+          "spring.datasource.password" : "${{ secrets.DB_PASSWORD }}",
+          "spring.datasource.driver-class-name" : "${{ secrets.DB_DRIVER }}"
+        }'
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
+

@@ -1,0 +1,18 @@
+<section class="searchContainer">
+        <div class="searchButton">🔍</div>
+        <input
+            type="text"
+            placeholder="Pesquisar por título, autor ou categoria..."
+            class="searchInput"
+            autocomplete="off"
+            name="search"
+            #search
+            (input)="onSearchUpdated(search.value)"/>
+
+        @if(search.value){
+            <button
+                (click)="search.value='';clear()"
+                class="clearButton"
+                aria-label="Limpar pesquisa">×</button>
+        }
+</section>

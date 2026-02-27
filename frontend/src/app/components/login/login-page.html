@@ -1,0 +1,43 @@
+<mat-card>
+    <mat-card-title>Login</mat-card-title>
+    <mat-card-content>
+    @if(!isLoggedIn){
+        <form [formGroup]="loginForm" (submit)="login()">
+            <p>
+            <mat-form-field>
+                <input type="text" matInput 
+                    placeholder="Username"
+                       formControlName="username" 
+                    (blur)="updateErrorMessage()"
+                    required>
+            </mat-form-field>
+            </p>
+
+            <p>
+            <mat-form-field>
+                <input type="password" matInput 
+                placeholder="Password"
+                formControlName="password"
+                (blur)="updateErrorMessage()"
+                required>
+            </mat-form-field>
+            </p>
+
+            @if(errorMessage()){
+                <p class="errorMessage">
+                {{ errorMessage() }}
+                </p>
+            }
+
+            <div class="button">
+            <button mat-button type="submit">Login</button>
+            </div>
+
+        </form>
+    }
+    @else{
+        <p class="successMessage">Login realizado com sucesso!</p>
+        <button mat-button (click)="reloadPage()">Entrar</button>
+    }
+    </mat-card-content>
+</mat-card>
