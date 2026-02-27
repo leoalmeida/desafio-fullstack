@@ -6,11 +6,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
-    <artifactId>desafio-app</artifactId>
+    <artifactId>desafio-fullstack</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Aplicação de Desenvolvimento Web Fullstacl</name>
+    <name>AppBackend</name>
     <description>Projeto Backend Spring Boot e EJB Module consumido por aplicação angular</description>
 
     <properties>
