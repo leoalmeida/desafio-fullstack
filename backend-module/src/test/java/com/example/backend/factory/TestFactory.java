@@ -5,7 +5,7 @@ import java.text.Normalizer;
 import java.util.regex.Pattern;
 
 import com.example.backend.dto.BeneficioDto;
-import com.example.backend.repository.Beneficio;
+import com.example.ejb.entity.Beneficio;
 
 public class TestFactory {
 

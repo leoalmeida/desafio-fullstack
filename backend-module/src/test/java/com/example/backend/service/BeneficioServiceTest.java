@@ -34,6 +34,7 @@ import com.example.backend.util.ObjectsValidator;
 import com.example.ejb.BeneficioEjbService;
 import com.example.backend.dto.BeneficioDto;
 import com.example.backend.dto.TransferenciaDTO;
+import com.example.ejb.entity.Beneficio;
 
 /**
  * Testes para o serviço de beneficios.
@@ -51,7 +52,7 @@ public class BeneficioServiceTest {
     private ObjectsValidator<Beneficio> validator;
     
     @InjectMocks
-    private BeneficioServiceImpl service;
+    private BeneficioService service;
 
     @Test
     void deveGerarException_quandoBeneficioInvalido() {

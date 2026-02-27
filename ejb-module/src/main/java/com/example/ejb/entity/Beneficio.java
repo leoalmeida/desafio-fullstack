@@ -1,9 +1,11 @@
-package com.example.ejb;
+package com.example.ejb.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +15,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -26,12 +27,13 @@ import java.math.BigDecimal;
  * Entidade que representa um benefício bancário.
  */
 @Entity
-@Table(name = "beneficio")
-@Data
+@Table(name = "BENEFICIO")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Beneficio implements Serializable {
+public class Beneficio {
 
     @Serial
     private static final long serialVersionUID = 1L;

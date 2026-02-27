@@ -2,8 +2,6 @@ package com.example.backend.util;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,11 +10,6 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.example.ejb.BeneficioEjbService;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.servers.Server;
 import jakarta.persistence.EntityManager;
 
 @Configuration

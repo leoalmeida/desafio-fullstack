@@ -5,13 +5,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.math.BigDecimal;
 
+import com.example.ejb.entity.Beneficio;
 import com.example.ejb.exception.BusinessException;
 
 /* Serviço EJB para operações de negócio relacionadas a Benefícios. */
 @Stateless
 public class BeneficioEjbService {
 
-    @PersistenceContext(unitName = "pu")
+    @PersistenceContext
     private EntityManager em;
 
     /**

@@ -18,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.ejb.exception.BusinessException;
 
+import com.example.ejb.entity.Beneficio;
+
 /**
  * Integration tests that exercise the real persistence layer together with the
  * EJB service implementation.  The Spring context is started with an in‑memory
