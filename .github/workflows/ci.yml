@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest # Use the latest Ubuntu runner
     strategy:
       matrix:
-        node-version: [22]
+        node-version: [24]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6 # Action to checkout your repository code
@@ -34,4 +34,4 @@ jobs:
         run: npm ci # Install project dependencies (using 'ci' for clean install in CI environments)
 
       - name: Build Angular Application
-        run: npm run build -- --configuration=production # Build the Angular application for production
+        run: npm run build # Build the Angular application for production
