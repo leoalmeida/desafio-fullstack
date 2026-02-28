@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 import lombok.NonNull;
 import com.example.backend.dto.BeneficioDto;
-import com.example.backend.dto.TransferenciaDTO;
-import com.example.backend.exception.BusinessException;
+import com.example.backend.dto.TransferenciaDto;
+import com.example.ejb.BusinessException;
 import com.example.ejb.entity.Beneficio;
 import com.example.backend.repository.BeneficioRepository;
 import com.example.backend.util.ObjectsValidator;
@@ -31,11 +31,11 @@ public class BeneficioService{
 
     private final BeneficioRepository repository;
     private final BeneficioEjbService ejbService;
-    private final ObjectsValidator<Beneficio> validador;
+    private final ObjectsValidator<BeneficioDto> validador;
     private final ModelMapper modelMapper;
 
 
-    public BeneficioService(BeneficioRepository repository,BeneficioEjbService ejbService,ObjectsValidator<Beneficio> validador, ModelMapper modelMapper) {
+    public BeneficioService(BeneficioRepository repository,BeneficioEjbService ejbService,ObjectsValidator<BeneficioDto> validador, ModelMapper modelMapper) {
         this.repository = repository;
         this.ejbService = ejbService;
         this.validador = validador;
@@ -52,9 +52,11 @@ public class BeneficioService{
     
     @Transactional
     public BeneficioDto criarBeneficio(@NonNull BeneficioDto dto) {
-        Beneficio entityIn = modelMapper.map(dto,Beneficio.class);
+        logger.info("Criando novo benefício: {}", dto.getNome());
+        BeneficioDto validated = validador.validate(dto);// Valida o beneficio antes de salvar
+        Beneficio entityIn = modelMapper.map(validated,Beneficio.class);
+        logger.info("Benefício mapeado para entidade: {}", entityIn.getNome());
         entityIn.setId(null); // Garante que o ID seja nulo para criação
-        validador.validate(entityIn);// Valida o beneficio antes de salvar
         Beneficio entityOut = repository.save(entityIn);// Salva a beneficio no repositório
 
         return modelMapper.map(entityOut, BeneficioDto.class);
@@ -71,7 +73,7 @@ public class BeneficioService{
      */
     
     @Transactional
-    public void realizarTransferencia(@NonNull TransferenciaDTO dto) {
+    public void realizarTransferencia(@NonNull TransferenciaDto dto) {
         // Validação básica dos dados de transferência
         if (null == dto || null == dto.getFromId() || null == dto.getToId()) {
             throw new IllegalArgumentException("Benefícios de origem e destino são obrigatórios.");
@@ -119,7 +121,9 @@ public class BeneficioService{
     
     @Transactional
     public BeneficioDto alterarBeneficio(@NonNull Long id, @NonNull BeneficioDto dto) {
-        Beneficio entity = validador.validate(modelMapper.map(dto,Beneficio.class));// Valida a beneficio antes  de realizar o merge
+        BeneficioDto validated = validador.validate(dto);// Valida o beneficio antes de salvar
+        
+        Beneficio entity = modelMapper.map(validated,Beneficio.class);
         if (this.buscarBeneficioPorId(id) != null) {;
             return  modelMapper.map(repository.save(Objects.requireNonNull(entity)), BeneficioDto.class);
         } else {

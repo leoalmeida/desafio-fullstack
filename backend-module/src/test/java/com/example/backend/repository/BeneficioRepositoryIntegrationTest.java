@@ -11,22 +11,23 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import com.example.backend.factory.TestFactory;
 import com.example.ejb.entity.Beneficio;
 
-
-
 @DataJpaTest
 public class BeneficioRepositoryIntegrationTest {
+    private static final Logger logger = LoggerFactory.getLogger(BeneficioRepositoryIntegrationTest.class);
 
     @Autowired
     private BeneficioRepository repository;
 
     @Test
-    void tabelaDeveEstarVazia() {
-        assertTrue(repository.findAll().size()==0);
+    void tabelaNaoDeveEstarVazia() {
+        assertTrue(repository.findAll().size()>0);
     }
 
     @Test
@@ -34,45 +35,46 @@ public class BeneficioRepositoryIntegrationTest {
         // given
         Beneficio novoItem = TestFactory.gerarBeneficio();
 
-        // whena
-        repository.save(Objects.requireNonNull(novoItem));
-
+        // whens
+        Beneficio saved = repository.save(Objects.requireNonNull(novoItem));
+        logger.info("Benefício criado com ID: {}", saved.getId());
         // then
-        Optional<Beneficio> retrieved = repository.findById(Objects.requireNonNull(novoItem.getId()));
+        Optional<Beneficio> retrieved = repository.findById(Objects.requireNonNull(saved.getId()));
         assertTrue(retrieved.isPresent());
-        assertEquals(novoItem.getId(), retrieved.get().getId());
-        assertEquals(novoItem.getNome(), retrieved.get().getNome());
-        assertEquals(novoItem.getDescricao(), retrieved.get().getDescricao());
-        assertEquals(novoItem.getValor(), retrieved.get().getValor());
-        assertEquals(novoItem.getAtivo(), retrieved.get().getAtivo());
+        assertEquals(saved.getId(), retrieved.get().getId());
+        assertEquals(saved.getNome(), retrieved.get().getNome());
+        assertEquals(saved.getDescricao(), retrieved.get().getDescricao());
+        assertEquals(saved.getValor(), retrieved.get().getValor());
+        assertEquals(saved.getAtivo(), retrieved.get().getAtivo());
+        
+        repository.deleteById(Objects.requireNonNull(retrieved.get().getId()));
     }
 
     @Test
     void aoAlterarBeneficio_entaoQuantidadeRegistrosNaoAltera() {
         // given
-        Beneficio beneficio1 = TestFactory.gerarBeneficio();
-        repository.save(Objects.requireNonNull(beneficio1));
+        Beneficio beneficio1 = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
         
         beneficio1.setNome("Beneficio Alterado");
         beneficio1.setDescricao("Descrição Alterada");
         beneficio1.setValor(new BigDecimal("1000.00"));
         beneficio1.setAtivo(!beneficio1.getAtivo());
-        repository.save(beneficio1);
+        Beneficio saved = repository.save(beneficio1);
 
         // when
         List<Beneficio> retrieved = repository.findAll();
-
+ 
         // then
         assertFalse(retrieved.isEmpty());
         assertEquals(3, retrieved.size());
+
     }
 
     @Test
     void aoAlterarBeneficio_entaoRegistroAlteradoComSucesso() {
         // given
-        Beneficio beneficio1 = TestFactory.gerarBeneficio();
-        repository.save(Objects.requireNonNull(beneficio1));
-
+        Beneficio beneficio1 = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
+        
         beneficio1.setNome("Beneficio Alterado");
         beneficio1.setDescricao("Descrição Alterada");
         beneficio1.setValor(new BigDecimal("1000.00"));
@@ -89,12 +91,16 @@ public class BeneficioRepositoryIntegrationTest {
         assertEquals(beneficio1.getDescricao(), retrieved.get().getDescricao());
         assertEquals(beneficio1.getValor(), retrieved.get().getValor());
         assertEquals(beneficio1.getAtivo(), retrieved.get().getAtivo());
+
+        repository.deleteById(Objects.requireNonNull(retrieved.get().getId()));
     }
 
     @Test
     void aoRemoverBeneficioComIdValido_entaoRegistroRemovidoComSucesso() {
         // given
-        Beneficio beneficio1 = TestFactory.gerarBeneficio();
+        Beneficio beneficio1 = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
+
+        // when
         repository.deleteById(Objects.requireNonNull(beneficio1.getId()));
 
         // when
@@ -107,39 +113,47 @@ public class BeneficioRepositoryIntegrationTest {
     @Test
     void aoRemoverBeneficioComIdInValido_entaoNenhumRegistroRemovido() {
         // given
-        repository.deleteById(1L);
-
+        repository.deleteAll();
+        Beneficio beneficio1 = TestFactory.gerarBeneficio();
+        Beneficio beneficio2 = TestFactory.gerarBeneficio();
+        Beneficio beneficio3 = TestFactory.gerarBeneficio();
+        List<Beneficio> array = new ArrayList<>();
+        array.addAll(Arrays.asList(beneficio1,beneficio2,beneficio3));
+        repository.saveAll(array);
         // when
+        repository.deleteById(1L);
         List<Beneficio> retrieved = repository.findAll();
 
         // then
         assertFalse(retrieved.isEmpty());
         assertEquals(3, retrieved.size());
+
+        repository.deleteAll();
     }
 
     @Test
     void aoConsultarBeneficioComIdValido_entaoRetornaRegistroComSucesso() {
         // given
-        Beneficio beneficio1 = TestFactory.gerarBeneficio();
-        repository.save(Objects.requireNonNull(beneficio1));
+        Beneficio saved = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
 
         // when
-        Optional<Beneficio> retrieved = repository.findById(Objects.requireNonNull(beneficio1.getId()));
+        Optional<Beneficio> retrieved = repository.findById(Objects.requireNonNull(saved.getId()));
 
         // then
         assertTrue(retrieved.isPresent());
-        assertEquals(beneficio1.getId(), retrieved.get().getId());
-        assertEquals(beneficio1.getNome(), retrieved.get().getNome());
-        assertEquals(beneficio1.getDescricao(), retrieved.get().getDescricao());
-        assertEquals(beneficio1.getValor(), retrieved.get().getValor());
-        assertEquals(beneficio1.getAtivo(), retrieved.get().getAtivo());
+        assertEquals(saved.getId(), retrieved.get().getId());
+        assertEquals(saved.getNome(), retrieved.get().getNome());
+        assertEquals(saved.getDescricao(), retrieved.get().getDescricao());
+        assertEquals(saved.getValor(), retrieved.get().getValor());
+        assertEquals(saved.getAtivo(), retrieved.get().getAtivo());
 
+        repository.deleteById(Objects.requireNonNull(saved.getId()));
     }
 
     @Test
     void aoConsultarBeneficioComIdInvalido_entaoNenhumRegistroRetornado() {
         // when
-        Optional<Beneficio> retrieved = repository.findById(1L);
+        Optional<Beneficio> retrieved = repository.findById(885L);
 
         // then
         assertFalse(retrieved.isPresent());
@@ -148,6 +162,7 @@ public class BeneficioRepositoryIntegrationTest {
     @Test
     void aoConsultarTodosBeneficios_entaoRetornaListaComSucesso() {
         // given
+        repository.deleteAll();
         Beneficio beneficio1 = TestFactory.gerarBeneficio();
         Beneficio beneficio2 = TestFactory.gerarBeneficio();
         Beneficio beneficio3 = TestFactory.gerarBeneficio();
@@ -161,6 +176,8 @@ public class BeneficioRepositoryIntegrationTest {
         // then
         assertFalse(retrieved.isEmpty());
         assertEquals(3, retrieved.size());
+
+        repository.deleteAll();
     }
 
     

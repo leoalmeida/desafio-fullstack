@@ -38,6 +38,7 @@ public class BeneficioDto {
     @DecimalMin(value = "0.00", message = "Valor deve ser maior que 0.00")
     private BigDecimal valor;
     @Schema(description = "Status do benefício (ativo ou cancelado)", example = "true")
+    @NotNull(message = "Status é obrigatório")
     private Boolean ativo;
 
 }

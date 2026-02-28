@@ -4,17 +4,25 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.math.BigDecimal;
+import java.util.logging.Logger;
 
 import com.example.ejb.entity.Beneficio;
-import com.example.ejb.exception.BusinessException;
 
 /* Serviço EJB para operações de negócio relacionadas a Benefícios. */
 @Stateless
 public class BeneficioEjbService {
 
+    private static final Logger logger = Logger.getLogger(BeneficioEjbService.class.getName());
+
     @PersistenceContext
     private EntityManager em;
 
+    public BeneficioEjbService() {
+        // Construtor padrão necessário para EJB
+    }
+    public BeneficioEjbService(EntityManager entityManager) {
+        this.em = entityManager;
+    }
     /**
      * Método deve transferir um valor de um benefício para outro, 
      *  garantindo que o saldo do benefício de origem não fique negativo. 
@@ -30,6 +38,7 @@ public class BeneficioEjbService {
             throw new IllegalArgumentException("Não é possível transferir para o mesmo registro");
         }
 
+        logger.info(String.format("Transferindo: %d -> %d, valor: %s", fromId, toId, amount));
         /*
          * Consulta dos Benefícios:
          *  Solicitação utilizando "pessimistic write lock" nas entidades envolvidas evitando race condition. 

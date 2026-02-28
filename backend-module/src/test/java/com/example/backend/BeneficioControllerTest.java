@@ -23,8 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -36,9 +37,9 @@ import com.example.backend.util.ObjectsValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.backend.dto.BeneficioDto;
 
-@WebMvcTest(BeneficioController.class)
-@AutoConfigureRestDocs(outputDir = "target/snippets")
+@WebMvcTest
 public class BeneficioControllerTest {
+    private static final Logger logger = LoggerFactory.getLogger(BeneficioControllerTest.class);
 
     @Autowired
     private MockMvc mockMvc;

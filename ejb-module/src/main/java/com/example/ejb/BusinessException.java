@@ -1,4 +1,4 @@
-package com.example.ejb.exception;
+package com.example.ejb;
 
 /* Exceção personalizada para erros de negócio. */
 public class BusinessException extends RuntimeException {

@@ -4,10 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -17,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -28,12 +28,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.backend.factory.TestFactory;
-import com.example.backend.exception.BusinessException;
+import com.example.ejb.BusinessException;
 import com.example.backend.repository.*;
 import com.example.backend.util.ObjectsValidator;
 import com.example.ejb.BeneficioEjbService;
 import com.example.backend.dto.BeneficioDto;
-import com.example.backend.dto.TransferenciaDTO;
+import com.example.backend.dto.TransferenciaDto;
 import com.example.ejb.entity.Beneficio;
 
 /**
@@ -42,6 +42,7 @@ import com.example.ejb.entity.Beneficio;
 @ExtendWith(MockitoExtension.class)
 public class BeneficioServiceTest {
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BeneficioServiceTest.class);
     @Mock
     private BeneficioRepository repository;
 
@@ -49,22 +50,32 @@ public class BeneficioServiceTest {
     private BeneficioEjbService ejbService;
 
     @Mock
-    private ObjectsValidator<Beneficio> validator;
+    private ObjectsValidator<BeneficioDto> validator;
+
+    @Mock
+    private ModelMapper mapper;
     
     @InjectMocks
     private BeneficioService service;
 
+    private Beneficio beneficio;
+    private BeneficioDto beneficioDto1;
+    private BeneficioDto beneficioDtoInvalido;
+
+    @BeforeEach
+    void setUp() {
+        beneficio = TestFactory.gerarBeneficio();
+        beneficioDto1 = TestFactory.gerarBeneficioDto();
+        beneficioDtoInvalido = TestFactory.gerarBeneficioDto();
+        beneficioDtoInvalido.setNome("");
+    }
+
     @Test
     void deveGerarException_quandoBeneficioInvalido() {
-        BeneficioDto beneficioInvalido = BeneficioDto.builder()
-                    .id(0L)
-                    .nome("")
-                    .descricao("")
-                    .build();
-        
+        logger.info("Criando novo benefício: {}", beneficioDtoInvalido.getNome());
         // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> {
-            service.criarBeneficio(beneficioInvalido);
+            service.criarBeneficio(beneficioDtoInvalido);
         });
     }
 
@@ -75,6 +86,7 @@ public class BeneficioServiceTest {
         // Arrange
         when(repository.save(any(Beneficio.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
+        logger.info("Criando novo benefício: {}", beneficio.getNome());
         // Act
         BeneficioDto result = service.criarBeneficio(beneficio);
 
@@ -88,7 +100,7 @@ public class BeneficioServiceTest {
         BeneficioDto mockBeneficio = mock(BeneficioDto.class);
 
         // Configura o mock
-        when(validator.validate(any(Beneficio.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(validator.validate(any(BeneficioDto.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(repository.save(any(Beneficio.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Executa o método
@@ -100,21 +112,22 @@ public class BeneficioServiceTest {
 
         // Verifica se o método do repositório foi chamado
         verify(repository, times(1)).save(any(Beneficio.class));
-        verify(validator, times(1)).validate(any(Beneficio.class));
+        verify(validator, times(1)).validate(any(BeneficioDto.class));
     }
 
     @Test
     public void deveAlterarBeneficio_quandoBeneficioValido() {
         BeneficioDto mockBeneficio = mock(BeneficioDto.class);
+        mockBeneficio.setId(1L);
         mockBeneficio.setNome("BeneficioAlterado");
         mockBeneficio.setDescricao("DescricaoAlterada");
         mockBeneficio.setValor(new BigDecimal(1000.00));
         mockBeneficio.setAtivo(true);
 
         // Configura o mock
-        when(validator.validate(any(Beneficio.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(validator.validate(any(BeneficioDto.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(service.buscarBeneficioPorId(mockBeneficio.getId())).thenReturn(mockBeneficio);
         when(repository.save(any(Beneficio.class))).thenAnswer(invocation -> invocation.getArgument(0));
-       
         // Executa o método
         BeneficioDto tested = service.alterarBeneficio(mockBeneficio.getId(),mockBeneficio);
 
@@ -128,7 +141,7 @@ public class BeneficioServiceTest {
 
         // Verifica se o método do repositório foi chamado
         verify(repository, times(1)).save(any(Beneficio.class));
-        verify(validator, times(1)).validate(any(Beneficio.class));
+        verify(validator, times(1)).validate(any(BeneficioDto.class));
     }
 
     @Test
@@ -136,7 +149,7 @@ public class BeneficioServiceTest {
         BeneficioDto mockBeneficio = mock(BeneficioDto.class);
 
         // Configura o mock
-        doThrow(IllegalArgumentException.class).when(validator).validate(any(Beneficio.class));
+        //doThrow(IllegalArgumentException.class).when(validator).validate(any(Beneficio.class));
 
         // Executa o método
         Throwable  throwable  = 
@@ -147,12 +160,12 @@ public class BeneficioServiceTest {
 
         // Verifica se o método do repositório foi chamado
         verify(repository, times(0)).save(any(Beneficio.class));
-        verify(validator, times(1)).validate(any(Beneficio.class));
+        verify(validator, times(1)).validate(any(BeneficioDto.class));
     }
 
     @Test
     public void deveAlterarStatusBeneficio_quandoBeneficioValido() {
-        BeneficioDto mockBeneficio = mock(BeneficioDto.class);
+        Beneficio mockBeneficio = mock(Beneficio.class);
         mockBeneficio.setId(1L);
         mockBeneficio.setAtivo(false);
 
@@ -175,7 +188,7 @@ public class BeneficioServiceTest {
 
     @Test
     public void deveEncontrarBeneficio_quandoIdBeneficioValido() {
-        BeneficioDto mockBeneficio = mock(BeneficioDto.class);
+        Beneficio mockBeneficio = mock(Beneficio.class);
         mockBeneficio.setId(1L);
         
         // Configura o mock
@@ -199,8 +212,8 @@ public class BeneficioServiceTest {
         Long idInvalido = -1L;
 
         // Configura o mock
-        doThrow(NoSuchElementException.class)
-            .when(repository).findById(idInvalido);
+        /*doThrow(IllegalArgumentException.class)
+            .when(repository).findById(idInvalido);*/
 
         // Executa o método
         Throwable  throwable  = 
@@ -210,7 +223,7 @@ public class BeneficioServiceTest {
         assertEquals(BusinessException.class, throwable.getClass());
 
         // Verifica se o método do repositório foi chamado
-        verify(repository, times(0)).findById(idInvalido);
+        verify(repository, times(1)).findById(idInvalido);
     }
 
     @Test
@@ -251,22 +264,25 @@ public class BeneficioServiceTest {
 
     @Test
     public void deveRemoverBeneficio_quandoIdBeneficioValido() {
+        BeneficioDto mockBeneficio1 = mock(BeneficioDto.class);
         // Configura o mock
-        doNothing().when(repository).deleteById(1L);
+        when(service.buscarBeneficioPorId(mockBeneficio1.getId())).thenReturn(mockBeneficio1);
+        doNothing().when(repository).deleteById(mockBeneficio1.getId());
 
         // Executa o método
-        service.removerBeneficio(1L);
+        service.removerBeneficio(mockBeneficio1.getId());
 
-        // Verifica se o método do repositório foi chamado
-        verify(repository, times(1)).deleteById(1L);
+        verify(service, times(1)).buscarBeneficioPorId(mockBeneficio1.getId());
+        verify(repository, times(1)).deleteById(mockBeneficio1.getId());
+
     }
 
     @Test
     public void deveGerarBusinessException_quandoIdBeneficioInvalido() {
         Long idInvalido = -1L;
 
-        doThrow(NoSuchElementException.class)
-                .when(repository).deleteById(idInvalido);
+        /*doThrow(IllegalArgumentException.class)
+                .when(repository).deleteById(idInvalido);*/
     
         // Executa o método
         Throwable  throwable  = 
@@ -289,7 +305,7 @@ public class BeneficioServiceTest {
         doReturn(Arrays.asList(mockBeneficio1, mockBeneficio2, mockBeneficio3))
             .when(repository).findAll();
 
-        TransferenciaDTO dto = mock(TransferenciaDTO.class);
+        TransferenciaDto dto = mock(TransferenciaDto.class);
         dto.setFromId(1L);
         dto.setToId(2L);
         dto.setValor(new BigDecimal(100.00));

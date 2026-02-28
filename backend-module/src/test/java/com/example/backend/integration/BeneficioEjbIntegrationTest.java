@@ -1,4 +1,4 @@
-package com.example.ejb;
+package com.example.backend.integration;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,8 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.example.ejb.exception.BusinessException;
-
+import com.example.ejb.BusinessException;
+import com.example.ejb.BeneficioEjbService;
 import com.example.ejb.entity.Beneficio;
 
 /**

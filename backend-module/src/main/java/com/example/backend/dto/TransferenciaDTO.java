@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "Transferencia", description = "Dados necessários para realizar uma transferência entre benefícios")
-public class TransferenciaDTO {
+public class TransferenciaDto {
     @Schema(description = "ID do benefício de origem (onde o valor será debitado)", example = "1")
     @NotNull(message = "ID de origem é obrigatório")
     private Long fromId;

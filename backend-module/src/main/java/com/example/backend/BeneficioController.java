@@ -3,7 +3,7 @@ package com.example.backend;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.dto.BeneficioDto;
-import com.example.backend.dto.TransferenciaDTO;
+import com.example.backend.dto.TransferenciaDto;
 import com.example.backend.service.BeneficioService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -87,7 +87,7 @@ public class BeneficioController {
     @PostMapping("/transferir")
     public ResponseEntity<Void> realizarTransferencia(
             @Parameter(description = "Dados da transferência (fromId, toId, valor)", required = true)
-            @Valid @RequestBody TransferenciaDTO dto) {
+            @Valid @RequestBody TransferenciaDto dto) {
         beneficioService.realizarTransferencia(dto);
         return ResponseEntity.ok().build();
     }

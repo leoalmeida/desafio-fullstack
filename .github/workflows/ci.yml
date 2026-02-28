@@ -98,4 +98,18 @@ jobs:
         with:
           name: coverage-report
           path: backend-module/target/site/jacoco/
-          retention-days: 7
+          retention-dsays: 7
+  #zap-scan:
+  #  needs: build-project
+  #  uses: ./.github/workflows/zap_scan.yml
+  #  secrets: inherit
+  
+  #docker:
+  #  needs: zap-scan
+  #  uses: ./.github/workflows/Docker.yml
+  #  secrets: inherit
+  
+  #deploy_ecs:
+  #  needs: docker
+  #  uses: ./.github/workflows/ECS.yml
+  #  secrets: inherit
