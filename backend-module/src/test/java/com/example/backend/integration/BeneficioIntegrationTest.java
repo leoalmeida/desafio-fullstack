@@ -21,10 +21,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.backend.dto.BeneficioDto;
@@ -36,7 +39,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 //@WebMvcTest(BeneficioController.class)
 //@Transactional
-@SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc 
 public class BeneficioIntegrationTest {
 
@@ -206,7 +211,7 @@ public class BeneficioIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error", is("Não é possível realizar transferirência para o mesmo benefício")));
+                .andExpect(jsonPath("$.error", is("Não é possível realizar transferência para o mesmo benefício")));
     }
 
     @Test

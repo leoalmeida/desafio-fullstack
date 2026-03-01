@@ -35,7 +35,7 @@ public class BeneficioEjbService {
             throw new IllegalArgumentException("Valor de transferência deve ser positivo");
         }
         if (fromId.equals(toId)) {
-            throw new IllegalArgumentException("Não é possível realizar transferirência para o mesmo benefício");
+            throw new IllegalArgumentException("Não é possível realizar transferência para o mesmo benefício");
         }
 
         logger.info(String.format("Transferindo: %d -> %d, valor: %s", fromId, toId, amount));

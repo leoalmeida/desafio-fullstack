@@ -85,7 +85,7 @@ public class BeneficioService{
         }
         log.info("Iniciando transferência entre benefícios ID={}, ID={}, VALOR={}", dto.getFromId(), dto.getToId(),dto.getValor());
         if (dto.getFromId().equals(dto.getToId())) {
-            throw new IllegalArgumentException("Não é possível realizar transferirência para o mesmo benefício");
+            throw new IllegalArgumentException("Não é possível realizar transferência para o mesmo benefício");
         }
         if (dto.getValor() == null || dto.getValor().signum() <= 0) {
             throw new IllegalArgumentException("Valor de transferência deve ser positivo");
