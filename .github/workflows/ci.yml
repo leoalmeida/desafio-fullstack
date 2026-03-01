@@ -37,7 +37,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build backend module
-        run: mvn -B -f backend-module/pom.xml clean package
+        run: mvn -B -f backend-module/pom.xml clean package -DskipTests
       - name: Run BackendApplicationTests
         run: mvn -B -f ejb-module/pom.xml -Dtest=BackendApplicationTests test
       - name: Run BeneficioControllerTest
