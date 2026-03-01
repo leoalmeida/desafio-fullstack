@@ -113,7 +113,7 @@ public class BeneficioEjbIntegrationTest{
     }
     @Test
     @DisplayName("Não deve transferir valores se um dos benefícios estiver cancelado")
-    void naoDeveTransferir_beneficioCancelado() throws Exception {
+    void naoDeveTransferir_beneficioCanceladof() throws Exception {
         // given: dois benefícios sendo um deles cancelado
         Beneficio fonte = Beneficio.builder()
                 .id(1L)
@@ -162,7 +162,7 @@ public class BeneficioEjbIntegrationTest{
         Throwable  throwable  = assertThrows(IllegalArgumentException.class,
                 () -> ejbService.transfer(beneficio.getId(), beneficio.getId(), montante));
         assertEquals(IllegalArgumentException.class, throwable.getClass());
-        assertEquals("Não é possível transferir para o mesmo benefício", throwable.getMessage());
+        assertEquals("Não é possível realizar transferência para o mesmo benefício", throwable.getMessage());
         verify(em, times(0))
                 .find(Beneficio.class, beneficio.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
         verify(em, times(0))
