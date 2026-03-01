@@ -22,16 +22,8 @@ jobs:
       - name: Build EJB Module
         run: mvn -B -f ejb-module/pom.xml clean install
 
-      - name: Run BackendApplicationTests
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BackendApplicationTests test
-      - name: Run BeneficioControllerTest
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioControllerTest test
-      - name: Run BeneficioEjbIntegrationTest
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioEjbIntegrationTest test
-      - name: Run BeneficioRepositoryIntegrationTest
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioRepositoryIntegrationTest test
-      - name: Run BeneficioServiceTest
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioServiceTest test
+      - name: Run EJB Tests
+        run: mvn -B -f ejb-module/pom.xml test
 
   build-backend:
     runs-on: ubuntu-latest
@@ -46,6 +38,16 @@ jobs:
           cache: 'maven'
       - name: Build backend module
         run: mvn -B -f backend-module/pom.xml clean package
+      - name: Run BackendApplicationTests
+        run: mvn -B -f ejb-module/pom.xml -Dtest=BackendApplicationTests test
+      - name: Run BeneficioControllerTest
+        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioControllerTest test
+      - name: Run BeneficioEjbIntegrationTest
+        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioEjbIntegrationTest test
+      - name: Run BeneficioRepositoryIntegrationTest
+        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioRepositoryIntegrationTest test
+      - name: Run BeneficioServiceTest
+        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioServiceTest test 
       - name: Run Integration Tests
         run: mvn -B -f backend-module/pom.xml verify
       - name: Upload Backend Artifact
