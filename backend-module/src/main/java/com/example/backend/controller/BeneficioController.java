@@ -1,4 +1,4 @@
-package com.example.backend;
+package com.example.backend.controller;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -65,6 +65,7 @@ public class BeneficioController {
             @ApiResponse(responseCode = "201", description = "Benefício criado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = BeneficioDto.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou incompletos"),
+            @ApiResponse(responseCode = "422", description = "Erro de negócio ao criar benefício"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping
@@ -72,7 +73,8 @@ public class BeneficioController {
             @Parameter(description = "Dados do benefício a ser criado", required = true)
             @Valid @RequestBody BeneficioDto beneficioDto) {
         BeneficioDto savedBeneficio = beneficioService.criarBeneficio(beneficioDto);
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(savedBeneficio);
     }
@@ -81,7 +83,8 @@ public class BeneficioController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transferência realizada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados de transferência inválidos"),
-            @ApiResponse(responseCode = "409", description = "Saldo insuficiente ou benefícios inativos"),
+            @ApiResponse(responseCode = "404", description = "Benefício não encontrado"),
+            @ApiResponse(responseCode = "422", description = "Erro de negócio ao realizar transferência"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping("/transferir")
@@ -98,6 +101,7 @@ public class BeneficioController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = BeneficioDto.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou incompletos"),
             @ApiResponse(responseCode = "404", description = "Benefício não encontrado"),
+            @ApiResponse(responseCode = "422", description = "Erro de negócio ao atualizar benefício"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}")
@@ -106,7 +110,9 @@ public class BeneficioController {
             @PathVariable Long id, 
             @Parameter(description = "Novos dados do benefício", required = true)
             @RequestBody BeneficioDto beneficio) {
-        return ResponseEntity.ok(beneficioService.alterarBeneficio(id, beneficio));
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(beneficioService.alterarBeneficio(id, beneficio));
     }
 
     @Operation(summary = "Ativar benefício", description = "Ativa um benefício que estava cancelado")
@@ -114,13 +120,16 @@ public class BeneficioController {
             @ApiResponse(responseCode = "200", description = "Benefício ativado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = BeneficioDto.class))),
             @ApiResponse(responseCode = "404", description = "Benefício não encontrado"),
+            @ApiResponse(responseCode = "422", description = "Erro de negócio ao ativar benefício"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}/ativar")
     public ResponseEntity<BeneficioDto> ativarBeneficio(
             @Parameter(description = "ID único do benefício a ativar", required = true, example = "1")
             @PathVariable Long id) {
-        return ResponseEntity.ok(beneficioService.alterarStatusBeneficio(id, true));
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(beneficioService.alterarStatusBeneficio(id, true));
     }
 
     @Operation(summary = "Cancelar benefício", description = "Cancela um benefício ativo, impedindo operações futuras com ele")
@@ -128,19 +137,23 @@ public class BeneficioController {
             @ApiResponse(responseCode = "200", description = "Benefício cancelado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = BeneficioDto.class))),
             @ApiResponse(responseCode = "404", description = "Benefício não encontrado"),
+            @ApiResponse(responseCode = "422", description = "Erro de negócio ao cancelar benefício"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<BeneficioDto> cancelarBeneficio(
             @Parameter(description = "ID único do benefício a cancelar", required = true, example = "1")
             @PathVariable Long id) {
-        return ResponseEntity.ok(beneficioService.alterarStatusBeneficio(id, false));
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(beneficioService.alterarStatusBeneficio(id, false));
     }
 
     @Operation(summary = "Remover benefício", description = "Remove permanentemente um benefício do sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Benefício removido com sucesso"),
             @ApiResponse(responseCode = "404", description = "Benefício não encontrado"),
+            @ApiResponse(responseCode = "422", description = "Erro de negócio ao remover benefício"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{id}")

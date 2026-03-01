@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -18,13 +19,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.backend.dto.BeneficioDto;
 import com.example.backend.dto.TransferenciaDto;
@@ -33,8 +34,10 @@ import com.example.backend.repository.BeneficioRepository;
 import com.example.ejb.entity.Beneficio;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@ExtendWith(MockitoExtension.class)
-@Transactional
+//@WebMvcTest(BeneficioController.class)
+//@Transactional
+@SpringBootTest
+@AutoConfigureMockMvc 
 public class BeneficioIntegrationTest {
 
     @Autowired
@@ -53,15 +56,16 @@ public class BeneficioIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        
+        repository.deleteAll();
         // Cria beneficios para testes
-        beneficio1 = repository.save(TestFactory.gerarBeneficio());
-        beneficio2 = repository.save(TestFactory.gerarBeneficio());
-        beneficio3 = repository.save(TestFactory.gerarBeneficio());
+        beneficio1 = repository.save(TestFactory.gerarBeneficio(true));
+        beneficio2 = repository.save(TestFactory.gerarBeneficio(true));
+        beneficio3 = repository.save(TestFactory.gerarBeneficio(false));
         beneficioAssets.addAll(Arrays.asList(beneficio1,beneficio2,beneficio3));
     }
 
     @Test
+    @DisplayName("Deve criar um novo benefício válido e retornar o benefício criado")
     void integradoAoCriarNovoBeneficioValido_RetornaBeneficioCriado() throws Exception {
         BeneficioDto dto = TestFactory.gerarBeneficioDto();
         dto.setId(null);
@@ -77,6 +81,7 @@ public class BeneficioIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar erro ao criar um novo benefício inválido")
     void integradoAoCriarNovoBeneficioInvalido_RetornaErro() throws Exception {
         BeneficioDto dto = TestFactory.gerarBeneficioDto();
         dto.setId(null);
@@ -89,6 +94,7 @@ public class BeneficioIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve atualizar um benefício válido e retornar o benefício atualizado")
     void integradoAoAtualizarBeneficio_RetornaBeneficioAtualizado() throws Exception {
         BeneficioDto dto = BeneficioDto.builder()
                 .id(beneficio1.getId())
@@ -107,10 +113,12 @@ public class BeneficioIntegrationTest {
                 .andExpect(jsonPath("$.nome", is(dto.getNome())))
                 .andExpect(jsonPath("$.descricao", is(dto.getDescricao())))
                 .andExpect(jsonPath("$.valor", is(dto.getValor().doubleValue())))
-                .andExpect(jsonPath("$.ativo", is(dto.getAtivo())));
+                .andExpect(jsonPath("$.ativo", is(dto.getAtivo())))
+                .andDo(print());
     }
 
     @Test
+    @DisplayName("Deve cancelar um benefício e retornar o benefício cancelado")
     void integradoAoCancelarBeneficio_RetornaBeneficioCancelado() throws Exception {
         mockMvc.perform(put("/api/v1/beneficios/{id}/cancelar", beneficio1.getId()))
                 .andExpect(status().isOk())
@@ -118,6 +126,7 @@ public class BeneficioIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve ativar um benefício e retornar o benefício ativado")
     void integradoAoAtivarBeneficio_RetornaBeneficioAtivado() throws Exception {
         mockMvc.perform(put("/api/v1/beneficios/{id}/ativar", beneficio1.getId()))
                 .andExpect(status().isOk())
@@ -125,12 +134,14 @@ public class BeneficioIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve remover um benefício e retornar status No Content")
     void integradoAoRemoverBeneficio_RetornaNoContent() throws Exception {
         mockMvc.perform(delete("/api/v1/beneficios/{id}", beneficio1.getId()))
                 .andExpect(status().isNoContent());
     }
 
     @Test
+    @DisplayName("Deve retornar a lista de todos os benefícios")
     void integradoAoConsultarTodosBeneficios_RetornaListaDeBeneficios() throws Exception {
         mockMvc.perform(get("/api/v1/beneficios"))
                 .andExpect(status().isOk())
@@ -140,22 +151,27 @@ public class BeneficioIntegrationTest {
                 .andExpect(jsonPath("$[2].nome", is(beneficio3.getNome())));
     }
     @Test
+    @DisplayName("Deve retornar um benefício pelo ID")
     void integradoAoBuscarBeneficioPorId_RetornaBeneficioEncontrado() throws Exception {
         mockMvc.perform(get("/api/v1/beneficios/{id}", beneficio1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(beneficio1.getId())))
+                .andExpect(jsonPath("$.id", is(beneficio1.getId().intValue())))
                 .andExpect(jsonPath("$.nome", is(beneficio1.getNome())))
                 .andExpect(jsonPath("$.valor", is(beneficio1.getValor().doubleValue())))
                 .andExpect(jsonPath("$.ativo", is(beneficio1.getAtivo())));
     }
 
     @Test
+    @DisplayName("Deve retornar status Not Found ao buscar um benefício inexistente")
     void integradoAoBuscarBeneficioPorIdInexistente_RetornaStatusNotFound() throws Exception {
         mockMvc.perform(get("/api/v1/beneficios/875"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error", is("Beneficio não encontrado")))
+                .andDo(print());
     }
 
     @Test
+    @DisplayName("Deve realizar transferência válida entre benefícios e retornar status Ok")
     void integradoAoRealizarTransferenciaValida_RetornaStatusOk() throws Exception {
         TransferenciaDto dto = new TransferenciaDto(
                 beneficio1.getId(),
@@ -176,7 +192,9 @@ public class BeneficioIntegrationTest {
         assertEquals(beneficio1.getValor().subtract(new BigDecimal("50.00")), origemDto.get().getValor());
         assertEquals(beneficio2.getValor().add(new BigDecimal("50.00")), destinoDto.get().getValor());
     }
-     @Test
+    
+    @Test
+    @DisplayName("Deve retornar status Bad Request ao tentar transferir para o mesmo benefício")
     void integradoAoRealizarTransferenciaMesmoBeneficio_RetornaStatusBadRequest() throws Exception {
         TransferenciaDto dto = new TransferenciaDto(
                 beneficio1.getId(),
@@ -188,10 +206,11 @@ public class BeneficioIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error", is("Não é possível realizar transferirência para o mesmo benefício.")));
+                .andExpect(jsonPath("$.error", is("Não é possível realizar transferirência para o mesmo benefício")));
     }
 
     @Test
+    @DisplayName("Deve retornar status Unprocessable Entity ao tentar transferir saldo insuficiente")
     void integradoAoRealizarTransferenciaSaldoInsuficiente_RetornaStatusUnprocessableEntity() throws Exception {
         TransferenciaDto dto = new TransferenciaDto(
                 beneficio1.getId(),
@@ -203,6 +222,6 @@ public class BeneficioIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.error", is("Saldo insuficiente para transferência.")));
+                .andExpect(jsonPath("$.error", is("Saldo insuficiente para transferência")));
     }
 }

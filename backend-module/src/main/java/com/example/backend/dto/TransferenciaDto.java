@@ -5,15 +5,17 @@ import java.math.BigDecimal;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Schema(name = "Transferencia", description = "Dados necessários para realizar uma transferência entre benefícios")
 public class TransferenciaDto {
     @Schema(description = "ID do benefício de origem (onde o valor será debitado)", example = "1")

@@ -41,4 +41,6 @@ public class BeneficioDto {
     @NotNull(message = "Status é obrigatório")
     private Boolean ativo;
 
+    @Schema(description = "Versão do benefício", example = "1")
+    private Long version;
 }

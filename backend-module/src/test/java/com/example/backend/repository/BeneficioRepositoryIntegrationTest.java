@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +28,13 @@ public class BeneficioRepositoryIntegrationTest {
     private BeneficioRepository repository;
 
     @Test
+    @DisplayName("Deve garantir que a tabela de benefícios não está vazia")
     void tabelaNaoDeveEstarVazia() {
         assertTrue(repository.findAll().size()>0);
     }
 
     @Test
+    @DisplayName("Deve persistir novo benefício com sucesso")
     void aoCriarBeneficio_entaoRegistroPersistidoComSucesso() {
         // given
         Beneficio novoItem = TestFactory.gerarBeneficio();
@@ -51,6 +55,7 @@ public class BeneficioRepositoryIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve alterar benefício sem alterar quantidade de registros")
     void aoAlterarBeneficio_entaoQuantidadeRegistrosNaoAltera() {
         // given
         Beneficio beneficio1 = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
@@ -71,6 +76,7 @@ public class BeneficioRepositoryIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve alterar benefício sem alterar quantidade de registros")
     void aoAlterarBeneficio_entaoRegistroAlteradoComSucesso() {
         // given
         Beneficio beneficio1 = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
@@ -96,6 +102,7 @@ public class BeneficioRepositoryIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve remover benefício com ID válido")
     void aoRemoverBeneficioComIdValido_entaoRegistroRemovidoComSucesso() {
         // given
         Beneficio beneficio1 = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
@@ -111,6 +118,7 @@ public class BeneficioRepositoryIntegrationTest {
     }
 
     @Test
+    @DisplayName("Não deve remover benefício com ID inválido")
     void aoRemoverBeneficioComIdInValido_entaoNenhumRegistroRemovido() {
         // given
         repository.deleteAll();
@@ -132,6 +140,7 @@ public class BeneficioRepositoryIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve consultar benefício com ID válido")
     void aoConsultarBeneficioComIdValido_entaoRetornaRegistroComSucesso() {
         // given
         Beneficio saved = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
@@ -151,6 +160,7 @@ public class BeneficioRepositoryIntegrationTest {
     }
 
     @Test
+    @DisplayName("Não deve consultar benefício com ID inválido")
     void aoConsultarBeneficioComIdInvalido_entaoNenhumRegistroRetornado() {
         // when
         Optional<Beneficio> retrieved = repository.findById(885L);
@@ -160,6 +170,7 @@ public class BeneficioRepositoryIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve consultar todos os benefícios com sucesso")
     void aoConsultarTodosBeneficios_entaoRetornaListaComSucesso() {
         // given
         repository.deleteAll();
@@ -182,6 +193,7 @@ public class BeneficioRepositoryIntegrationTest {
 
     
     @Test
+    @DisplayName("Deve retornar lista vazia quando não houver benefícios cadastrados")
     void comTabelaVaziaAoConsultarTodosBeneficios_entaoRetornaListaVazia() {
         // given
         repository.deleteAll();

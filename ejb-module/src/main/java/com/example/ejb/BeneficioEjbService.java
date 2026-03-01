@@ -35,7 +35,7 @@ public class BeneficioEjbService {
             throw new IllegalArgumentException("Valor de transferência deve ser positivo");
         }
         if (fromId.equals(toId)) {
-            throw new IllegalArgumentException("Não é possível transferir para o mesmo registro");
+            throw new IllegalArgumentException("Não é possível realizar transferirência para o mesmo benefício");
         }
 
         logger.info(String.format("Transferindo: %d -> %d, valor: %s", fromId, toId, amount));
@@ -57,16 +57,16 @@ public class BeneficioEjbService {
 
         /* Validação dos benefícios encontrados */
         if (from == null || to == null) {
-            throw new IllegalArgumentException("Registro de benefício não encontrado");
+            throw new IllegalArgumentException("Benefício não encontrado");
         }
         if (!from.getAtivo()) {
-            throw new BusinessException("Benefício de origem foi cancelado.");
+            throw new BusinessException("Benefício de origem está cancelado");
         }
         if (!to.getAtivo()) {
-            throw new BusinessException("Benefício de destino foi cancelado.");
+            throw new BusinessException("Benefício de destino está cancelado");
         }
         if (from.getValor().compareTo(amount) < 0) {
-            throw new BusinessException("Saldo insuficiente para transferência.");
+            throw new BusinessException("Saldo insuficiente para transferência");
         }
 
         /* Validação de saldo insuficiente para transferência entre benefícios*/
