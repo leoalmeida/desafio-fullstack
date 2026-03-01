@@ -38,8 +38,7 @@ jobs:
           cache: 'maven'
       - name: Build backend module
         run: mvn -B -f backend-module/pom.xml clean package -DskipTests
-      - name: Run BackendApplicationTests
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BackendApplicationTests test
+      
       - name: Run BeneficioControllerTest
         run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioControllerTest test
       - name: Run BeneficioEjbIntegrationTest
@@ -48,6 +47,8 @@ jobs:
         run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioRepositoryIntegrationTest test
       - name: Run BeneficioServiceTest
         run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioServiceTest test 
+      - name: Run BackendApplicationTests
+        run: mvn -B -f ejb-module/pom.xml -Dtest=BackendApplicationTests test
       - name: Run Integration Tests
         run: mvn -B -f backend-module/pom.xml verify
       - name: Upload Backend Artifact
