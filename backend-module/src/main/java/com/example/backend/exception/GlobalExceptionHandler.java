@@ -3,8 +3,6 @@ package com.example.backend.exception;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityNotFoundException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cglib.proxy.UndeclaredThrowableException;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -13,9 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -58,7 +55,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (e.getClass().isAssignableFrom(UndeclaredThrowableException.class)) {
             UndeclaredThrowableException exception = (UndeclaredThrowableException) e;
             return handleBusinessException((BusinessException) exception.getUndeclaredThrowable(), request);
-        } else {
+        } else if (e.getClass().isAssignableFrom(MethodArgumentNotValidException.class)) {
+            Map<String, String> errors = new HashMap<>();
+            ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors()
+                .forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage())
+                );
+            ResponseError error = responseError(errors.toString(),HttpStatus.BAD_REQUEST);
+            return handleExceptionInternal(e, error, Objects.requireNonNull(headers()), HttpStatus.BAD_REQUEST, request);
+        }{
             String message = messageSource.getMessage("error.server", new Object[]{e.getMessage()}, Objects.requireNonNull(Locale.getDefault()));
             ResponseError error = responseError(message,HttpStatus.INTERNAL_SERVER_ERROR);
             return handleExceptionInternal(e, error,Objects.requireNonNull(headers()), HttpStatus.INTERNAL_SERVER_ERROR, request);

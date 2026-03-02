@@ -5,8 +5,8 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build-ejb:
-    name: Build EJB Module
+  test-backend:
+    name: Execute Unit tests for Backend Module
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,15 +19,27 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build EJB Module
-        run: mvn -B -f ejb-module/pom.xml clean install
-
-      - name: Run EJB Tests
+      - name: Compile EJB Module
+        run: mvn -B -f ejb-module/pom.xml clean compile test-compile
+      - name: Run EJB Module Unit Tests
         run: mvn -B -f ejb-module/pom.xml test
+
+      - name: Compile Backend Module
+        run: mvn -B -f backend-module/pom.xml clean compile test-compile
+      - name: Run Backend-Module BeneficioEjbIntegrationTest
+        run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioEjbIntegrationTest test
+      - name: Run Backend-Module BeneficioRepositoryIntegrationTest
+        run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioRepositoryIntegrationTest test
+      - name: Run Backend-Module BeneficioServiceTest
+        run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioServiceTest test
+      - name: Run Backend-Module BeneficioControllerTest
+        run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioControllerTest test
+      - name: Run Backend-Module BackendApplicationTests
+        run: mvn -B -f backend-module/pom.xml -Dtest=BackendApplicationTests test
 
   build-backend:
     runs-on: ubuntu-latest
-    needs: build-ejb
+    needs: [test-backend]
     steps:
       - uses: actions/checkout@v6
       - name: Set up JDK 17
@@ -38,17 +50,6 @@ jobs:
           cache: 'maven'
       - name: Build backend module
         run: mvn -B -f backend-module/pom.xml clean package -DskipTests
-      
-      - name: Run BeneficioControllerTest
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioControllerTest test
-      - name: Run BeneficioEjbIntegrationTest
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioEjbIntegrationTest test
-      - name: Run BeneficioRepositoryIntegrationTest
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioRepositoryIntegrationTest test
-      - name: Run BeneficioServiceTest
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BeneficioServiceTest test 
-      - name: Run BackendApplicationTests
-        run: mvn -B -f ejb-module/pom.xml -Dtest=BackendApplicationTests test
       - name: Run Integration Tests
         run: mvn -B -f backend-module/pom.xml verify
       - name: Upload Backend Artifact
@@ -56,6 +57,12 @@ jobs:
         with:
           name: backend-jar
           path: backend-module/target/*.jar
+          retention-days: 7
+      - name: Upload EJB Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ejb-module-jar
+          path: ejb-module/target/*.jar
           retention-days: 7
 
   build-frontend:

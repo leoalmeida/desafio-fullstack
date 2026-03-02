@@ -11,7 +11,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.backend.dto.BeneficioDto;
+import com.example.backend.dto.BeneficioRequestDto;
+import com.example.backend.dto.BeneficioResponseDto;
 import com.example.backend.dto.TransferenciaDto;
 import com.example.backend.mapper.BeneficioMapper;
 import com.example.ejb.BusinessException;
@@ -38,33 +39,33 @@ public class BeneficioService{
     private BeneficioEjbService ejbService;
     
     @Autowired
-    private ObjectsValidator<BeneficioDto> validador;
+    private ObjectsValidator<BeneficioRequestDto> validador;
 
     /**
      * Cria um novo benefício no sistema.
      * Valida os dados fornecidos antes de persistir no banco de dados.
      * 
      * @param dto Dados do benefício a ser criado
-     * @return BeneficioDto com os dados do benefício criado, incluindo ID gerado
+     * @return BeneficioResponseDto com os dados do benefício criado, incluindo ID gerado
      * @throws IllegalArgumentException se os dados fornecidos forem inválidos
      * @throws BusinessException se ocorrer um erro de negócio ao criar o benefício
      */
     
     @Transactional
-    public BeneficioDto criarBeneficio(@NonNull BeneficioDto dto) throws IllegalArgumentException, BusinessException {
+    public BeneficioResponseDto criarBeneficio(@NonNull BeneficioRequestDto dto) throws IllegalArgumentException, BusinessException {
         if (null == dto || null == dto.getNome() || null == dto.getValor()) {
             throw new IllegalArgumentException("Objeto inválido");
         }
         log.info("Criando novo benefício: {}", dto.getNome());
         // Valida o beneficio e converte antess de salvar
-        Beneficio entityIn = BeneficioMapper.map(validador.validate(dto), true);
+        Beneficio entityIn = BeneficioMapper.mapRequest(validador.validate(dto));
         if (entityIn == null) {
             throw new BusinessException("Erro ao converter dados.");
         }
         log.info("Benefício mapeado para entidade: {}", entityIn.getNome());
-        Beneficio entityOut = repository.save(entityIn);// Salva a beneficio no repositório
+        Beneficio entityOut = repository.saveAndFlush(entityIn);// Salva a beneficio no repositório
 
-        return BeneficioMapper.map(entityOut);
+        return BeneficioMapper.mapResponse(entityOut);
     }
 
     /**
@@ -111,23 +112,23 @@ public class BeneficioService{
      * 
      * @param id Identificador único do benefício
      * @param status Novo status a ser definido (true = ativo, false = cancelado)
-     * @return BeneficioDto atualizado com o novo status
+     * @return BeneficioResponseDto atualizado com o novo status
      * @throws BusinessException se o benefício não for encontrado
      * @throws IllegalArgumentException se o ID fornecido for inválido
      * @throws EntityNotFoundException se o benefício não for encontrado
      */
     
     @Transactional
-    public BeneficioDto alterarStatusBeneficio(@NonNull Long id, boolean status) throws BusinessException, IllegalArgumentException, EntityNotFoundException {
+    public BeneficioResponseDto alterarStatusBeneficio(@NonNull Long id, boolean status) throws BusinessException, IllegalArgumentException, EntityNotFoundException {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Identificador do benefício inválido");
         }
         log.info("Alterando status do benefício ID: {}", id);
         Beneficio entity = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Beneficio não encontrado"));
         entity.setAtivo(status);
-        Beneficio saved = repository.save(entity);
+        Beneficio saved = repository.saveAndFlush(entity);
         log.info("Status do benefício ID={} alterado para: {}", id, status ? "Ativo" : "Cancelado");
-        return BeneficioMapper.map(saved);
+        return BeneficioMapper.mapResponse(saved);
     }
 
     /**
@@ -136,20 +137,19 @@ public class BeneficioService{
      * 
      * @param id Identificador único do benefício a ser atualizado
      * @param dto Novos dados do benefício
-     * @return BeneficioDto com os dados atualizados
+     * @return BeneficioResponseDto com os dados atualizados
      * @throws EntityNotFoundException se o benefício não for encontrado
      * @throws IllegalArgumentException se os dados fornecidos forem inválidos
      * @throws BusinessException se ocorrer um erro de negócio ao atualizar o benefício
      */
-    
     @Transactional
-    public BeneficioDto alterarBeneficio(@NonNull Long id, @NonNull BeneficioDto dto) throws EntityNotFoundException, IllegalArgumentException, BusinessException {
+    public BeneficioResponseDto alterarBeneficio(@NonNull Long id, @NonNull BeneficioRequestDto dto) throws EntityNotFoundException, IllegalArgumentException, BusinessException {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Identificador inválido");
         }
 
         log.info("Alterando dados do benefício ID={} com os seguintes dados: {}", id, dto.toString());
-        Beneficio validated = BeneficioMapper.map(validador.validate(dto), false);// Valida o beneficio antes de salvar
+        Beneficio validated = BeneficioMapper.mapRequest(validador.validate(dto));// Valida o beneficio antes de salvar
         
         if (validated == null) {
             throw new BusinessException("Erro ao validar objeto");
@@ -159,27 +159,27 @@ public class BeneficioService{
             .orElseThrow(() -> new EntityNotFoundException("Beneficio não encontrado"));
         
         entity.updateData(validated);
-        Beneficio saved = repository.save(entity);
+        Beneficio saved = repository.saveAndFlush(entity);
         log.info("Benefício ID={} alterado com sucesso", id);
-        return  BeneficioMapper.map(saved);   
+        return  BeneficioMapper.mapResponse(saved);   
     }
 
     /**
      * Busca um benefício específico pelo seu identificador único.
      * 
      * @param id Identificador único do benefício
-     * @return BeneficioDto com os dados do benefício encontrado
+     * @return BeneficioResponseDto com os dados do benefício encontrado
      * @throws EntityNotFoundException se o benefício não for encontrado
      * @throws IllegalArgumentException se o ID fornecido for inválido
      */
     
     @Transactional(readOnly = true)
-    public BeneficioDto buscarBeneficioPorId(@NonNull Long id) throws EntityNotFoundException, IllegalArgumentException {
+    public BeneficioResponseDto buscarBeneficioPorId(@NonNull Long id) throws EntityNotFoundException, IllegalArgumentException {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Identificador inválido");
         }
         return repository.findById(id)
-                    .map(BeneficioMapper::map)
+                    .map(BeneficioMapper::mapResponse)
                     .orElseThrow(() -> new EntityNotFoundException("Beneficio não encontrado"));
     }
 
@@ -187,13 +187,13 @@ public class BeneficioService{
     /**
      * Retorna uma lista de todos os benefícios cadastrados no sistema.
      * 
-     * @return Lista contendo BeneficioDtos de todos os benefícios
+     * @return Lista contendo BeneficioResponseDtos de todos os benefícios
      */
     
     @Transactional(readOnly = true)
-    public List<BeneficioDto> buscarTodosBeneficios() {
+    public List<BeneficioResponseDto> buscarTodosBeneficios() {
         return repository.findAll().stream()
-                    .map(BeneficioMapper::map)
+                    .map(BeneficioMapper::mapResponse)
                     .collect(Collectors.toList());
     }
 
@@ -202,12 +202,12 @@ public class BeneficioService{
      * Útil para listar benefícios ativos ou inativos.
      * 
      * @param ativo Status de filtro (true = ativos, false = cancelados)
-     * @return Lista de BeneficioDtos que correspondem ao status informado
+     * @return Lista de BeneficioResponseDtos que correspondem ao status informado
      */
     @Transactional(readOnly = true)
-    public List<BeneficioDto> filtrarBeneficiosPorStatus(boolean ativo) {
+    public List<BeneficioResponseDto> filtrarBeneficiosPorStatus(boolean ativo) {
         return repository.searchByStatus(ativo).stream()
-                .map(BeneficioMapper::map)
+                .map(BeneficioMapper::mapResponse)
                 .collect(Collectors.toList());
     }
 
@@ -216,12 +216,12 @@ public class BeneficioService{
      * Útil para realizar buscas por nome ou parte do nome do benefício.
      * 
      * @param nome Nome ou parte do nome a ser pesquisado
-     * @return Lista de BeneficioDtos que correspondem ao critério de busca
+     * @return Lista de BeneficioResponseDtos que correspondem ao critério de busca
      */
     @Transactional(readOnly = true)
-    public List<BeneficioDto> filtrarBeneficiosPorNome(String nome) {
+    public List<BeneficioResponseDto> filtrarBeneficiosPorNome(String nome) {
         return repository.searchByNome(nome).stream()
-                .map(BeneficioMapper::map)
+                .map(BeneficioMapper::mapResponse)
                 .collect(Collectors.toList());
     }
 
@@ -241,8 +241,8 @@ public class BeneficioService{
             throw new IllegalArgumentException("Identificador inválido para remoção.");
         }
         
-        BeneficioDto beneficio = repository.findById(beneficioId)
-                    .map(BeneficioMapper::map)
+        BeneficioResponseDto beneficio = repository.findById(beneficioId)
+                    .map(BeneficioMapper::mapResponse)
                     .orElseThrow(() -> new EntityNotFoundException("Beneficio não encontrado"));
         if (beneficio == null){
             throw new BusinessException("Beneficio não encontrado para remoção.");

@@ -1,5 +1,6 @@
 package com.example.backend.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,11 +22,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "Beneficio", description = "Dados de um benefício bancário")
-public class BeneficioDto {
+@Schema(name = "BeneficioRequest", description = "Dados de um Request para criação ou alteração de um benefício bancário")
+public class BeneficioRequestDto {
 
-    @Schema(description = "Identificador único do benefício", example = "1")
-    private Long id;
     @Schema(description = "Nome do benefício", example = "Vale Refeição", minLength = 3, maxLength = 100)
     @NotBlank(message = "Nome é obrigatório")
     @Size(min = 3, max = 100, message = "Nome deve ter entre 3 e 100 caracteres")
@@ -41,6 +40,4 @@ public class BeneficioDto {
     @NotNull(message = "Status é obrigatório")
     private Boolean ativo;
 
-    @Schema(description = "Versão do benefício", example = "1")
-    private Long version;
 }

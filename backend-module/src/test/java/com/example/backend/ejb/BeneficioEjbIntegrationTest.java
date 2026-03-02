@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -18,6 +20,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
+
 import com.example.ejb.BusinessException;
 import com.example.ejb.BeneficioEjbService;
 import com.example.ejb.entity.Beneficio;
@@ -28,6 +32,7 @@ import com.example.ejb.entity.Beneficio;
  * para que as entidades JPA possam ser gerenciadas normalmente.
  */
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 public class BeneficioEjbIntegrationTest{
 
     @Mock 
@@ -62,20 +67,20 @@ public class BeneficioEjbIntegrationTest{
         BigDecimal montante = new BigDecimal("100.00");
 
         // Arrange
-        when(em.find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)).thenReturn(fonte);
-        when(em.find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)).thenReturn(destino);
-        when(em.merge(any(Beneficio.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        given(em.find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE))
+                .willReturn(fonte);
+        given(em.find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE))
+                .willReturn(destino);
+        given(em.merge(any(Beneficio.class)))
+                .willAnswer(invocation -> invocation.getArgument(0));
 
         // Act
         ejbService.transfer(fonte.getId(), destino.getId(), montante);
 
         // then: valores atualizados na base
-        verify(em, times(1))
-                .find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
-        verify(em, times(1))
-                .find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
-        verify(em, times(2))
-                .merge(any(Beneficio.class));
+        then(em).should(times(1)).find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+        then(em).should(times(1)).find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+        then(em).should(times(2)).merge(any(Beneficio.class));
     }
 
     @Test
