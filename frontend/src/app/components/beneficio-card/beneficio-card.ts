@@ -11,6 +11,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { BeneficioDetails } from '../beneficio-details/beneficio-details';
 import { TransferDetails } from '../transfer-details/transfer-details';
 import { MatIconModule } from '@angular/material/icon';
+import { TransferenciaService } from 'src/app/services/transferencia.service';
 
 @Component({
   selector: 'app-beneficio-card',
@@ -21,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class BeneficioCard {
   beneficio = input.required<BeneficioType>();
   private beneficioService: BeneficioService = inject(BeneficioService);
+  private transferenciaService: TransferenciaService = inject(TransferenciaService);
   message:string = "";
   private dialogAcao: MatDialog = inject(MatDialog);
   constructor() {  
@@ -89,8 +91,10 @@ export class BeneficioCard {
           console.error("Dados de transferência incompletos.");
           return;
         }
-        this.beneficioService.transferValue(result);
-        console.log('Transferência solicitada:', result);
+        this.transferenciaService.transferValue(result).subscribe({
+          next: () => console.log('Transferência realizada com sucesso:', result),
+          error: (error) => console.error('Erro ao realizar transferência:', error)
+        });
       }
     });
   }
