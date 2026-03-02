@@ -248,7 +248,7 @@ class BackendApplicationTests extends AbstractIntegrationTest{
                 new BigDecimal("50.00") 
         );
         performPostRequest(
-                        TestFactory.BENEFICIOS_API_ENDPOINT + "/transferir", 
+                        TestFactory.TRANSFERENCIAS_API_ENDPOINT, 
                         dto, 
                         null,
                         status().isBadRequest(),
@@ -266,7 +266,7 @@ class BackendApplicationTests extends AbstractIntegrationTest{
         );
 
         performPostRequest(
-                        TestFactory.BENEFICIOS_API_ENDPOINT + "/transferir", 
+                        TestFactory.TRANSFERENCIAS_API_ENDPOINT, 
                         dto, 
                         null,
                         status().isUnprocessableEntity(),
