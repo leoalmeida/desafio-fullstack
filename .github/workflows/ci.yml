@@ -23,6 +23,9 @@ jobs:
         run: mvn -B -f backend-module/pom.xml checkstyle:checkstyle
 
       #- name: Run PMD
+      #  run: mvn -B -f backend-module/pom.xml pmd:check
+
+      #- name: Run PMD
       #  run: mvn -B -f backend-module/pom.xml pmd:pmd
 
       #- name: Run SpotBugs
