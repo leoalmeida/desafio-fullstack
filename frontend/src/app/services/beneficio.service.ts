@@ -1,9 +1,10 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { BeneficioType } from '../models/beneficio-type';
 import { TransferenciaType } from '../models/transferencia-type';
+import { beneficios } from 'src/mocks/beneficios';
 
 @Injectable({
   providedIn: 'root'
@@ -21,52 +22,67 @@ export class BeneficioService {
 
   items = this.beneficiosList.asReadonly();
 
-  getAll(): void{
-    this.http.get<BeneficioType[]>(`${this.baseUrl}`)
-                  .subscribe(xs => this.beneficiosList.set(xs));
+  getAll(): Observable<BeneficioType[]>{
+    return this.http.get<BeneficioType[]>(`${this.baseUrl}`)
+                  .pipe(catchError(this.handleError));
   }
 
-  getOne(idAssociado:number): void{
-    this.http.get<BeneficioType[]>(`${this.baseUrl}/associado/${idAssociado}`)
-                  .subscribe(xs => this.beneficiosList.set(xs));
+  getOne(idAssociado:number): Observable<BeneficioType[]>{
+    return this.http.get<BeneficioType[]>(`${this.baseUrl}/associado/${idAssociado}`)
+                  .pipe(catchError(this.handleError));
+  }
+
+  getAllAtivos(): Observable<BeneficioType[]> {
+    return this.http.get<BeneficioType[]>(`${this.baseUrl}/ativos`)
+      .pipe(catchError(this.handleError));
   }
 
    //POST - "/"
-  createOne(beneficio: BeneficioType): boolean {
+  createOne(beneficio: BeneficioType): Observable<BeneficioType> {
     console.log(`Solicitando a criação de novo benefício: nome: ${beneficio.nome}.`);
-    this.http.post(`${this.baseUrl}`, beneficio);
-    return true; 
+    return this.http.post<BeneficioType>(`${this.baseUrl}`, beneficio)
+              .pipe(catchError(this.handleError));
+
   }
 
-  changeOne(beneficio: BeneficioType): void {
+  changeOne(beneficio: BeneficioType): Observable<BeneficioType> {
     console.log(`Cancelando benefício: ${beneficio.id}.`);
-    this.http.put(`${this.baseUrl}/${beneficio.id}`, beneficio).subscribe({
-      next: (res) => console.log(`Benefício ${beneficio.id} atualizado com sucesso.`),
-         error: (err) => console.log(err),
-      });
+    return this.http.put<BeneficioType>(`${this.baseUrl}/${beneficio.id}`, beneficio)
+              .pipe(catchError(this.handleError));
   }
   
-  changeStatus(beneficio: BeneficioType): void {
+  changeStatus(beneficio: BeneficioType): Observable<BeneficioType> {
     console.log(`Alterando status do benefício: ${beneficio.id} para ${beneficio.ativo ? 'cancelado' : 'ativo'}.`);
-    this.http.put(`${this.baseUrl}/${beneficio.id}/`+ (beneficio.ativo ? 'cancelar' : 'ativar'),{}).subscribe({
-      next: (res) => console.log(`Status do benefício ${beneficio.id} alterado para ${beneficio.ativo ? 'ativo' : 'inativo'} com sucesso.`),
-      error: (err) => console.log(err),
-    });
+    return this.http.put<BeneficioType>(`${this.baseUrl}/${beneficio.id}/`+ (beneficio.ativo ? 'cancelar' : 'ativar'),{})
+                  .pipe(catchError(this.handleError));  
   }
 
-  deleteOne(idBeneficio: number): void {
+  deleteOne(idBeneficio: number): Observable<void> {
     console.log(`Removendo benefício: ${idBeneficio}.`);
-    this.http.delete(`${this.baseUrl}/${idBeneficio}`).subscribe({
-      next: (res) => console.log(`Benefício ${idBeneficio} removido com sucesso.`),
-      error: (err) => console.log(err),
-    });
+    return this.http.delete<void>(`${this.baseUrl}/${idBeneficio}`)
+              .pipe(catchError(this.handleError));
+
   }
 
-  transferValue(transferencia: TransferenciaType): void {
+  transferValue(transferencia: TransferenciaType): Observable<void> {
     console.log(`Transferindo valor ${transferencia.valor} de benefício: ${transferencia.fromId} para benefício: ${transferencia.toId}.`);
-    this.http.post(`${this.baseUrl}/transferir`, transferencia).subscribe({
-      next: (res) => console.log(`Valor ${transferencia.valor} transferido para benefício ${transferencia.toId} com sucesso.`),
-      error: (err) => console.log(err),
-    });
+    return this.http.post<void>(`${this.baseUrl}/transferir`, transferencia)
+              .pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Erro desconhecido';
+
+    if (error.error instanceof ErrorEvent) {
+      // Erro do lado do cliente
+      errorMessage = `Erro: ${error.error.message}`;
+    } else {
+      // Erro do lado do servidor
+      errorMessage = error.error?.message ||
+                    `Erro ${error.status}: ${error.statusText}`;
+    }
+
+    console.error('Erro na requisição:', errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 }
