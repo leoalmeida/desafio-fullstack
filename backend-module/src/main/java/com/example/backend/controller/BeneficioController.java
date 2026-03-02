@@ -125,13 +125,13 @@ public class BeneficioController {
                 @ApiResponse(responseCode = "422", description = "Erro de negócio ao alterar status do benefício"),
                 @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
         })
-        @PutMapping(path = "/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+        @PutMapping(path = "/{id}/{acao}", produces = MediaType.APPLICATION_JSON_VALUE)
         public ResponseEntity<BeneficioResponseDto> alterarStatusBeneficio(
                         @Parameter(description = "ID único do benefício a alterar", required = true, 
                                 example = "1") 
                         @PathVariable final Long id, 
-                        @Parameter(description = "Novo status do benefício (true = ativo, false = cancelado)", 
-                                required = true, example = "true") 
+                        @Parameter(description = "Ação a ser realizada no benefício (ativar/cancelar)", 
+                                required = true, example = "ativar") 
                         @PathVariable final String acao) {
                 Boolean status = "ativar".equalsIgnoreCase(acao);
                 BeneficioResponseDto updBeneficio = beneficioService.alterarStatusBeneficio(id, status);

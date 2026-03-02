@@ -123,8 +123,8 @@ public class BeneficioControllerTest {
         when(beneficioService.alterarStatusBeneficio(eq(beneficioResponseInativo.getId()), eq(true)))
             .thenReturn(beneficioResponseInativo);
         // Executa e verifica
-        ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}/ativar",
-                beneficioResponseInativo.getId()));
+        ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}/{acao}",
+                beneficioResponseInativo.getId(), "ativar"));
         // Verifica se o método do serviço foi chamado e se a resposta está correta
         response.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -150,8 +150,8 @@ public class BeneficioControllerTest {
             .thenReturn(beneficioResponse2);
 
         // Executa e verifica
-        ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}/cancelar",
-                beneficioResponse2.getId()));
+        ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}/{acao}",
+                beneficioResponse2.getId(), "cancelar"));
         response.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id", CoreMatchers.is(beneficioResponse2.getId().intValue())))
