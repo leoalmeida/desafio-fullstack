@@ -108,8 +108,9 @@ public class BeneficioController {
                         @PathVariable final Long id,
                         @Parameter(description = "Novos dados do benefício", required = true) 
                         @Valid @RequestBody final BeneficioRequestDto beneficio) {
+                BeneficioResponseDto updBeneficio = beneficioService.alterarBeneficio(id, beneficio);
                 return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-                                .body(beneficioService.alterarBeneficio(id, beneficio));
+                                .body(updBeneficio);
         }
 
         @Operation(summary = "Alterar Status de um benefício", 
@@ -119,6 +120,7 @@ public class BeneficioController {
                 description = "Status do benefício alterado com sucesso", 
                 content = @Content(mediaType = "application/json", 
                         schema = @Schema(implementation = BeneficioResponseDto.class))),
+                @ApiResponse(responseCode = "400", description = "Dados inválidos ou incompletos"),
                 @ApiResponse(responseCode = "404", description = "Benefício não encontrado"),
                 @ApiResponse(responseCode = "422", description = "Erro de negócio ao alterar status do benefício"),
                 @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
@@ -130,9 +132,11 @@ public class BeneficioController {
                         @PathVariable final Long id, 
                         @Parameter(description = "Novo status do benefício (true = ativo, false = cancelado)", 
                                 required = true, example = "true") 
-                        @PathVariable final Boolean status) {
+                        @PathVariable final String acao) {
+                Boolean status = "ativar".equalsIgnoreCase(acao);
+                BeneficioResponseDto updBeneficio = beneficioService.alterarStatusBeneficio(id, status);
                 return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-                                .body(beneficioService.alterarStatusBeneficio(id, status));
+                                .body(updBeneficio);
         }
 
         /*

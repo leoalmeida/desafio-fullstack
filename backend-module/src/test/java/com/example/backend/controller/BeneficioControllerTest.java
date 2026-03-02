@@ -119,13 +119,15 @@ public class BeneficioControllerTest {
     public void deveAtivarBeneficioSolicitado() throws Exception {
         // Configura entidade utilizada
         beneficioResponseInativo.setAtivo(true);
-        // Configura o mock
+        // Configura o mocks
         when(beneficioService.alterarStatusBeneficio(eq(beneficioResponseInativo.getId()), eq(true)))
             .thenReturn(beneficioResponseInativo);
         // Executa e verifica
-        ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}/ativar",beneficioResponseInativo.getId()));
+        ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}/ativar",
+                beneficioResponseInativo.getId()));
         // Verifica se o método do serviço foi chamado e se a resposta está correta
-        response.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        response.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id", CoreMatchers.is(beneficioResponseInativo.getId().intValue())))
                 .andExpect(jsonPath("$.nome", CoreMatchers.is(beneficioResponseInativo.getNome())))
                 .andExpect(jsonPath("$.descricao", CoreMatchers.is(beneficioResponseInativo.getDescricao())))
@@ -148,7 +150,8 @@ public class BeneficioControllerTest {
             .thenReturn(beneficioResponse2);
 
         // Executa e verifica
-        ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}/cancelar",beneficioResponse2.getId()));
+        ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}/cancelar",
+                beneficioResponse2.getId()));
         response.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id", CoreMatchers.is(beneficioResponse2.getId().intValue())))
@@ -157,6 +160,9 @@ public class BeneficioControllerTest {
                 .andExpect(jsonPath("$.valor", CoreMatchers.is(beneficioResponse2.getValor().doubleValue())))
                 .andExpect(jsonPath("$.ativo", CoreMatchers.is(beneficioResponse2.getAtivo())));
 
+        // Verifica se o método do serviço foi chamado com os parâmetros corretos
+        then(beneficioService).should(times(1))
+                .alterarStatusBeneficio(beneficioResponse2.getId(), false);
     }
 
 	/*
