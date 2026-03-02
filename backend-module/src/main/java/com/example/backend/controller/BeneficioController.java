@@ -6,6 +6,7 @@ import com.example.backend.dto.BeneficioRequestDto;
 import com.example.backend.dto.BeneficioResponseDto;
 import com.example.backend.dto.TransferenciaDto;
 import com.example.backend.service.BeneficioService;
+import com.example.backend.service.BeneficioServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -60,7 +60,7 @@ public class BeneficioServiceTest {
     private ObjectsValidator<BeneficioRequestDto> validator;
 
     @InjectMocks
-    private BeneficioService service;
+    private BeneficioServiceImpl service;
 
     private BeneficioResponseDto beneficioDto1;
     private BeneficioResponseDto beneficioDto2;

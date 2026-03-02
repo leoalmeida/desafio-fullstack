@@ -5,11 +5,13 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Random;
 
-import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willAnswer;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,7 +40,6 @@ import com.example.backend.dto.BeneficioResponseDto;
 import com.example.backend.factory.TestFactory;
 import com.example.backend.mapper.BeneficioMapper;
 import com.example.backend.service.BeneficioService;
-import com.example.backend.util.ObjectsValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -76,8 +77,8 @@ public class BeneficioControllerTest {
     @DisplayName("Deve retornar lista com todos os benefícios")
     public void deveRetornarTodosBeneficios() throws Exception {
         // Configura o mock
-        given(beneficioService.buscarTodosBeneficios())
-            .willReturn(Arrays.asList(beneficioResponse1, beneficioResponseInativo, beneficioResponse2));
+        when(beneficioService.buscarTodosBeneficios())
+            .thenReturn(Arrays.asList(beneficioResponse1, beneficioResponseInativo, beneficioResponse2));
 
         // Executa e verifica
         ResultActions response = mockMvc.perform(get(TestFactory.BENEFICIOS_API_ENDPOINT));
@@ -100,8 +101,8 @@ public class BeneficioControllerTest {
     public void deveRetornarUmBeneficioAPartirDoId() throws Exception {
 		// Configura entidade utilizada
         // Configura o mock
-        given(beneficioService.buscarBeneficioPorId(beneficioResponse1.getId()))
-            .willReturn(beneficioResponse1);
+        when(beneficioService.buscarBeneficioPorId(eq(beneficioResponse1.getId())))
+            .thenReturn(beneficioResponse1);
  
         // Executa e verifica
         ResultActions response = mockMvc.perform(get(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}",beneficioResponse1.getId()));
@@ -123,8 +124,8 @@ public class BeneficioControllerTest {
         // Configura entidade utilizada
         beneficioResponseInativo.setAtivo(true);
         // Configura o mock
-        given(beneficioService.alterarStatusBeneficio(beneficioResponseInativo.getId(), true))
-            .willReturn(beneficioResponseInativo);
+        when(beneficioService.alterarStatusBeneficio(eq(beneficioResponseInativo.getId()), eq(true)))
+            .thenReturn(beneficioResponseInativo);
         // Executa e verifica
         ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}/ativar",beneficioResponseInativo.getId()));
         // Verifica se o método do serviço foi chamado e se a resposta está correta
@@ -147,8 +148,8 @@ public class BeneficioControllerTest {
         // Configura entidade utilizada
         beneficioResponse2.setAtivo(false);
         // Configura o mock
-        given(beneficioService.alterarStatusBeneficio(beneficioResponse2.getId(), false))
-            .willReturn(beneficioResponse2);
+        when(beneficioService.alterarStatusBeneficio(eq(beneficioResponse2.getId()), eq(false)))
+            .thenReturn(beneficioResponse2);
 
         // Executa e verifica
         ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}/cancelar",beneficioResponse2.getId()));
@@ -179,16 +180,17 @@ public class BeneficioControllerTest {
         BeneficioRequestDto beneficioRequest1 = BeneficioMapper.mapRequest(beneficioResponse1);
 
         // Configura o mock
-        given(beneficioService.criarBeneficio(ArgumentMatchers.any(BeneficioRequestDto.class)))
-            .willReturn(beneficioResponse1);
+        when(beneficioService.criarBeneficio(ArgumentMatchers.any(BeneficioRequestDto.class)))
+            .thenReturn(beneficioResponse1);
+        //given(beneficioService.criarBeneficio(ArgumentMatchers.any(BeneficioRequestDto.class)))
+        //    .willReturn(beneficioResponse1);
 
         // Executa o teste para o comportamento esperado
         ResultActions response = mockMvc.perform(post(TestFactory.BENEFICIOS_API_ENDPOINT)
                             .content(mapper.writeValueAsString(beneficioRequest1))
                             .contentType(MediaType.APPLICATION_JSON));
         // Verifica se o método do serviço foi chamado com os parâmetros corretos
-        response.andDo(print())
-                .andExpect(status().isCreated())
+        response.andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", CoreMatchers.is(beneficioResponse1.getId().intValue())))
                 .andExpect(jsonPath("$.nome", CoreMatchers.is(beneficioResponse1.getNome())))
@@ -208,9 +210,9 @@ public class BeneficioControllerTest {
         beneficioRequest.setValor(new BigDecimal(new Random().nextDouble()).setScale(2, RoundingMode.HALF_UP));
         
 		// Configura o mock
-        given(beneficioService.alterarBeneficio(beneficioResponse1.getId(), beneficioRequest))
-            .willReturn(beneficioResponse1);
-        
+        //given(beneficioService).alterarBeneficio(beneficioResponse1.getId(), any(BeneficioRequestDto.class));
+        when(beneficioService.alterarBeneficio(eq(beneficioResponse1.getId()), any(BeneficioRequestDto.class)))
+            .thenReturn(beneficioResponse1);
 		// Executa o teste para o comportamento esperado 
         ResultActions response = mockMvc.perform(put(TestFactory.BENEFICIOS_API_ENDPOINT+"/{id}",
                             beneficioResponse1.getId())
