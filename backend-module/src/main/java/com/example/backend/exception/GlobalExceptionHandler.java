@@ -5,7 +5,6 @@ import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.cglib.proxy.UndeclaredThrowableException;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -21,11 +20,11 @@ import com.example.ejb.BusinessException;
 
 import java.net.URI;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /* Manipulador global de exceções para a aplicação. */
 @RestControllerAdvice
@@ -34,15 +33,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Resource
     private MessageSource messageSource;
 
-    // private static final Logger logger =
-    // LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
-    private HttpHeaders headers() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+    /** 
+     * Método auxiliar para criar um mapa de cabeçalhos HTTP padrão. 
+     */
+    private Map<String, String> headers() {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         return headers;
     }
 
+    /** 
+     * Método auxiliar para criar um objeto ResponseError a partir de uma mensagem e um 
+     *      código de status HTTP. 
+     */
     private ResponseError responseError(final String message, final HttpStatus statusCode) {
         ResponseError responseError = new ResponseError();
         responseError.setStatus("error");
@@ -51,6 +54,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return responseError;
     }
 
+    /**
+     * Manipulador genérico para todas as exceções não tratadas especificamente por outros métodos. 
+     * Ele verifica o tipo da exceção e delega para o manipulador apropriado, ou retorna um erro 
+     *  genérico de servidor se a exceção não for reconhecida.
+     */
     @ExceptionHandler(Exception.class)
     private ResponseEntity<Object> handleGeneral(
             @NonNull final Exception e, @NonNull final WebRequest request) {
@@ -58,7 +66,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             return handleBusinessException((BusinessException)((UndeclaredThrowableException) e)
                 .getUndeclaredThrowable(), request);
         } else if (e.getClass().isAssignableFrom(MethodArgumentNotValidException.class)) {
-            ResponseError error = handleExceptionArgumentNotValid((MethodArgumentNotValidException) e, request);
+            ResponseError error = handleExceptionArgumentNotValid((MethodArgumentNotValidException) e);
             return handleExceptionInternal(e,
                     error, Objects.requireNonNull(headers()), HttpStatus.BAD_REQUEST, request);
         } else {
@@ -70,16 +78,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
     }
 
+    /**
+     * Manipulador específico para exceções de validação de argumentos, que coleta os erros de validação
+     */
     private ResponseError handleExceptionArgumentNotValid(
-                final MethodArgumentNotValidException e, 
-                final WebRequest request) {
-        Map<String, String> errors = new HashMap<>();
+                @NonNull final MethodArgumentNotValidException e) {
+        Map<String, String> errors = new ConcurrentHashMap <>();
         ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors()
                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         ResponseError error = responseError(errors.toString(), HttpStatus.BAD_REQUEST);
         return error;
     }
 
+    /* Manipulador para exceções de entidade não encontrada, que retorna um erro 404 */
     @ExceptionHandler({ EntityNotFoundException.class })
     private ResponseEntity<Object> handleEntityNotFoundException(
             @NonNull final EntityNotFoundException e,
@@ -92,6 +103,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request);
     }
 
+    /* Manipulador para exceções de negócio, que retorna um erro 422 */
     @ExceptionHandler({ BusinessException.class })
     private ResponseEntity<Object> handleBusinessException(
             @NonNull final BusinessException e,
@@ -104,6 +116,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request);
     }
 
+    /* Manipulador para exceções de não encontrado, que retorna um erro 404 */
     @ExceptionHandler({ NoSuchElementException.class })
     private ResponseEntity<Object> handleNotFoundException(
             @NonNull final NoSuchElementException e,
@@ -116,6 +129,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request);
     }
 
+    /* Manipulador para exceções de argumento inválido, que retorna um erro 400 */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(final IllegalArgumentException e,
             @NonNull final WebRequest request) {
@@ -127,6 +141,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 request);
     }
 
+    /* Manipulador para exceções de controlador, que retorna um erro 500 com detalhes do problema */
     @ExceptionHandler(value = { ControllerException.class })
     public ResponseEntity<ProblemDetail> handleIllegalStateException(final ControllerException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR,

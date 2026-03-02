@@ -52,7 +52,7 @@ public class BeneficioServiceImpl implements BeneficioService {
      * @throws BusinessException        se ocorrer um erro de negócio ao criar o
      *                                  benefício
      */
-
+    @Override
     @Transactional
     public BeneficioResponseDto criarBeneficio(@NonNull final BeneficioRequestDto dto)
             throws IllegalArgumentException, BusinessException {
@@ -81,7 +81,7 @@ public class BeneficioServiceImpl implements BeneficioService {
      * @throws IllegalArgumentException se os dados forem inválidos
      * @throws BusinessException        se ocorrer erro na operação
      */
-
+    @Override
     @Transactional
     public void realizarTransferencia(@NonNull final TransferenciaDto dto)
             throws IllegalArgumentException, BusinessException {
@@ -126,7 +126,7 @@ public class BeneficioServiceImpl implements BeneficioService {
      * @throws IllegalArgumentException se o ID fornecido for inválido
      * @throws EntityNotFoundException  se o benefício não for encontrado
      */
-
+    @Override
     @Transactional
     public BeneficioResponseDto alterarStatusBeneficio(
             @NonNull final Long id,
@@ -156,6 +156,7 @@ public class BeneficioServiceImpl implements BeneficioService {
      * @throws BusinessException        se ocorrer um erro de negócio ao atualizar o
      *                                  benefício
      */
+    @Override
     @Transactional
     public BeneficioResponseDto alterarBeneficio(
             @NonNull final Long id,
@@ -186,7 +187,7 @@ public class BeneficioServiceImpl implements BeneficioService {
      * @throws EntityNotFoundException  se o benefício não for encontrado
      * @throws IllegalArgumentException se o ID fornecido for inválido
      */
-
+    @Override
     @Transactional(readOnly = true)
     public BeneficioResponseDto buscarBeneficioPorId(@NonNull final Long id)
             throws EntityNotFoundException, IllegalArgumentException {
@@ -203,7 +204,7 @@ public class BeneficioServiceImpl implements BeneficioService {
      * 
      * @return Lista contendo BeneficioResponseDtos de todos os benefícios
      */
-
+    @Override
     @Transactional(readOnly = true)
     public List<BeneficioResponseDto> buscarTodosBeneficios() {
         return repository.findAll().stream()
@@ -218,6 +219,7 @@ public class BeneficioServiceImpl implements BeneficioService {
      * @param ativo Status de filtro (true = ativos, false = cancelados)
      * @return Lista de BeneficioResponseDtos que correspondem ao status informado
      */
+    @Override
     @Transactional(readOnly = true)
     public List<BeneficioResponseDto> filtrarBeneficiosPorStatus(final boolean ativo) {
         return repository.searchByStatus(ativo).stream()
@@ -232,6 +234,7 @@ public class BeneficioServiceImpl implements BeneficioService {
      * @param nome Nome ou parte do nome a ser pesquisado
      * @return Lista de BeneficioResponseDtos que correspondem ao critério de busca
      */
+    @Override
     @Transactional(readOnly = true)
     public List<BeneficioResponseDto> filtrarBeneficiosPorNome(final String nome) {
         return repository.searchByNome(nome).stream()
@@ -249,7 +252,7 @@ public class BeneficioServiceImpl implements BeneficioService {
      * @throws IllegalArgumentException se o ID fornecido for inválido
      * @throws EntityNotFoundException  se o benefício não for encontrado
      */
-
+    @Override
     @Transactional
     public void removerBeneficio(@NonNull final Long beneficioId)
             throws BusinessException, IllegalArgumentException, EntityNotFoundException {

@@ -30,4 +30,9 @@ public interface BeneficioService {
 
         void realizarTransferencia(@NonNull TransferenciaDto dto)
                         throws IllegalArgumentException, BusinessException;
+
+        List<BeneficioResponseDto> filtrarBeneficiosPorStatus(final boolean ativo);
+
+        List<BeneficioResponseDto> filtrarBeneficiosPorNome(final String nome);
+        
 }

@@ -83,6 +83,14 @@
 			<version>1.18.42</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Code Quality Plugins -->
+		<dependency>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-project-info-reports-plugin</artifactId>
+		<version>3.9.0</version>
+		<type>maven-plugin</type>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -198,6 +206,7 @@
                     </execution>
                 </executions>
             </plugin>
+			<!-- Checkstyle Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -216,7 +225,117 @@
 					<failsOnError>true</failsOnError>
 				</configuration>
 			</plugin>
+			<!-- PMD Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.28.0</version>
+                <configuration>
+                    <printFailingErrors>true</printFailingErrors>
+                    <failOnViolation>true</failOnViolation>
+                    <rulesets>
+                        <!-- Use default rules or custom ruleset -->
+                        <ruleset>src/main/resources/pmd/custom-ruleset.xml</ruleset>
+                    </rulesets>
+					<excludes>
+						<exclude>**/test/**</exclude>
+					</excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- SpotBugs Plugin -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.9.3.0</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Low</threshold>
+                    <failOnError>true</failOnError>
+                    <!-- Optional: custom exclude filter -->
+                    <!-- <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile> -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <!-- SpotBugs core -->
+                    <dependency>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs</artifactId>
+                        <version>4.9.3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 		</plugins>
 	</build>
 	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>3.9.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.28.0</version>
+				<configuration>
+					<rulesets>
+						<ruleset>src/main/resources/pmd/custom-ruleset.xml</ruleset>
+					</rulesets>
+					<excludes>
+						<!-- Do not run PMD against test files. We only care about source code -->
+						<exclude>**/test/**</exclude>
+					</excludes>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<!-- by default, id = "default" -->
+						<reports>
+							<!-- select non-aggregate reports -->
+							<report>pmd</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>4.8.4.0</version>
+				<configuration>
+				<plugins>
+					<plugin>
+						<groupId>com.h3xstream.findsecbugs</groupId>
+						<artifactId>findsecbugs-plugin</artifactId>
+						<version>1.12.0</version>
+					</plugin>
+				</plugins>
+				<excludeFilterFile>src/main/resources/spotbugs/spotbugs-exclusions.xml</excludeFilterFile>
+				</configuration>
+				<reportSets>
+				<reportSet>
+					<reports>
+					<!-- select non-aggregate reports -->
+					<report>spotbugs</report>
+					</reports>
+				</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>

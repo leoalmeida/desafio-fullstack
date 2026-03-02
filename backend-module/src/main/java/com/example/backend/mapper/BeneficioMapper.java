@@ -78,12 +78,12 @@ public class BeneficioMapper {
         }
         Beneficio beneficio = Beneficio
                 .builder()
-                .id((isNewEntity) ? null : dto.getId())
+                .id(isNewEntity? null : dto.getId())
                 .nome(dto.getNome())
                 .descricao(dto.getDescricao())
                 .valor(dto.getValor())
                 .ativo(dto.getAtivo() != null ? dto.getAtivo() : true)
-                .version((isNewEntity) ? null :dto.getVersion())
+                .version(isNewEntity? null :dto.getVersion())
                 .build();
         return beneficio;
     }
