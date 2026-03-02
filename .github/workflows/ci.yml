@@ -2,7 +2,7 @@ name: CI
 
 #on:
 #  workflow_call:
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   test-backend:
