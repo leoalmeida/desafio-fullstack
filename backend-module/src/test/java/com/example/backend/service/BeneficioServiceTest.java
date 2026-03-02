@@ -33,7 +33,7 @@ import com.example.backend.factory.TestFactory;
 import com.example.backend.mapper.BeneficioMapper;
 import com.example.ejb.BusinessException;
 import com.example.backend.repository.*;
-import com.example.backend.util.ObjectsValidator;
+import com.example.backend.validator.ObjectsValidator;
 import com.example.ejb.BeneficioEjbService;
 import com.example.backend.dto.BeneficioRequestDto;
 import com.example.backend.dto.BeneficioResponseDto;

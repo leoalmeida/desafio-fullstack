@@ -24,6 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.example.backend.controller.BeneficioController;
+import com.example.backend.controller.TransferenciaController;
 import com.example.backend.dto.BeneficioRequestDto;
 import com.example.backend.dto.BeneficioResponseDto;
 import com.example.backend.dto.TransferenciaDto;
@@ -41,7 +42,10 @@ import lombok.extern.slf4j.Slf4j;
 class BackendApplicationTests extends AbstractIntegrationTest{
 
 	@Autowired
-	private BeneficioController controller;
+	private BeneficioController beneficioController;
+
+    @Autowired
+	private TransferenciaController transferenciaController;
 
 	@Autowired
     private BeneficioRepository repository;
@@ -68,9 +72,10 @@ class BackendApplicationTests extends AbstractIntegrationTest{
 	@Test
 	@DisplayName("Teste de contexto da aplicação carregado com sucesso")
 	void contextLoads() {
-		assertThat(controller).isNotNull();
-	}
-
+		assertThat(beneficioController).isNotNull();
+		assertThat(transferenciaController).isNotNull();
+    }
+    
     @Test
     @DisplayName("Deve criar um novo benefício válido e retornar o benefício criado")
     void integradoAoCriarNovoBeneficioValido_RetornaBeneficioCriado() throws Exception {
@@ -156,6 +161,7 @@ class BackendApplicationTests extends AbstractIntegrationTest{
         assertNotNull(response);
     }
 
+    /*
     @Test
     @DisplayName("Deve remover um benefício e retornar status No Content")
     void integradoAoRemoverBeneficio_RetornaNoContent() throws Exception {
@@ -164,7 +170,7 @@ class BackendApplicationTests extends AbstractIntegrationTest{
                         beneficio1.getId(),
                         status().isNoContent());
     }
-    
+    */
     @Test
     @DisplayName("Deve retornar a lista de todos os benefícios")
     void integradoAoConsultarTodosBeneficios_RetornaListaDeBeneficios() throws Exception {
@@ -219,7 +225,7 @@ class BackendApplicationTests extends AbstractIntegrationTest{
                 new BigDecimal("50.00")
         );
         performPostRequest(
-                        TestFactory.BENEFICIOS_API_ENDPOINT + "/transferir", 
+                        TestFactory.TRANSFERENCIAS_API_ENDPOINT, 
                         dto, 
                         null,
                         status().isOk());

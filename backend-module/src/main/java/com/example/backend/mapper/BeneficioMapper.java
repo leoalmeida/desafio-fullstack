@@ -16,7 +16,7 @@ public class BeneficioMapper {
      * @param dto DTO de requisição contendo os dados do benefício a ser criado ou atualizado
      * @return Beneficio Entity correspondente aos dados do DTO, ou null se o DTO for null
      */
-    public static Beneficio mapRequest(@NotNull BeneficioRequestDto dto) {
+    public static Beneficio mapRequest(@NotNull final BeneficioRequestDto dto) {
         if (dto == null) {
             return null;
         }
@@ -35,7 +35,7 @@ public class BeneficioMapper {
      * @param beneficio Entity de benefício a ser convertida para DTO de requisição
      * @return BeneficioRequestDto correspondente aos dados da Entity, ou null se a Entity for null
      */
-    public static BeneficioRequestDto mapRequest(@NotNull Beneficio beneficio) {
+    public static BeneficioRequestDto mapRequest(@NotNull final Beneficio beneficio) {
         if (beneficio == null) {
             return null;
         }
@@ -52,7 +52,7 @@ public class BeneficioMapper {
      * @param beneficioResponse DTO de resposta contendo os dados do benefício a ser convertido para DTO de requisição
      * @return BeneficioRequestDto correspondente aos dados da Entity, ou null se a Entity for null
      */
-    public static BeneficioRequestDto mapRequest(@NotNull BeneficioResponseDto beneficioResponse) {
+    public static BeneficioRequestDto mapRequest(@NotNull final BeneficioResponseDto beneficioResponse) {
         if (beneficioResponse == null) {
             return null;
         }
@@ -70,7 +70,9 @@ public class BeneficioMapper {
      * @param isNewEntity Indica se a entidade é nova (true para criação, false para atualização)
      * @return Beneficio Entity correspondente aos dados do DTO, ou null se o DTO for null
      */
-    public static Beneficio mapResponse(@NotNull BeneficioResponseDto dto, boolean isNewEntity) {
+    public static Beneficio mapResponse(
+                                @NotNull final BeneficioResponseDto dto, 
+                                final boolean isNewEntity) {
         if (dto == null) {
             return null;
         }
@@ -91,7 +93,7 @@ public class BeneficioMapper {
      * @param beneficio Entity de benefício a ser convertida para DTO de resposta
      * @return BeneficioResponseDto correspondente aos dados da Entity, ou null se a Entity for null
      */
-    public static BeneficioResponseDto mapResponse(@NotNull Beneficio beneficio) {
+    public static BeneficioResponseDto mapResponse(@NotNull final Beneficio beneficio) {
         if (beneficio == null) {
             return null;
         }
@@ -113,7 +115,9 @@ public class BeneficioMapper {
      * @return Entity de benefício atualizado com os dados do DTO, ou null se o DTO for null
      * @throws IllegalArgumentException se o DTO de origem ou a Entity de destino forem nulos  
      */
-    public static Beneficio map(@NotNull Beneficio objDestino, @NotNull BeneficioRequestDto objOrigem) throws IllegalArgumentException {
+    public static Beneficio map(
+                    @NotNull final Beneficio objDestino, 
+                    @NotNull final BeneficioRequestDto objOrigem) throws IllegalArgumentException {
         if (objOrigem == null) {
             throw new IllegalArgumentException("Objeto de origem não pode ser nulo");
         }

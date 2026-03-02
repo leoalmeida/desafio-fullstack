@@ -1,4 +1,4 @@
-package com.example.backend.util;
+package com.example.backend.validator;
 
 import java.util.Set;
 
@@ -18,7 +18,7 @@ public class ObjectsValidator<T> {
 
   private final Validator validator = factory.getValidator();
 
-  public T validate(@NonNull T objectToValidate) {
+  public T validate(@NonNull final T objectToValidate) {
 
     Set<ConstraintViolation<T>> violations = validator.validate(objectToValidate);
 

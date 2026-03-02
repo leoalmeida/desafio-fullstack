@@ -2,36 +2,26 @@ package com.example.backend.exception;
 
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /* Classe de modelo para representar erros de resposta. */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResponseError {
+    public static final String STATUS_ERROR = "error";
+    public static final String STATUS_SUCCESS = "success";
+    public static final int STATUS_CODE_SUCCESS = 200;
+    public static final int STATUS_CODE_ERROR = 400;
+    
+
     private Date timestamp = new Date();
-    private String status = "error";
-    private int statusCode = 400;
+    private String status = STATUS_ERROR;
+    private int statusCode = STATUS_CODE_ERROR;
     private String error;
 
-    public String getError() {
-        return error;
-    }
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getStatusCode() {
-        return statusCode;
-    }
-
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-    }
 }

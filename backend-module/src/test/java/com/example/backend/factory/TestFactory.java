@@ -13,6 +13,7 @@ import com.example.ejb.entity.Beneficio;
 public class TestFactory {
 
     public static final String BENEFICIOS_API_ENDPOINT = "/api/v1/beneficios";
+    public static final String TRANSFERENCIAS_API_ENDPOINT = "/api/v1/transferencias";
     
     public static BeneficioResponseDto gerarBeneficioResponseDto(boolean ativo) {
         Long regBeneficio = (long)(Math.random() * 999) + 1;

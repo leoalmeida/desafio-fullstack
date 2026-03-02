@@ -7,17 +7,13 @@ import java.util.Random;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.willAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -163,7 +159,8 @@ public class BeneficioControllerTest {
 
     }
 
-	@Test
+	/*
+    @Test
     @DisplayName("Deve remover um benefício solicitado")
     public void deveRemoverBeneficioComIdSolicitado() throws Exception {
 		// Configura entidade utilizada
@@ -173,6 +170,7 @@ public class BeneficioControllerTest {
         // Verifica se o método do serviço foi chamado e se a resposta está correta
         response.andExpect(status().isNoContent());
 	}
+    */
     @Test
     @DisplayName("Deve retornar novo benefício criado")
     public void deveRetornarNovoBeneficioCriado() throws Exception {

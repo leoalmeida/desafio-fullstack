@@ -30,19 +30,20 @@ import java.util.Objects;
 /* Manipulador global de exceções para a aplicação. */
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    
+
     @Resource
     private MessageSource messageSource;
 
-    //private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    
-    private HttpHeaders headers(){
+    // private static final Logger logger =
+    // LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    private HttpHeaders headers() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
     }
 
-    private ResponseError responseError(String message,HttpStatus statusCode){
+    private ResponseError responseError(final String message, final HttpStatus statusCode) {
         ResponseError responseError = new ResponseError();
         responseError.setStatus("error");
         responseError.setError(message);
@@ -51,53 +52,85 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    private ResponseEntity<Object> handleGeneral(Exception e, @NonNull WebRequest request) {
+    private ResponseEntity<Object> handleGeneral(
+            @NonNull final Exception e, @NonNull final WebRequest request) {
         if (e.getClass().isAssignableFrom(UndeclaredThrowableException.class)) {
-            UndeclaredThrowableException exception = (UndeclaredThrowableException) e;
-            return handleBusinessException((BusinessException) exception.getUndeclaredThrowable(), request);
+            return handleBusinessException((BusinessException)((UndeclaredThrowableException) e)
+                .getUndeclaredThrowable(), request);
         } else if (e.getClass().isAssignableFrom(MethodArgumentNotValidException.class)) {
-            Map<String, String> errors = new HashMap<>();
-            ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors()
-                .forEach(error ->
-                    errors.put(error.getField(), error.getDefaultMessage())
-                );
-            ResponseError error = responseError(errors.toString(),HttpStatus.BAD_REQUEST);
-            return handleExceptionInternal(e, error, Objects.requireNonNull(headers()), HttpStatus.BAD_REQUEST, request);
-        }{
-            String message = messageSource.getMessage("error.server", new Object[]{e.getMessage()}, Objects.requireNonNull(Locale.getDefault()));
-            ResponseError error = responseError(message,HttpStatus.INTERNAL_SERVER_ERROR);
-            return handleExceptionInternal(e, error,Objects.requireNonNull(headers()), HttpStatus.INTERNAL_SERVER_ERROR, request);
+            ResponseError error = handleExceptionArgumentNotValid((MethodArgumentNotValidException) e, request);
+            return handleExceptionInternal(e,
+                    error, Objects.requireNonNull(headers()), HttpStatus.BAD_REQUEST, request);
+        } else {
+            String message = messageSource.getMessage("error.server", new Object[] { e.getMessage() },
+                    Objects.requireNonNull(Locale.getDefault()));
+            ResponseError error = responseError(message, HttpStatus.INTERNAL_SERVER_ERROR);
+            return handleExceptionInternal(e,
+                    error, Objects.requireNonNull(headers()), HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
     }
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    private ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException e, @NonNull WebRequest request) {
-        ResponseError error = responseError(e.getMessage(),HttpStatus.NOT_FOUND);
-        return handleExceptionInternal(e, error,Objects.requireNonNull(headers()), HttpStatus.NOT_FOUND, request);
+    private ResponseError handleExceptionArgumentNotValid(
+                final MethodArgumentNotValidException e, 
+                final WebRequest request) {
+        Map<String, String> errors = new HashMap<>();
+        ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        ResponseError error = responseError(errors.toString(), HttpStatus.BAD_REQUEST);
+        return error;
     }
 
-    @ExceptionHandler({BusinessException.class})
-    private ResponseEntity<Object> handleBusinessException(BusinessException e, @NonNull WebRequest request) {
-        ResponseError error = responseError(e.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
-        return handleExceptionInternal(e, error,Objects.requireNonNull(headers()), HttpStatus.UNPROCESSABLE_ENTITY, request);
+    @ExceptionHandler({ EntityNotFoundException.class })
+    private ResponseEntity<Object> handleEntityNotFoundException(
+            @NonNull final EntityNotFoundException e,
+            @NonNull final WebRequest request) {
+        ResponseError error = responseError(e.getMessage(), HttpStatus.NOT_FOUND);
+        return handleExceptionInternal(e,
+                error,
+                Objects.requireNonNull(headers()),
+                HttpStatus.NOT_FOUND,
+                request);
     }
 
-    @ExceptionHandler({NoSuchElementException.class})
-    private ResponseEntity<Object> handleNotFoundException(NoSuchElementException e, @NonNull WebRequest request) {
-        ResponseError error = responseError(e.getMessage(),HttpStatus.NOT_FOUND);
-        return handleExceptionInternal(e, error,Objects.requireNonNull(headers()), HttpStatus.NOT_FOUND, request);
+    @ExceptionHandler({ BusinessException.class })
+    private ResponseEntity<Object> handleBusinessException(
+            @NonNull final BusinessException e,
+            @NonNull final WebRequest request) {
+        ResponseError error = responseError(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        return handleExceptionInternal(e,
+                error,
+                Objects.requireNonNull(headers()),
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                request);
     }
-    
+
+    @ExceptionHandler({ NoSuchElementException.class })
+    private ResponseEntity<Object> handleNotFoundException(
+            @NonNull final NoSuchElementException e,
+            @NonNull final WebRequest request) {
+        ResponseError error = responseError(e.getMessage(), HttpStatus.NOT_FOUND);
+        return handleExceptionInternal(e,
+                error,
+                Objects.requireNonNull(headers()),
+                HttpStatus.NOT_FOUND,
+                request);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e, @NonNull WebRequest request) {
-        ResponseError error = responseError(e.getMessage(),HttpStatus.BAD_REQUEST);
-        return handleExceptionInternal(e, error, Objects.requireNonNull(headers()), HttpStatus.BAD_REQUEST, request);
+    public ResponseEntity<Object> handleIllegalArgumentException(final IllegalArgumentException e,
+            @NonNull final WebRequest request) {
+        ResponseError error = responseError(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return handleExceptionInternal(e,
+                error,
+                Objects.requireNonNull(headers()),
+                HttpStatus.BAD_REQUEST,
+                request);
     }
 
-    @ExceptionHandler(value = {ControllerException.class})
-    public ResponseEntity<ProblemDetail> handleIllegalStateException(ControllerException ex) {
+    @ExceptionHandler(value = { ControllerException.class })
+    public ResponseEntity<ProblemDetail> handleIllegalStateException(final ControllerException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR,
-                ex.getMessage()); 
+                ex.getMessage());
         problemDetail.setTitle("Controller Exception");
         problemDetail.setDetail(ex.getErrorMessage());
         problemDetail.setType(Objects.requireNonNull(URI.create("http://localhost:8000/errors/500")));
