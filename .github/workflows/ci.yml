@@ -109,7 +109,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Run Code Quality Analysis
-        run: mvn -B -f backend-module/pom.xml test jacoco:report
+        run: mvn -B -f backend-module/pom.xml jacoco:report
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v6

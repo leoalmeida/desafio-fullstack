@@ -221,7 +221,6 @@ public class BeneficioControllerTest {
 
         // Verifica se o método do serviço foi chamado com os parâmetros corretos
         response.andExpect(status().isOk())
-                .andDo(print())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.nome",CoreMatchers.is(beneficioResponse1.getNome())))
                 .andExpect(jsonPath("$.descricao",CoreMatchers.is(beneficioResponse1.getDescricao())))
