@@ -18,17 +18,29 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
+      
+      - name: Compile EJB Module
+        run: mvn -B -f ejb-module/pom.xml clean install -DskipTests
+
+      - name: Compile Backend Module
+        run: mvn -B -f backend-module/pom.xml clean package -DskipTests
 
       - name: Run Checkstyle
+        run: mvn -B -f backend-module/pom.xml checkstyle:check
+
+      - name: Generate Checkstyle report
         run: mvn -B -f backend-module/pom.xml checkstyle:checkstyle
 
-      #- name: Run PMD
-      #  run: mvn -B -f backend-module/pom.xml pmd:check
+      - name: Run PMD check
+        run: mvn -B -f backend-module/pom.xml pmd:check
 
-      #- name: Run PMD
-      #  run: mvn -B -f backend-module/pom.xml pmd:pmd
+      - name: generate PMD report
+        run: mvn -B -f backend-module/pom.xml pmd:pmd
+      
+      #- name: Run spotbugs check
+      #  run: mvn -B -f backend-module/pom.xml spotbugs:check
 
-      #- name: Run SpotBugs
+      #- name: Generate SpotBugs report
       #  run: mvn -B -f backend-module/pom.xml spotbugs:spotbugs
         
   test-backend:
@@ -51,7 +63,7 @@ jobs:
         run: mvn -B -f ejb-module/pom.xml test
 
       - name: Compile Backend Module
-        run: mvn -B -f backend-module/pom.xml clean install -DskipTests
+        run: mvn -B -f backend-module/pom.xml clean package -DskipTests
       - name: Run Backend-Module BeneficioEjbIntegrationTest
         run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioEjbIntegrationTest test
       - name: Run Backend-Module BeneficioRepositoryIntegrationTest
