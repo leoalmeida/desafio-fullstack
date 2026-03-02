@@ -20,12 +20,12 @@ jobs:
           cache: 'maven'
 
       - name: Compile EJB Module
-        run: mvn -B -f ejb-module/pom.xml clean compile test-compile
+        run: mvn -B -f ejb-module/pom.xml clean install -DskipTests
       - name: Run EJB Module Unit Tests
         run: mvn -B -f ejb-module/pom.xml test
 
       - name: Compile Backend Module
-        run: mvn -B -f backend-module/pom.xml clean compile test-compile
+        run: mvn -B -f backend-module/pom.xml clean install -DskipTests
       - name: Run Backend-Module BeneficioEjbIntegrationTest
         run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioEjbIntegrationTest test
       - name: Run Backend-Module BeneficioRepositoryIntegrationTest
