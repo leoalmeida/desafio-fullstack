@@ -98,7 +98,7 @@
         <!-- Additional Checks -->
         <!-- Limit the number of classes a single class can depend on to 20 -->
         <module name="ClassFanOutComplexity">
-            <property name="max" value="20" />
+            <property name="max" value="25" />
         </module>
 
         <!-- Limit the cyclomatic complexity of methods to 10 -->

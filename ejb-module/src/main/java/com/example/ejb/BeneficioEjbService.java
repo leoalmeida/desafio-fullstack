@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.logging.Logger;
 
 import com.example.ejb.entity.Beneficio;
+import com.example.ejb.exception.BusinessException;
 
 /* Serviço EJB para operações de negócio relacionadas a Benefícios. */
 @Stateless

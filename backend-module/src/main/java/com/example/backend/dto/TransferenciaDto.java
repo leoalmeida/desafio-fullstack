@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * DTO para a entidade Transferencia.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

@@ -1,43 +1,13 @@
 package com.example.backend.config;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import com.example.ejb.BeneficioEjbService;
-
-import jakarta.persistence.EntityManager;
-
 @Configuration
-public class AppConfigurations {
-
-    /**
-     * Configura o BeneficioEjbService para ser gerenciado pelo Spring, permitindo a
-     * injeção de dependências.
-     * O EntityManager é injetado manualmente usando reflection, já que o EJB não é
-     * um componente Spring tradicional.
-     * 
-     * @param em EntityManager gerenciado pelo Spring para acesso ao banco de dados
-     * @return Instância configurada do BeneficioEjbService com EntityManager
-     *         injetado
-     */
-    @Bean
-    public BeneficioEjbService beneficioEjbService(final EntityManager em) {
-        BeneficioEjbService ejb = new BeneficioEjbService();
-
-        try {
-            Field field = BeneficioEjbService.class.getDeclaredField("em");
-            field.setAccessible(true);
-            field.set(ejb, em);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException("Não foi possível iniciar EJB service", e);
-        }
-
-        return ejb;
-    }
+public class CorsConfig {
 
     /*
      * Configuração global de CORS para permitir requisições do frontend Angular.

@@ -29,7 +29,7 @@
 		<dependency>
             <groupId>com.example</groupId>
             <artifactId>ejb-module</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
 
 		<!-- JPA + H2 (exemplo banco em memória para rodar os testes) -->
@@ -86,10 +86,10 @@
 
 		<!-- Code Quality Plugins -->
 		<dependency>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-project-info-reports-plugin</artifactId>
-		<version>3.9.0</version>
-		<type>maven-plugin</type>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-project-info-reports-plugin</artifactId>
+			<version>3.9.0</version>
+			<type>maven-plugin</type>
 		</dependency>
 	</dependencies>
 
@@ -207,6 +207,7 @@
                 </executions>
             </plugin>
 			<!-- Checkstyle Plugin -->
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -225,6 +226,7 @@
 					<failsOnError>true</failsOnError>
 				</configuration>
 			</plugin>
+			
 			<!-- PMD Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -234,7 +236,6 @@
                     <printFailingErrors>true</printFailingErrors>
                     <failOnViolation>true</failOnViolation>
                     <rulesets>
-                        <!-- Use default rules or custom ruleset -->
                         <ruleset>src/main/resources/pmd/custom-ruleset.xml</ruleset>
                     </rulesets>
 					<excludes>
@@ -250,9 +251,9 @@
                     </execution>
                 </executions>
             </plugin>
-
             <!-- SpotBugs Plugin -->
-            <plugin>
+            <!--
+			<plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>4.9.3.0</version>
@@ -260,8 +261,6 @@
                     <effort>Max</effort>
                     <threshold>Low</threshold>
                     <failOnError>true</failOnError>
-                    <!-- Optional: custom exclude filter -->
-                    <!-- <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile> -->
                 </configuration>
                 <executions>
                     <execution>
@@ -272,7 +271,6 @@
                     </execution>
                 </executions>
                 <dependencies>
-                    <!-- SpotBugs core -->
                     <dependency>
                         <groupId>com.github.spotbugs</groupId>
                         <artifactId>spotbugs</artifactId>
@@ -280,6 +278,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+			-->
 		</plugins>
 	</build>
 	

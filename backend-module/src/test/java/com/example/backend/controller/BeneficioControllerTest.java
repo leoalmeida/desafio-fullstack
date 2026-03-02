@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,6 +34,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.example.backend.dto.BeneficioRequestDto;
 import com.example.backend.dto.BeneficioResponseDto;
+import com.example.backend.dto.TransferenciaDto;
 import com.example.backend.factory.TestFactory;
 import com.example.backend.mapper.BeneficioMapper;
 import com.example.backend.service.BeneficioService;
@@ -194,7 +196,8 @@ public class BeneficioControllerTest {
                             .content(mapper.writeValueAsString(beneficioRequest1))
                             .contentType(MediaType.APPLICATION_JSON));
         // Verifica se o método do serviço foi chamado com os parâmetros corretos
-        response.andExpect(status().isCreated())
+        response.andDo(print())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", CoreMatchers.is(beneficioResponse1.getId().intValue())))
                 .andExpect(jsonPath("$.nome", CoreMatchers.is(beneficioResponse1.getNome())))
@@ -231,4 +234,27 @@ public class BeneficioControllerTest {
                 .andExpect(jsonPath("$.valor",CoreMatchers.is(beneficioResponse1.getValor().doubleValue())))
                 .andExpect(jsonPath("$.ativo",CoreMatchers.is(beneficioResponse1.getAtivo())));
 	}
+
+    @Test
+    @DisplayName("Deve realizar transferência com sucesso entre benefícios ativos e com saldo suficiente")
+    public void testRealizarTransferencia_Sucesso() throws Exception {
+        // Cenário
+        Long origemId = beneficioResponse1.getId();
+        Long destinoId = beneficioResponse2.getId();
+        BigDecimal valorTransferencia = new BigDecimal("100.00");
+        TransferenciaDto dto = new TransferenciaDto(origemId, destinoId, valorTransferencia);
+            
+        // Executa e verifica
+        ResultActions response = mockMvc.perform(
+                post(TestFactory.BENEFICIOS_API_ENDPOINT+"/transferir")
+                .content(mapper.writeValueAsString(dto))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Verifica se o método do serviço foi chamado e se a resposta está correta
+        response.andDo(print())
+            .andExpect(status().isOk());
+        
+        // Verifica se o método do serviço foi chamado com os parâmetros corretos
+        then(beneficioService).should(times(1)).realizarTransferencia(any());
+    }
 }

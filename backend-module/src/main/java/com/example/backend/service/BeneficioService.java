@@ -5,34 +5,37 @@ import java.util.List;
 import com.example.backend.dto.BeneficioRequestDto;
 import com.example.backend.dto.BeneficioResponseDto;
 import com.example.backend.dto.TransferenciaDto;
-import com.example.ejb.BusinessException;
+import com.example.ejb.exception.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 
 public interface BeneficioService {
-        List<BeneficioResponseDto> buscarTodosBeneficios() throws BusinessException;
 
-        BeneficioResponseDto buscarBeneficioPorId(@NonNull Long id)
-                        throws EntityNotFoundException, IllegalArgumentException, BusinessException;
+    List<BeneficioResponseDto> buscarTodosBeneficios() throws BusinessException;
 
-        BeneficioResponseDto criarBeneficio(@NonNull BeneficioRequestDto beneficio)
-                        throws IllegalArgumentException, BusinessException;
+    BeneficioResponseDto buscarBeneficioPorId(@NonNull Long id) 
+        throws EntityNotFoundException, IllegalArgumentException, BusinessException;
 
-        BeneficioResponseDto alterarBeneficio(@NonNull Long id, @NonNull BeneficioRequestDto beneficio)
-                        throws EntityNotFoundException, IllegalArgumentException, BusinessException;
+    BeneficioResponseDto criarBeneficio(@NonNull BeneficioRequestDto beneficio) 
+        throws IllegalArgumentException, BusinessException;
 
-        BeneficioResponseDto alterarStatusBeneficio(@NonNull Long id, boolean status)
-                        throws BusinessException, IllegalArgumentException, EntityNotFoundException;
+    BeneficioResponseDto alterarBeneficio(@NonNull Long id, @NonNull BeneficioRequestDto beneficio) 
+        throws EntityNotFoundException, IllegalArgumentException, BusinessException;
 
-        void removerBeneficio(@NonNull Long id)
-                        throws EntityNotFoundException, IllegalArgumentException, BusinessException;
+    BeneficioResponseDto alterarStatusBeneficio(@NonNull Long id, boolean status)
+        throws BusinessException, IllegalArgumentException, EntityNotFoundException; 
 
-        void realizarTransferencia(@NonNull TransferenciaDto dto)
-                        throws IllegalArgumentException, BusinessException;
+    void removerBeneficio(@NonNull Long id) 
+        throws EntityNotFoundException, IllegalArgumentException, BusinessException;
 
-        List<BeneficioResponseDto> filtrarBeneficiosPorStatus(final boolean ativo);
+    void realizarTransferencia(@NonNull TransferenciaDto dto) 
+        throws IllegalArgumentException, BusinessException;
 
-        List<BeneficioResponseDto> filtrarBeneficiosPorNome(final String nome);
+    List<BeneficioResponseDto> filtrarBeneficiosPorNome(String nome) 
+        throws BusinessException;
+
+    List<BeneficioResponseDto> filtrarBeneficiosPorStatus(boolean ativo) 
+        throws BusinessException;
         
 }

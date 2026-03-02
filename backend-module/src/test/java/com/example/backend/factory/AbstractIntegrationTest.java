@@ -102,6 +102,17 @@ public abstract class AbstractIntegrationTest {
         return convertStringToClass(mvcResult.getResponse().getContentAsString(), responseType);
     }
 
+    protected <T> List<T> performRequestOfList(@NonNull String path, Object object, Class<T> responseType, ResultMatcher... matchers)
+            throws TesteIntegradoException, Exception {
+        MvcResult mvcResult = submitPostAction(path, object)
+                .andDo(print())
+                .andExpectAll(matchers)
+                .andReturn();
+        if (mvcResult == null) throw new TesteIntegradoException("Erro ao executar cenário de criação");
+        if (responseType == null) return null;
+        return convertStringToListClass(mvcResult.getResponse().getContentAsString(), responseType);
+    }
+
     protected <T> T performPostRequestExpectedServerError(@NonNull String path, Object object, Class<T> responseType)
             throws Exception {
         return performPostRequest(path, object, responseType, status().is5xxServerError());

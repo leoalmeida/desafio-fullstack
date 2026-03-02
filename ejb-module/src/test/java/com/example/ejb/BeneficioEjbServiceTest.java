@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.example.ejb.entity.Beneficio;
+import com.example.ejb.exception.BusinessException;
+
 import java.math.BigDecimal;
 import java.util.logging.Logger;
 

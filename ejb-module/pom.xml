@@ -7,11 +7,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
 	<artifactId>ejb-module</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>ejb-module</name>
 	<description>Módulo EJB com operação de transferência de benefícios</description>
     <packaging>ejb</packaging>
-
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -77,14 +76,6 @@
 
     <build>
         <plugins>
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-ejb-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <ejbVersion>4.0</ejbVersion>
-                </configuration>
-            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

@@ -2,7 +2,7 @@ name: CI
 
 #on:
 #  workflow_call:
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   lint-backend:
@@ -68,8 +68,8 @@ jobs:
         run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioEjbIntegrationTest test
       - name: Run Backend-Module BeneficioRepositoryIntegrationTest
         run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioRepositoryIntegrationTest test
-      - name: Run Backend-Module BeneficioServiceTest
-        run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioServiceTest test
+      - name: Run Backend-Module TransferenciaServiceTest
+        run: mvn -B -f backend-module/pom.xml -Dtest=TransferenciaServiceTest test
       - name: Run Backend-Module BeneficioControllerTest
         run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioControllerTest test
       - name: Run Backend-Module BackendApplicationTests

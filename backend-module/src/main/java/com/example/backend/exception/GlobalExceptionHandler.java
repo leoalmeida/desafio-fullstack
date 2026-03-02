@@ -3,7 +3,6 @@ package com.example.backend.exception;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityNotFoundException;
 
-import org.springframework.cglib.proxy.UndeclaredThrowableException;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,8 +17,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.example.ejb.BusinessException;
+import com.example.ejb.exception.BusinessException;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /* Manipulador global de exceções para a aplicação. */
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
+    
     @Resource
     private MessageSource messageSource;
 
@@ -64,8 +64,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleGeneral(
             @NonNull final Exception e, @NonNull final WebRequest request) {
         if (e.getClass().isAssignableFrom(UndeclaredThrowableException.class)) {
-            return handleBusinessException((BusinessException)((UndeclaredThrowableException) e)
-                .getUndeclaredThrowable(), request);
+            UndeclaredThrowableException exception = (UndeclaredThrowableException) e;
+            return handleBusinessException((BusinessException) exception.getUndeclaredThrowable(), request);
         } else if (e.getClass().isAssignableFrom(MethodArgumentNotValidException.class)) {
             ResponseError error = handleExceptionArgumentNotValid((MethodArgumentNotValidException) e);
             return handleExceptionInternal(e,
@@ -103,7 +103,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.NOT_FOUND,
                 request);
     }
-    
+
     /* Manipulador para exceções de negócio, que retorna um erro 422 */
     @ExceptionHandler({ BusinessException.class })
     private ResponseEntity<Object> handleBusinessException(
@@ -146,7 +146,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     /*@ExceptionHandler(value = { ControllerException.class })
     public ResponseEntity<ProblemDetail> handleIllegalStateException(final ControllerException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR,
-                ex.getMessage());
+                ex.getMessage()); 
         problemDetail.setTitle("Controller Exception");
         problemDetail.setDetail(ex.getErrorMessage());
         problemDetail.setType(Objects.requireNonNull(URI.create("http://localhost:8000/errors/500")));

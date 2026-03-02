@@ -21,24 +21,18 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.BDDMockito.willThrow;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.example.backend.factory.TestFactory;
 import com.example.backend.mapper.BeneficioMapper;
-import com.example.ejb.BusinessException;
 import com.example.backend.repository.*;
 import com.example.backend.validator.ObjectsValidator;
 import com.example.ejb.BeneficioEjbService;
 import com.example.backend.dto.BeneficioRequestDto;
 import com.example.backend.dto.BeneficioResponseDto;
-import com.example.backend.dto.TransferenciaDto;
 import com.example.ejb.entity.Beneficio;
+import com.example.ejb.exception.BusinessException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -301,68 +295,4 @@ public class BeneficioServiceTest {
         then(repository).should(never()).deleteById(anyLong());
     }
 
-    @Test
-    @DisplayName("Deve realizar transferência com dados válidos")
-    public void deveRealizarTransferencia_quandoDadosValidos() {
-        //Given        
-        TransferenciaDto dto = TransferenciaDto.builder()
-            .fromId(1L)
-            .toId(2L)
-            .valor(new BigDecimal(100.00))
-            .build();
-        
-        //doNothing().when(ejbService).transfer(dto.getFromId(), dto.getToId(), dto.getValor());
-
-        // Executa o método
-        service.realizarTransferencia(dto);
-        
-        // Verifica o resultado
-        then(ejbService).should().transfer(dto.getFromId(), dto.getToId(), dto.getValor());
-    }
-
-    @Test
-    @DisplayName("Deve gerar IllegalArgumentException ao realizar transferência com identificadores iguais")
-    public void deveGerarIllegalArgumentException_quandoTransferenciaComIdentificadoresIguais() {
-        //Given        
-        TransferenciaDto dto = TransferenciaDto.builder()
-            .fromId(2L)
-            .toId(2L)
-            .valor(new BigDecimal(100.00))
-            .build();
-
-         // Executa o método
-        Throwable  throwable  = 
-            assertThrows(IllegalArgumentException.class, () ->{
-                service.realizarTransferencia(dto);
-            });
-
-        // Verifica o resultado
-        assertEquals(IllegalArgumentException.class, throwable.getClass());
-        then(ejbService).should(never()).transfer(dto.getFromId(), dto.getToId(), dto.getValor());
-    }
-
-    @Test
-    @DisplayName("Deve gerar BusinessException ao realizar transferência com valores inválidos")
-    public void deveGerarBusinessException_quandoTransferenciaValoresInvalidos() {
-        // Configura o mock para o serviço EJB
-        TransferenciaDto dto = TransferenciaDto.builder()
-            .fromId(1L)
-            .toId(2L)
-            .valor(new BigDecimal(100.00))
-            .build();
-
-        willThrow(new BusinessException("Saldo insuficiente para transferência."))
-            .given(ejbService)
-            .transfer(dto.getFromId(), dto.getToId(), dto.getValor());
-
-        // Executa o método
-        Throwable  throwable  = 
-                assertThrows(BusinessException.class, () ->{
-                    service.realizarTransferencia(dto);
-                });
-
-        // Verifica o resultado
-        assertEquals(BusinessException.class, throwable.getClass());
-        then(ejbService).should().transfer(dto.getFromId(), dto.getToId(), dto.getValor());
-    }
 }
