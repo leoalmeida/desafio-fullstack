@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
 	<artifactId>ejb-module</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>ejb-module</name>
 	<description>Módulo EJB com operação de transferência de benefícios</description>
     <packaging>ejb</packaging>
