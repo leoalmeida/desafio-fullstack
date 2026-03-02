@@ -2,7 +2,6 @@ package com.example.backend.util;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -14,10 +13,6 @@ import jakarta.persistence.EntityManager;
 
 @Configuration
 public class AppConfigurations {
-    @Bean
-    public ModelMapper obterModelMapper(){
-        return new ModelMapper();
-    }
 
     /**
      * Configura o BeneficioEjbService para ser gerenciado pelo Spring, permitindo a injeção de dependências.

@@ -4,17 +4,25 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.math.BigDecimal;
+import java.util.logging.Logger;
 
 import com.example.ejb.entity.Beneficio;
-import com.example.ejb.exception.BusinessException;
 
 /* Serviço EJB para operações de negócio relacionadas a Benefícios. */
 @Stateless
 public class BeneficioEjbService {
 
+    private static final Logger logger = Logger.getLogger(BeneficioEjbService.class.getName());
+
     @PersistenceContext
     private EntityManager em;
 
+    public BeneficioEjbService() {
+        // Construtor padrão necessário para EJB
+    }
+    public BeneficioEjbService(EntityManager entityManager) {
+        this.em = entityManager;
+    }
     /**
      * Método deve transferir um valor de um benefício para outro, 
      *  garantindo que o saldo do benefício de origem não fique negativo. 
@@ -27,9 +35,10 @@ public class BeneficioEjbService {
             throw new IllegalArgumentException("Valor de transferência deve ser positivo");
         }
         if (fromId.equals(toId)) {
-            throw new IllegalArgumentException("Não é possível transferir para o mesmo registro");
+            throw new IllegalArgumentException("Não é possível realizar transferência para o mesmo benefício");
         }
 
+        logger.info(String.format("Transferindo: %d -> %d, valor: %s", fromId, toId, amount));
         /*
          * Consulta dos Benefícios:
          *  Solicitação utilizando "pessimistic write lock" nas entidades envolvidas evitando race condition. 
@@ -48,16 +57,16 @@ public class BeneficioEjbService {
 
         /* Validação dos benefícios encontrados */
         if (from == null || to == null) {
-            throw new IllegalArgumentException("Registro de benefício não encontrado");
+            throw new IllegalArgumentException("Benefício não encontrado");
         }
         if (!from.getAtivo()) {
-            throw new BusinessException("Benefício de origem foi cancelado.");
+            throw new BusinessException("Benefício de origem está cancelado");
         }
         if (!to.getAtivo()) {
-            throw new BusinessException("Benefício de destino foi cancelado.");
+            throw new BusinessException("Benefício de destino está cancelado");
         }
         if (from.getValor().compareTo(amount) < 0) {
-            throw new BusinessException("Saldo insuficiente para transferência.");
+            throw new BusinessException("Saldo insuficiente para transferência");
         }
 
         /* Validação de saldo insuficiente para transferência entre benefícios*/

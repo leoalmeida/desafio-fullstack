@@ -22,14 +22,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Entidade que representa um benefício bancário.
  */
 @Entity
 @Table(name = "BENEFICIO")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -74,4 +74,5 @@ public class Beneficio {
         this.ativo = beneficio.getAtivo();
         return this;
     }
+
 }
