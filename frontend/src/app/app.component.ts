@@ -4,10 +4,11 @@ import { TokenStorageService } from './services/token-storage.service';
 import { LoadingIndicator } from './components/loading-indicator/loading-indicator';
 import {  RouterOutlet } from '@angular/router';
 import { Toolbar } from './components/toolbar/toolbar';
+import { BeneficioList } from './components/beneficio-list/beneficio-list';
 
 @Component({
   selector: 'app-root',
-  imports: [LoadingIndicator, Toolbar, RouterOutlet],
+  imports: [LoadingIndicator, Toolbar, BeneficioList],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

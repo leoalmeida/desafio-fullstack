@@ -1,2 +1,13 @@
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+ mat-dialog-content {
+    min-width: 400px;
+    padding: 20px;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+mat-checkbox {
+    margin-bottom: 15px;
+}

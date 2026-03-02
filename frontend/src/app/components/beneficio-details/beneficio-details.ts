@@ -5,10 +5,18 @@ import { BeneficioType } from '../../models/beneficio-type';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-beneficio-details',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule,MatButtonModule,MatDialogModule],
+  imports: [CommonModule, 
+          ReactiveFormsModule, 
+          MatFormFieldModule, 
+          MatInputModule,
+          MatButtonModule,
+          MatDialogModule, 
+          MatCheckboxModule],
   templateUrl: './beneficio-details.html',
   styleUrl: './beneficio-details.css',
 })
@@ -21,7 +29,6 @@ export class BeneficioDetails {
   
   constructor() {
     this.formBeneficio = this.formBuilder.group({
-      id: [this.data.id || '', Validators.required],
       nome: [this.data.nome || '', Validators.required],
       descricao: [this.data.descricao || ''],
       valor: [this.data.valor || 0.00, Validators.required],

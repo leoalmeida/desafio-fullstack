@@ -33,6 +33,7 @@ export class BeneficioList {
       this.tokenStorageService.loggedUser$.subscribe(user => {
          this.loggedUser.set(user);
       });
+      this.beneficioService.getAll();
     } catch (error) {
       console.log(error);
     } finally {
