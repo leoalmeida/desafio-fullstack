@@ -99,7 +99,7 @@ jobs:
   code-quality:
     name: Code Quality Check (Jococo)
     runs-on: ubuntu-latest
-    needs: [build-ejb, build-backend]
+    needs: [build-backend]
     steps:
       - uses: actions/checkout@v6
       - name: Set up JDK 17
@@ -116,7 +116,8 @@ jobs:
         with:
           name: coverage-report
           path: backend-module/target/site/jacoco/
-          retention-dsays: 7
+          retention-days: 7
+
   #zap-scan:
   #  needs: build-project
   #  uses: ./.github/workflows/zap_scan.yml
