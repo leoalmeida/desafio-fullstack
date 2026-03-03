@@ -6,14 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
+import com.example.ejb.BeneficioEjbService;
+import com.example.ejb.entity.Beneficio;
+import com.example.ejb.exception.BusinessException;
 import jakarta.persistence.EntityManager;
-
+import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,10 +23,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.example.ejb.BusinessException;
-import com.example.ejb.BeneficioEjbService;
-import com.example.ejb.entity.Beneficio;
-
 /**
  * Testes integrados que exercitam a camada de persistência juntamente com a
  * implementação do serviço EJB. O contexto do Spring é iniciado com um banco de dados em memória
@@ -33,16 +30,16 @@ import com.example.ejb.entity.Beneficio;
  */
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class BeneficioEjbIntegrationTest{
+public class BeneficioEjbIntegrationTest {
 
-    @Mock 
+    @Mock
     private EntityManager em;
 
     @InjectMocks
     private BeneficioEjbService ejbService;
-    
+
     @Test
-    public void deveEncontrarModuloEJB(){
+    public void deveEncontrarModuloEJB() {
         assertNotNull(ejbService);
     }
 
@@ -71,15 +68,16 @@ public class BeneficioEjbIntegrationTest{
                 .willReturn(fonte);
         given(em.find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE))
                 .willReturn(destino);
-        given(em.merge(any(Beneficio.class)))
-                .willAnswer(invocation -> invocation.getArgument(0));
+        given(em.merge(any(Beneficio.class))).willAnswer(invocation -> invocation.getArgument(0));
 
         // Act
         ejbService.transfer(fonte.getId(), destino.getId(), montante);
 
         // then: valores atualizados na base
-        then(em).should(times(1)).find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
-        then(em).should(times(1)).find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+        then(em).should(times(1))
+                .find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+        then(em).should(times(1))
+                .find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
         then(em).should(times(2)).merge(any(Beneficio.class));
     }
 
@@ -101,21 +99,21 @@ public class BeneficioEjbIntegrationTest{
                 .valor(new BigDecimal("0.00"))
                 .ativo(true)
                 .build();
-        when(em.find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)).thenReturn(fonte);
-        when(em.find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)).thenReturn(destino);
-        
+        when(em.find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE))
+                .thenReturn(fonte);
+        when(em.find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE))
+                .thenReturn(destino);
+
         BigDecimal montante = new BigDecimal("10.00");
-        Throwable  throwable  = assertThrows(BusinessException.class,
-                () -> ejbService.transfer(fonte.getId(), destino.getId(), montante));
+        Throwable throwable = assertThrows(
+                BusinessException.class, () -> ejbService.transfer(fonte.getId(), destino.getId(), montante));
         assertEquals(BusinessException.class, throwable.getClass());
         assertEquals("Saldo insuficiente para transferência", throwable.getMessage());
-        verify(em, times(1))
-                .find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
-        verify(em, times(1))
-                .find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
-        verify(em, times(0))
-                .merge(any(Beneficio.class));
+        verify(em, times(1)).find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+        verify(em, times(1)).find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+        verify(em, times(0)).merge(any(Beneficio.class));
     }
+
     @Test
     @DisplayName("Não deve transferir valores se um dos benefícios estiver cancelado")
     void naoDeveTransferir_beneficioCanceladof() throws Exception {
@@ -134,21 +132,19 @@ public class BeneficioEjbIntegrationTest{
                 .valor(new BigDecimal("50.00"))
                 .ativo(true)
                 .build();
-        when(em.find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)).thenReturn(fonte);
-        when(em.find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)).thenReturn(destino);
-        
+        when(em.find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE))
+                .thenReturn(fonte);
+        when(em.find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE))
+                .thenReturn(destino);
 
         BigDecimal montante = new BigDecimal("10.00");
-        Throwable  throwable  = assertThrows(BusinessException.class,
-                () -> ejbService.transfer(fonte.getId(), destino.getId(), montante));
+        Throwable throwable = assertThrows(
+                BusinessException.class, () -> ejbService.transfer(fonte.getId(), destino.getId(), montante));
         assertEquals(BusinessException.class, throwable.getClass());
         assertEquals("Benefício de origem está cancelado", throwable.getMessage());
-        verify(em, times(1))
-                .find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
-        verify(em, times(1))
-                .find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
-        verify(em, times(0))
-                .merge(any(Beneficio.class));
+        verify(em, times(1)).find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+        verify(em, times(1)).find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+        verify(em, times(0)).merge(any(Beneficio.class));
     }
 
     @Test
@@ -162,18 +158,18 @@ public class BeneficioEjbIntegrationTest{
                 .valor(new BigDecimal("100.00"))
                 .ativo(true)
                 .build();
-        
+
         BigDecimal montante = new BigDecimal("10.00");
-        Throwable  throwable  = assertThrows(IllegalArgumentException.class,
+        Throwable throwable = assertThrows(
+                IllegalArgumentException.class,
                 () -> ejbService.transfer(beneficio.getId(), beneficio.getId(), montante));
         assertEquals(IllegalArgumentException.class, throwable.getClass());
         assertEquals("Não é possível realizar transferência para o mesmo benefício", throwable.getMessage());
         verify(em, times(0))
                 .find(Beneficio.class, beneficio.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
-        verify(em, times(0))
-                .merge(any(Beneficio.class));
+        verify(em, times(0)).merge(any(Beneficio.class));
     }
-    
+
     @Test
     @DisplayName("Não deve transferir valores negativos")
     void naoDeveTransferir_valorNegativo() throws Exception {
@@ -192,18 +188,14 @@ public class BeneficioEjbIntegrationTest{
                 .valor(new BigDecimal("50.00"))
                 .ativo(true)
                 .build();
-               
+
         BigDecimal montante = new BigDecimal("-10.00");
-        Throwable  throwable  = assertThrows(IllegalArgumentException.class,
-                () -> ejbService.transfer(fonte.getId(), destino.getId(), montante));
+        Throwable throwable = assertThrows(
+                IllegalArgumentException.class, () -> ejbService.transfer(fonte.getId(), destino.getId(), montante));
         assertEquals(IllegalArgumentException.class, throwable.getClass());
         assertEquals("Valor de transferência deve ser positivo", throwable.getMessage());
-        verify(em, times(0))
-                .find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
-        verify(em, times(0))
-                .find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
-        verify(em, times(0))
-                .merge(any(Beneficio.class));
+        verify(em, times(0)).find(Beneficio.class, fonte.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+        verify(em, times(0)).find(Beneficio.class, destino.getId(), jakarta.persistence.LockModeType.PESSIMISTIC_WRITE);
+        verify(em, times(0)).merge(any(Beneficio.class));
     }
 }
-

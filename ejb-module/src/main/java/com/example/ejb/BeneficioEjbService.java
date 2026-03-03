@@ -1,12 +1,16 @@
 package com.example.ejb;
 
+import jakarta.annotation.Nonnull;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.NonNull;
+
 import java.math.BigDecimal;
 import java.util.logging.Logger;
 
 import com.example.ejb.entity.Beneficio;
+import com.example.ejb.exception.BusinessException;
 
 /* Serviço EJB para operações de negócio relacionadas a Benefícios. */
 @Stateless
@@ -15,12 +19,9 @@ public class BeneficioEjbService {
     private static final Logger logger = Logger.getLogger(BeneficioEjbService.class.getName());
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    public BeneficioEjbService() {
-        // Construtor padrão necessário para EJB
-    }
-    public BeneficioEjbService(EntityManager entityManager) {
+    public BeneficioEjbService(@Nonnull final EntityManager entityManager) {
         this.em = entityManager;
     }
     /**

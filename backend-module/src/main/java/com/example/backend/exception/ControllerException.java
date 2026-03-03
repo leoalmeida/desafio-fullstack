@@ -12,7 +12,7 @@ public class ControllerException extends Exception {
 
     private final String errorMessage;
 
-    public ControllerException(String errorMessage) {
+    public ControllerException(final String errorMessage) {
         this.errorMessage = errorMessage;
     }
 }

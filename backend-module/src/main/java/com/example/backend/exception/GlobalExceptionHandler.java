@@ -1,108 +1,121 @@
 package com.example.backend.exception;
 
+import com.example.ejb.exception.BusinessException;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityNotFoundException;
-
-import org.springframework.cglib.proxy.UndeclaredThrowableException;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.example.ejb.BusinessException;
-
-import java.net.URI;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-
 /* Manipulador global de exceções para a aplicação. */
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    
+
     @Resource
     private MessageSource messageSource;
 
-    //private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    
-    private HttpHeaders headers(){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return headers;
+    /**
+     * Método auxiliar para criar um mapa de cabeçalhos HTTP padrão.
+     */
+    private MultiValueMap<String, String> headers() {
+        Map<String, String> headers = new ConcurrentHashMap<>();
+        headers.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+        headers.forEach((key, value) -> multiValueMap.add(key, value));
+        return multiValueMap;
     }
 
-    private ResponseError responseError(String message,HttpStatus statusCode){
-        ResponseError responseError = new ResponseError();
-        responseError.setStatus("error");
-        responseError.setError(message);
-        responseError.setStatusCode(statusCode.value());
+    /**
+     * Método auxiliar para criar um objeto ResponseError a partir de uma mensagem e um
+     *      código de status HTTP.
+     */
+    private ResponseError responseError(final String message, final HttpStatus statusCode) {
+        ResponseError responseError = new ResponseError().setError(message).setStatusCode(statusCode.value());
         return responseError;
     }
 
+    /**
+     * Manipulador genérico para todas as exceções não tratadas especificamente por outros métodos.
+     * Ele verifica o tipo da exceção e delega para o manipulador apropriado, ou retorna um erro
+     *  genérico de servidor se a exceção não for reconhecida.
+     */
     @ExceptionHandler(Exception.class)
-    private ResponseEntity<Object> handleGeneral(Exception e, @NonNull WebRequest request) {
+    public ResponseEntity<Object> handleGeneral(@NonNull final Exception e, @NonNull final WebRequest request) {
         if (e.getClass().isAssignableFrom(UndeclaredThrowableException.class)) {
-            UndeclaredThrowableException exception = (UndeclaredThrowableException) e;
-            return handleBusinessException((BusinessException) exception.getUndeclaredThrowable(), request);
+            assert e instanceof UndeclaredThrowableException : e.getClass();
+            return handleBusinessException(
+                    (BusinessException)
+                            UndeclaredThrowableException.class.cast(e).getUndeclaredThrowable(),
+                    request);
         } else if (e.getClass().isAssignableFrom(MethodArgumentNotValidException.class)) {
-            Map<String, String> errors = new HashMap<>();
-            ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors()
-                .forEach(error ->
-                    errors.put(error.getField(), error.getDefaultMessage())
-                );
-            ResponseError error = responseError(errors.toString(),HttpStatus.BAD_REQUEST);
-            return handleExceptionInternal(e, error, Objects.requireNonNull(headers()), HttpStatus.BAD_REQUEST, request);
-        }{
-            String message = messageSource.getMessage("error.server", new Object[]{e.getMessage()}, Objects.requireNonNull(Locale.getDefault()));
-            ResponseError error = responseError(message,HttpStatus.INTERNAL_SERVER_ERROR);
-            return handleExceptionInternal(e, error,Objects.requireNonNull(headers()), HttpStatus.INTERNAL_SERVER_ERROR, request);
+            assert e instanceof MethodArgumentNotValidException : e.getClass();
+            ResponseError error = handleExceptionArgumentNotValid(MethodArgumentNotValidException.class.cast(e));
+            return handleExceptionInternal(e, error, new HttpHeaders(headers()), HttpStatus.BAD_REQUEST, request);
+        } else if (e.getClass().isAssignableFrom(EntityNotFoundException.class)) {
+            assert e instanceof EntityNotFoundException : e.getClass();
+            return handleEntityNotFoundException(EntityNotFoundException.class.cast(e), request);
+        } else {
+            String message = messageSource.getMessage(
+                    "error.server", new Object[] {e.getMessage()}, Objects.requireNonNull(Locale.getDefault()));
+            return handleExceptionInternal(
+                    e,
+                    responseError(message, HttpStatus.INTERNAL_SERVER_ERROR),
+                    new HttpHeaders(headers()),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    request);
         }
     }
 
+    /**
+     * Manipulador específico para exceções de validação de argumentos, que coleta os erros de validação
+     */
+    private ResponseError handleExceptionArgumentNotValid(@NonNull final MethodArgumentNotValidException e) {
+        Map<String, String> errors = new ConcurrentHashMap<>();
+        ((MethodArgumentNotValidException) e)
+                .getBindingResult()
+                .getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        ResponseError error = responseError(errors.toString(), HttpStatus.BAD_REQUEST);
+        return error;
+    }
+
+    /* Manipulador para exceções de entidade não encontrada, que retorna um erro 404 */
     @ExceptionHandler({EntityNotFoundException.class})
-    private ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException e, @NonNull WebRequest request) {
-        ResponseError error = responseError(e.getMessage(),HttpStatus.NOT_FOUND);
-        return handleExceptionInternal(e, error,Objects.requireNonNull(headers()), HttpStatus.NOT_FOUND, request);
+    ResponseEntity<Object> handleEntityNotFoundException(
+            @NonNull final EntityNotFoundException e, @NonNull final WebRequest request) {
+        ResponseError error = responseError(e.getMessage(), HttpStatus.NOT_FOUND);
+        return handleExceptionInternal(e, error, new HttpHeaders(headers()), HttpStatus.NOT_FOUND, request);
     }
 
+    /* Manipulador para exceções de negócio, que retorna um erro 422 */
     @ExceptionHandler({BusinessException.class})
-    private ResponseEntity<Object> handleBusinessException(BusinessException e, @NonNull WebRequest request) {
-        ResponseError error = responseError(e.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
-        return handleExceptionInternal(e, error,Objects.requireNonNull(headers()), HttpStatus.UNPROCESSABLE_ENTITY, request);
+    ResponseEntity<Object> handleBusinessException(
+            @NonNull final BusinessException e, @NonNull final WebRequest request) {
+        ResponseError error = responseError(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        return handleExceptionInternal(e, error, new HttpHeaders(headers()), HttpStatus.UNPROCESSABLE_ENTITY, request);
     }
 
-    @ExceptionHandler({NoSuchElementException.class})
-    private ResponseEntity<Object> handleNotFoundException(NoSuchElementException e, @NonNull WebRequest request) {
-        ResponseError error = responseError(e.getMessage(),HttpStatus.NOT_FOUND);
-        return handleExceptionInternal(e, error,Objects.requireNonNull(headers()), HttpStatus.NOT_FOUND, request);
-    }
-    
+    /* Manipulador para exceções de argumento inválido, que retorna um erro 400 */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e, @NonNull WebRequest request) {
-        ResponseError error = responseError(e.getMessage(),HttpStatus.BAD_REQUEST);
-        return handleExceptionInternal(e, error, Objects.requireNonNull(headers()), HttpStatus.BAD_REQUEST, request);
+    ResponseEntity<Object> handleIllegalArgumentException(
+            final IllegalArgumentException e, @NonNull final WebRequest request) {
+        ResponseError error = responseError(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return handleExceptionInternal(e, error, new HttpHeaders(headers()), HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler(value = {ControllerException.class})
-    public ResponseEntity<ProblemDetail> handleIllegalStateException(ControllerException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR,
-                ex.getMessage()); 
-        problemDetail.setTitle("Controller Exception");
-        problemDetail.setDetail(ex.getErrorMessage());
-        problemDetail.setType(Objects.requireNonNull(URI.create("http://localhost:8000/errors/500")));
-        problemDetail.setProperty("isBusinessError", "true");
-        problemDetail.setProperty("timestamp", Instant.now());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problemDetail);
-    }
 }

@@ -4,13 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.example.backend.factory.TestFactory;
+import com.example.ejb.entity.Beneficio;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -18,9 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import com.example.backend.factory.TestFactory;
-import com.example.ejb.entity.Beneficio;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -33,7 +31,7 @@ public class BeneficioRepositoryIntegrationTest {
     @Test
     @DisplayName("Deve garantir que a tabela de benefícios não está vazia")
     void tabelaNaoDeveEstarVazia() {
-        assertTrue(repository.findAll().size()>0);
+        assertTrue(repository.findAll().size() > 0);
     }
 
     @Test
@@ -53,7 +51,7 @@ public class BeneficioRepositoryIntegrationTest {
         assertEquals(saved.getDescricao(), retrieved.get().getDescricao());
         assertEquals(saved.getValor(), retrieved.get().getValor());
         assertEquals(saved.getAtivo(), retrieved.get().getAtivo());
-        
+
         repository.deleteById(Objects.requireNonNull(retrieved.get().getId()));
     }
 
@@ -62,7 +60,7 @@ public class BeneficioRepositoryIntegrationTest {
     void aoAlterarBeneficio_entaoQuantidadeRegistrosNaoAltera() {
         // given
         Beneficio beneficio1 = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
-        
+
         beneficio1.setNome("Beneficio Alterado");
         beneficio1.setDescricao("Descrição Alterada");
         beneficio1.setValor(new BigDecimal("1000.00"));
@@ -71,11 +69,10 @@ public class BeneficioRepositoryIntegrationTest {
 
         // when
         List<Beneficio> retrieved = repository.findAll();
- 
+
         // then
         assertFalse(retrieved.isEmpty());
         assertEquals(3, retrieved.size());
-
     }
 
     @Test
@@ -83,7 +80,7 @@ public class BeneficioRepositoryIntegrationTest {
     void aoAlterarBeneficio_entaoRegistroAlteradoComSucesso() {
         // given
         Beneficio beneficio1 = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
-        
+
         beneficio1.setNome("Beneficio Alterado");
         beneficio1.setDescricao("Descrição Alterada");
         beneficio1.setValor(new BigDecimal("1000.00"));
@@ -129,7 +126,7 @@ public class BeneficioRepositoryIntegrationTest {
         Beneficio beneficio2 = TestFactory.gerarBeneficio();
         Beneficio beneficio3 = TestFactory.gerarBeneficio();
         List<Beneficio> array = new ArrayList<>();
-        array.addAll(Arrays.asList(beneficio1,beneficio2,beneficio3));
+        array.addAll(Arrays.asList(beneficio1, beneficio2, beneficio3));
         repository.saveAll(array);
         // when
         repository.deleteById(1L);
@@ -181,7 +178,7 @@ public class BeneficioRepositoryIntegrationTest {
         Beneficio beneficio2 = TestFactory.gerarBeneficio();
         Beneficio beneficio3 = TestFactory.gerarBeneficio();
         List<Beneficio> array = new ArrayList<>();
-        array.addAll(Arrays.asList(beneficio1,beneficio2,beneficio3));
+        array.addAll(Arrays.asList(beneficio1, beneficio2, beneficio3));
         repository.saveAll(array);
 
         // when
@@ -194,7 +191,6 @@ public class BeneficioRepositoryIntegrationTest {
         repository.deleteAll();
     }
 
-    
     @Test
     @DisplayName("Deve retornar lista vazia quando não houver benefícios cadastrados")
     void comTabelaVaziaAoConsultarTodosBeneficios_entaoRetornaListaVazia() {
@@ -206,7 +202,5 @@ public class BeneficioRepositoryIntegrationTest {
 
         // then
         assertTrue(retrieved.isEmpty());
-
     }
-
 }
