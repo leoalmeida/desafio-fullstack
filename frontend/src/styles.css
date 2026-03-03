@@ -11,3 +11,18 @@
 mat-checkbox {
     margin-bottom: 15px;
 }
+
+.snackbar-default {
+  background-color: #323232;
+  color: #fff;
+}
+
+.snackbar-success {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.snackbar-error {
+  background-color: #f44336;
+  color: #fff;
+}

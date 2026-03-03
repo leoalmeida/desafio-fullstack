@@ -2,10 +2,10 @@ import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } fr
 import { inject } from '@angular/core';
 import { TokenStorageService } from '../services/token-storage.service';
 
-export const canActivateUser: CanActivateFn = (
+export const canActivateAdmin: CanActivateFn = (
                     route: ActivatedRouteSnapshot, 
                     state: RouterStateSnapshot) => {
   const router = inject(Router);
   const tokenService = inject(TokenStorageService);
-  return tokenService.isAuthenticated() ? true : router.parseUrl('/login');
+  return (tokenService.isAuthenticated() && tokenService.hasRole('ROLE_ADMIN')) ? true : router.parseUrl('/acesso-negado');
 };

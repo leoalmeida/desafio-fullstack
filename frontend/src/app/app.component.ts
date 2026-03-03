@@ -4,21 +4,20 @@ import { TokenStorageService } from './services/token-storage.service';
 import { LoadingIndicator } from './components/loading-indicator/loading-indicator';
 import {  RouterOutlet } from '@angular/router';
 import { Toolbar } from './components/toolbar/toolbar';
-import { BeneficioList } from './components/beneficio-list/beneficio-list';
 
 @Component({
   selector: 'app-root',
-  imports: [LoadingIndicator, Toolbar, BeneficioList],
+  standalone: true,
+  imports: [LoadingIndicator, Toolbar, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit{
-    protected readonly title = signal('Modulo Frontend');
+    protected readonly title = signal('');
     private roles: string[] = [];
     isloggedIn = false;
     showAdminBoard = false;
-    showModeratorBoard = false;
-    
+    showUserBoard = false;
     
     private titleService: TitleService = inject(TitleService);
     
@@ -30,7 +29,7 @@ export class AppComponent implements OnInit{
     }
 
     updateViewByRole(): void {
-      this.showAdminBoard = this.roles.includes('ADMIN');
-      this.showModeratorBoard = this.roles.includes('MODERATOR');
+      this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
+      this.showUserBoard = this.roles.includes('ROLE_USER');
     }
 }

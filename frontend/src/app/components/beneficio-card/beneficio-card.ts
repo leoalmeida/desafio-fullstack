@@ -12,6 +12,8 @@ import { BeneficioDetails } from '../beneficio-details/beneficio-details';
 import { TransferDetails } from '../transfer-details/transfer-details';
 import { MatIconModule } from '@angular/material/icon';
 import { TransferenciaService } from 'src/app/services/transferencia.service';
+import { NotificationService } from 'src/app/services/notification.service';
+import { LoggerService } from 'src/app/services/logger.service';
 
 @Component({
   selector: 'app-beneficio-card',
@@ -24,7 +26,10 @@ export class BeneficioCard {
   private beneficioService: BeneficioService = inject(BeneficioService);
   private transferenciaService: TransferenciaService = inject(TransferenciaService);
   message:string = "";
+
   private dialogAcao: MatDialog = inject(MatDialog);
+  private notify: NotificationService = inject(NotificationService);
+  
   constructor() {  
   }
 
@@ -38,14 +43,14 @@ export class BeneficioCard {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.beneficioService.changeOne(result);
-        console.log('Atualização de beneficio solicitada:', result);
+        this.notify.showSuccess('Atualização realizada com sucesso!');
       }
     });
   }
 
   onRemoverBeneficio(dialogRef: TemplateRef<any>, beneficio: BeneficioType): void {
     if (!beneficio.id) {
-        console.error("Nenhum benefício selecionado.");
+        this.notify.showError("Nenhum benefício selecionado!");
         return;
     }
     const refOpen = this.dialogAcao.open(dialogRef, {
@@ -76,7 +81,7 @@ export class BeneficioCard {
 
   onRealizarTransferencia(beneficio: BeneficioType): void {
     if (!beneficio.id) {
-        console.error("Nenhum benefício selecionado.");
+        this.notify.showError("Nenhum benefício selecionado!");
         return;
     }
 
@@ -87,16 +92,20 @@ export class BeneficioCard {
 
     refOpen.afterClosed().subscribe(result => {
       if (result) {
-        if (!result.fromId || !result.toId || !result.valor) {
-          console.error("Dados de transferência incompletos.");
-          return;
-        }
-        this.transferenciaService.transferValue(result).subscribe({
-          next: () => console.log('Transferência realizada com sucesso:', result),
-          error: (error) => console.error('Erro ao realizar transferência:', error)
-        });
+        this.processarTransferencia(result);
       }
     });
   }
-}
 
+  private processarTransferencia(result: any): void {
+    if (!result.fromId || !result.toId || !result.valor || result.valor <= 0) {
+      this.notify.showError("Dados da transferência inválidos ou incompletos!");
+      return;
+    }
+
+    this.transferenciaService.transferValue(result).subscribe({
+      next: () => this.notify.showSuccess('Transferência realizada com sucesso!'),
+      error: (error) => this.notify.showError('Erro ao realizar transferência: ' + error)
+    });
+  }
+}

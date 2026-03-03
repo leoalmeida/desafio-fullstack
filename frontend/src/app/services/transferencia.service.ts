@@ -5,25 +5,26 @@ import { environment } from '../../environments/environment';
 import { BeneficioType } from '../models/beneficio-type';
 import { TransferenciaType } from '../models/transferencia-type';
 import { beneficios } from 'src/mocks/beneficios';
+import { LoggerService } from './logger.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransferenciaService {
-  private baseUrl:string = '/api/v1/transferencias';
+  private baseUrl:string = '/api/v1/beneficios';
   private beneficiosList = signal<BeneficioType[]>([]);
 
-  //private logger = inject(Logger);
+  private logger = inject(LoggerService);
 
   private http: HttpClient = inject(HttpClient);
   constructor(){
-    this.baseUrl = environment.transferenciasApi;
+    this.baseUrl = environment.beneficiosApi + '/transferir';
   }
 
   items = this.beneficiosList.asReadonly();
 
   transferValue(transferencia: TransferenciaType): Observable<void> {
-    console.log(`Transferindo valor ${transferencia.valor} de benefício: ${transferencia.fromId} para benefício: ${transferencia.toId}.`);
+    this.logger.log(`Transferindo valor ${transferencia.valor} de benefício: ${transferencia.fromId} para benefício: ${transferencia.toId}.`);
     return this.http.post<void>(`${this.baseUrl}`, transferencia)
               .pipe(catchError(this.handleError));
   }
@@ -40,7 +41,7 @@ export class TransferenciaService {
                     `Erro ${error.status}: ${error.statusText}`;
     }
 
-    console.error('Erro na requisição:', errorMessage);
+    this.logger.error(`Erro na requisição: ${errorMessage}`);
     return throwError(() => new Error(errorMessage));
   }
 }

@@ -22,7 +22,7 @@ export class Toolbar {
 
   constructor(){
     this.tokenStorageService.loggedUser$.subscribe(user => 
-      this.loggedUser = user.username
+      this.loggedUser = user.nome
     );
   }
 

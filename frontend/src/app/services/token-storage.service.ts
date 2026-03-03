@@ -8,39 +8,51 @@ import { TokenType } from '../models/token-type';
 })
 export class TokenStorageService {
 
-  private userToken = new BehaviorSubject<TokenType>({} as TokenType);
+  private associado = new BehaviorSubject<AssociadoType>({} as AssociadoType);
   private loggedIn = signal<boolean>(false);
 
   constructor() { }
 
   isAuthenticated = this.loggedIn.asReadonly();
-  loggedUser = this.userToken.getValue();
-  loggedUser$ = this.userToken.asObservable();
+  loggedUser = this.associado.getValue();
+  loggedUser$ = this.associado.asObservable();
 
   signOut(): void {
     window.sessionStorage.clear();
-    this.userToken.next({} as TokenType);
+    this.associado.next({} as AssociadoType);
     this.loggedIn.set(false);
   }
 
-  public saveJsonWebToken(associado: AssociadoType): void {
-    if (associado.accessToken){
-      window.sessionStorage.removeItem('auth-token'); // Clear previous token
-      window.sessionStorage.setItem('auth-token', associado.accessToken); // Save token in session storage
+  public saveJsonWebToken(accessToken: AssociadoType): void {
+    if (accessToken.accessToken) {
+      const userToken: TokenType = JSON.parse(atob(accessToken.accessToken.split('.')[1]));
+      
+      const associado: AssociadoType = {
+        id: userToken.id,
+        nome: accessToken.nome,
+        email: accessToken.email,
+        telefone: accessToken.telefone,
+        userData: userToken,
+        accessToken: accessToken.accessToken,
+        stats: [],
+        logs: []
+      };
 
-      const userToken: TokenType = JSON.parse(atob(associado.accessToken.split('.')[1]));
-      this.userToken.next(userToken);
+      this.saveUser(associado);
+
+      this.associado.next(associado);
       this.loggedIn.set(true);
     }
   }
-  
-  public getToken(): string | null {
-    return window.sessionStorage.getItem('auth-token');
+  public hasRole(role: string): boolean {
+    return this.associado.getValue().userData?.roles.includes(role) || false;
   }
+  
   public saveUser(user: AssociadoType): void {
     window.sessionStorage.removeItem('user'); // Clear previous user
     window.sessionStorage.setItem('user', JSON.stringify(user));
   } 
+
   public getUser(): AssociadoType  {
     const user = window.sessionStorage.getItem('user');
     return user ? JSON.parse(user) : {} as AssociadoType;
