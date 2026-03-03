@@ -1,7 +1,6 @@
 package com.example.backend.exception;
 
 import java.time.Instant;
-
 import lombok.NoArgsConstructor;
 
 /* Classe de modelo para representar erros de resposta. */
@@ -11,7 +10,7 @@ public class ResponseError {
     public static final String STATUS_SUCCESS = "success";
     public static final int STATUS_CODE_SUCCESS = 200;
     public static final int STATUS_CODE_ERROR = 400;
-    
+
     private Instant timestamp = Instant.now();
     private String status = STATUS_ERROR;
     private int statusCode = STATUS_CODE_ERROR;
@@ -49,10 +48,9 @@ public class ResponseError {
     }
 
     /**
-    * @return the status
-    */
+     * @return the status
+     */
     String getStatus() {
         return status;
     }
-
 }

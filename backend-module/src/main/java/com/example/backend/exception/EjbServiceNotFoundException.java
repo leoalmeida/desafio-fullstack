@@ -14,5 +14,4 @@ public class EjbServiceNotFoundException extends BusinessException {
     public EjbServiceNotFoundException(final String message, final Throwable cause) {
         super(message, cause);
     }
-
 }

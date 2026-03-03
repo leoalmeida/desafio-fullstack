@@ -3,7 +3,6 @@ package com.example.backend.mapper;
 import com.example.backend.dto.BeneficioRequestDto;
 import com.example.backend.dto.BeneficioResponseDto;
 import com.example.ejb.entity.Beneficio;
-
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -20,8 +19,7 @@ public class BeneficioMapper {
         if (dto == null) {
             return null;
         }
-        Beneficio beneficio = Beneficio
-                .builder()
+        Beneficio beneficio = Beneficio.builder()
                 .nome(dto.getNome())
                 .descricao(dto.getDescricao())
                 .valor(dto.getValor())
@@ -70,20 +68,17 @@ public class BeneficioMapper {
      * @param isNewEntity Indica se a entidade é nova (true para criação, false para atualização)
      * @return Beneficio Entity correspondente aos dados do DTO, ou null se o DTO for null
      */
-    public static Beneficio mapResponse(
-                                @NotNull final BeneficioResponseDto dto, 
-                                final boolean isNewEntity) {
+    public static Beneficio mapResponse(@NotNull final BeneficioResponseDto dto, final boolean isNewEntity) {
         if (dto == null) {
             return null;
         }
-        Beneficio beneficio = Beneficio
-                .builder()
-                .id(isNewEntity? null : dto.getId())
+        Beneficio beneficio = Beneficio.builder()
+                .id(isNewEntity ? null : dto.getId())
                 .nome(dto.getNome())
                 .descricao(dto.getDescricao())
                 .valor(dto.getValor())
                 .ativo(dto.getAtivo() != null ? dto.getAtivo() : true)
-                .version(isNewEntity? null :dto.getVersion())
+                .version(isNewEntity ? null : dto.getVersion())
                 .build();
         return beneficio;
     }
@@ -108,16 +103,15 @@ public class BeneficioMapper {
     }
 
     /**
-     * Faz o merge de um dto de request para um Entity existente, atualizando 
+     * Faz o merge de um dto de request para um Entity existente, atualizando
      * apenas os campos que foram modificados
      * @param objDestino Entity de benefício existente a ser atualizado
      * @param objOrigem DTO de requisição contendo os novos dados do benefício
      * @return Entity de benefício atualizado com os dados do DTO, ou null se o DTO for null
-     * @throws IllegalArgumentException se o DTO de origem ou a Entity de destino forem nulos  
+     * @throws IllegalArgumentException se o DTO de origem ou a Entity de destino forem nulos
      */
-    public static Beneficio map(
-                    @NotNull final Beneficio objDestino, 
-                    @NotNull final BeneficioRequestDto objOrigem) throws IllegalArgumentException {
+    public static Beneficio map(@NotNull final Beneficio objDestino, @NotNull final BeneficioRequestDto objOrigem)
+            throws IllegalArgumentException {
         if (objOrigem == null) {
             throw new IllegalArgumentException("Objeto de origem não pode ser nulo");
         }
@@ -130,5 +124,4 @@ public class BeneficioMapper {
         objDestino.setAtivo(objOrigem.getAtivo());
         return objDestino;
     }
-  
 }

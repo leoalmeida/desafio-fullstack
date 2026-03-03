@@ -1,11 +1,15 @@
 package com.example.backend.factory;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.example.backend.exception.TesteIntegradoException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.example.backend.exception.TesteIntegradoException;
-
+import java.util.List;
+import java.util.TimeZone;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +27,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
-import java.util.TimeZone;
-
 @TestInstance(Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 @EnableConfigurationProperties
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AbstractIntegrationTest {
 
     @Autowired
@@ -42,67 +40,66 @@ public abstract class AbstractIntegrationTest {
     protected void startMockMvc(@NonNull WebApplicationContext webApplicationContext) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
-    
+
     protected final ObjectMapper mapper = new ObjectMapper()
             .setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"))
             .findAndRegisterModules()
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    protected <T> List<T> performGetAllRequest(@NonNull String path, @NonNull Class<T> responseType, ResultMatcher... matchers)
+    protected <T> List<T> performGetAllRequest(
+            @NonNull String path, @NonNull Class<T> responseType, ResultMatcher... matchers)
             throws TesteIntegradoException, Exception {
-        
-        MvcResult mvcResult = 
-                    submitGetAction(path)
-                            .andExpectAll(matchers)
-                            .andReturn();
+
+        MvcResult mvcResult = submitGetAction(path).andExpectAll(matchers).andReturn();
         if (mvcResult == null) throw new TesteIntegradoException("Erro ao executar cenário de consulta");
-        return  convertStringToListClass(mvcResult.getResponse().getContentAsString(), responseType);
+        return convertStringToListClass(mvcResult.getResponse().getContentAsString(), responseType);
     }
 
-    protected <T> T performGetRequest(@NonNull String path, Long keyParameter, @NonNull Class<T> responseType, ResultMatcher... matchers)
+    protected <T> T performGetRequest(
+            @NonNull String path, Long keyParameter, @NonNull Class<T> responseType, ResultMatcher... matchers)
             throws TesteIntegradoException, Exception {
-        
-        MvcResult mvcResult = submitGetAction(path, keyParameter)
-                            .andExpectAll(matchers)
-                            .andReturn();
+
+        MvcResult mvcResult =
+                submitGetAction(path, keyParameter).andExpectAll(matchers).andReturn();
         if (mvcResult == null) throw new TesteIntegradoException("Erro ao executar cenário de consulta");
-        return  convertStringToClass(mvcResult.getResponse().getContentAsString(), responseType);
+        return convertStringToClass(mvcResult.getResponse().getContentAsString(), responseType);
     }
 
     protected String performDeleteRequest(@NonNull String path, Long keyParameter, ResultMatcher... matchers)
             throws TesteIntegradoException, Exception {
-        
-        MvcResult mvcResult = submitDeleteAction(path, keyParameter)
-                .andExpectAll(matchers)
-                .andReturn();
-        
+
+        MvcResult mvcResult =
+                submitDeleteAction(path, keyParameter).andExpectAll(matchers).andReturn();
+
         if (mvcResult == null) throw new TesteIntegradoException("Erro ao executar cenário de delete");
         return mvcResult.getResponse().getErrorMessage();
     }
-    protected <T> T performPutRequest(@NonNull String path, Long keyParameter, Object body, Class<T> responseType, ResultMatcher... matchers)
+
+    protected <T> T performPutRequest(
+            @NonNull String path, Long keyParameter, Object body, Class<T> responseType, ResultMatcher... matchers)
             throws TesteIntegradoException, Exception {
-        
-        MvcResult mvcResult = submitPutAction(path, body, keyParameter)
-                .andExpectAll(matchers)
-                .andReturn();
-    
+
+        MvcResult mvcResult =
+                submitPutAction(path, body, keyParameter).andExpectAll(matchers).andReturn();
+
         if (mvcResult == null) throw new TesteIntegradoException("Erro ao executar cenário de update");
         if (responseType == null) return null;
         return convertStringToClass(mvcResult.getResponse().getContentAsString(), responseType);
     }
 
-    protected <T> T performPostRequest(@NonNull String path, Object object, Class<T> responseType, ResultMatcher... matchers)
+    protected <T> T performPostRequest(
+            @NonNull String path, Object object, Class<T> responseType, ResultMatcher... matchers)
             throws TesteIntegradoException, Exception {
-        MvcResult mvcResult = submitPostAction(path, object)
-                .andExpectAll(matchers)
-                .andReturn();
+        MvcResult mvcResult =
+                submitPostAction(path, object).andExpectAll(matchers).andReturn();
         if (mvcResult == null) throw new TesteIntegradoException("Erro ao executar cenário de criação");
         if (responseType == null) return null;
         return convertStringToClass(mvcResult.getResponse().getContentAsString(), responseType);
     }
 
-    protected <T> List<T> performRequestOfList(@NonNull String path, Object object, Class<T> responseType, ResultMatcher... matchers)
+    protected <T> List<T> performRequestOfList(
+            @NonNull String path, Object object, Class<T> responseType, ResultMatcher... matchers)
             throws TesteIntegradoException, Exception {
         MvcResult mvcResult = submitPostAction(path, object)
                 .andDo(print())
@@ -145,7 +142,9 @@ public abstract class AbstractIntegrationTest {
     private <T> T convertStringToClass(String jsonString, Class<T> responseType) throws JsonProcessingException {
         return mapper.readValue(jsonString, responseType);
     }
-    private <T> List<T> convertStringToListClass(String jsonString, Class<T> responseType) throws JsonProcessingException {
+
+    private <T> List<T> convertStringToListClass(String jsonString, Class<T> responseType)
+            throws JsonProcessingException {
         return mapper.readValue(jsonString, mapper.getTypeFactory().constructCollectionType(List.class, responseType));
     }
 }

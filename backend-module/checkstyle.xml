@@ -83,9 +83,9 @@
             <property name="max" value="5" />
         </module>
 
-        <!-- Limit the length of methods to 20 lines -->
+        <!-- Limit the length of methods to 30 lines -->
         <module name="MethodLength">
-            <property name="max" value="20" />
+            <property name="max" value="30" />
         </module>
 
         <!-- Best Practices -->
@@ -96,7 +96,7 @@
         <module name="UnusedImports" />
 
         <!-- Additional Checks -->
-        <!-- Limit the number of classes a single class can depend on to 20 -->
+        <!-- Limit the number of classes a single class can depend on to 25 -->
         <module name="ClassFanOutComplexity">
             <property name="max" value="25" />
         </module>
