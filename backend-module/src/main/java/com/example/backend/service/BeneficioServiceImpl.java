@@ -96,7 +96,10 @@ public class BeneficioServiceImpl implements BeneficioService {
             throw ex;
         } catch (OptimisticLockException e) {
             throw new BusinessException("Erro de concorrência ao realizar transferência. Por favor, tente novamente.");
-        }
+        } catch (Exception ex) {
+            log.error("Erro ao realizar transferência: {}", ex.getMessage());
+            throw new BusinessException("Erro ao realizar transferência: " + ex.getMessage(), ex);
+        } 
     }
 
     private void validateTransferenciaDto(@Nonnull final TransferenciaDto dto) {

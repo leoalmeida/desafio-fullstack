@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,6 +30,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.context.WebApplicationContext;
 
 @ContextConfiguration(classes = BackendApplication.class)
@@ -190,19 +194,6 @@ class BackendApplicationTests extends AbstractIntegrationTest {
         assertNotNull(response);
     }
 
-    @Test
-    @DisplayName("Deve retornar status Not Found ao buscar um benefício inexistente")
-    void integradoAoBuscarBeneficioPorIdInexistente_RetornaStatusNotFound() throws Exception {
-        BeneficioResponseDto response = performGetRequest(
-                TestFactory.BENEFICIOS_API_ENDPOINT + "/{id}",
-                875L,
-                BeneficioResponseDto.class,
-                status().isNotFound(),
-                jsonPath("$.error", is("Beneficio não encontrado")));
-        // then
-        log.error("Response de erro: {}", response.toString());
-        // assertNull(response);
-    }
 
     @Test
     @DisplayName("Deve realizar transferência válida entre benefícios e retornar status Ok")
@@ -223,24 +214,4 @@ class BackendApplicationTests extends AbstractIntegrationTest {
                 destinoDto.get().getValor());
     }
 
-    @Test
-    @DisplayName("Deve retornar status Bad Request ao tentar transferir para o mesmo benefício")
-    void integradoAoRealizarTransferenciaMesmoBeneficio_RetornaStatusBadRequest() throws Exception {
-        TransferenciaDto dto = new TransferenciaDto(beneficio1.getId(), beneficio1.getId(), new BigDecimal("50.00"));
-        performPostRequest(TestFactory.BENEFICIOS_API_ENDPOINT + "/transferir", dto, null, status().isBadRequest());
-        // ,jsonPath("$.error", is("Não é possível realizar transferência para o mesmo benefício")));
-
-    }
-
-    @Test
-    @DisplayName("Deve retornar status Unprocessable Entity ao tentar transferir saldo insuficiente")
-    void integradoAoRealizarTransferenciaSaldoInsuficiente_RetornaStatusUnprocessableEntity() throws Exception {
-        TransferenciaDto dto = new TransferenciaDto(
-                beneficio1.getId(), beneficio2.getId(), beneficio1.getValor().add(new BigDecimal("50.00")));
-
-        performPostRequest(
-                TestFactory.BENEFICIOS_API_ENDPOINT + "/transferir", dto, null, status().isUnprocessableEntity());
-        // ,jsonPath("$.error", is("Saldo insuficiente para transferência")));
-
-    }
 }

@@ -66,21 +66,21 @@ public class BeneficioServiceTest {
     }
 
     @Test
-    @DisplayName("Deve gerar BusinessException ao criar benefício com dados inválidos")
-    void deveGerarException_quandoBeneficioInvalido() {
+    @DisplayName("Deve gerar IllegalArgumentException ao criar benefício com dados inválidos")
+    void deveGerarException_quandoIllegalArgumentException() {
         log.info("Criando novo benefício: {}", beneficioDtoInvalido.getNome());
         // given  - precondition or setup
         BeneficioRequestDto input = BeneficioMapper.mapRequest(beneficioDtoInvalido);
 
         // Act & Assert
-        Throwable throwable = assertThrows(BusinessException.class, () -> {
+        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> {
             service.criarBeneficio(input);
         });
 
-        assertEquals(BusinessException.class, throwable.getClass());
+        assertEquals(IllegalArgumentException.class, throwable.getClass());
         then(repository).should(never()).findById(any(Long.class));
         then(repository).should(never()).save(any(Beneficio.class));
-        then(validator).should().validate(input);
+        then(validator).should(never()).validate(input); //Validação ocorre antes do validador
     }
 
     @Test
@@ -90,7 +90,6 @@ public class BeneficioServiceTest {
         Beneficio entity = BeneficioMapper.mapResponse(beneficioDto1, false);
         BeneficioRequestDto beneficioRequest = BeneficioMapper.mapRequest(beneficioDto1);
         given(repository.saveAndFlush(any(Beneficio.class))).willReturn(entity);
-        given(validator.validate(beneficioRequest)).willReturn(beneficioRequest);
 
         log.info("Criando novo benefício: {}", entity.getNome());
         // Act
@@ -99,7 +98,6 @@ public class BeneficioServiceTest {
         // Assert
         assertNotNull(result);
         then(repository).should().saveAndFlush(any(Beneficio.class));
-        then(validator).should().validate(beneficioRequest);
     }
 
     @Test
@@ -112,7 +110,6 @@ public class BeneficioServiceTest {
         entity.setValor(new BigDecimal(1000.00));
         entity.setAtivo(true);
         BeneficioRequestDto beneficioRequest = BeneficioMapper.mapRequest(entity);
-        given(validator.validate(beneficioRequest)).willReturn(beneficioRequest);
         given(repository.findById(entity.getId())).willReturn(Optional.of(entity));
         given(repository.saveAndFlush(any(Beneficio.class))).willReturn(entity);
 
@@ -131,28 +128,24 @@ public class BeneficioServiceTest {
         // Verifica se o método do repositório foi chamado
         then(repository).should().findById(entity.getId());
         then(repository).should().saveAndFlush(any(Beneficio.class));
-        then(validator).should().validate(beneficioRequest);
     }
 
     @Test
-    @DisplayName("Deve gerar BusinessException ao alterar benefício com dados inválidos")
-    public void deveGerarBusinessException_quandoAlterarBeneficioInvalido() {
+    @DisplayName("Deve gerar IllegalArgumentException ao alterar benefício com dados inválidos")
+    public void deveGerarIllegalArgumentException_quandoAlterarBeneficioInvalido() {
         // given  - precondition or setup
         BeneficioRequestDto beneficioRequestInvalido = BeneficioMapper.mapRequest(beneficioDtoInvalido);
 
-        given(validator.validate(beneficioRequestInvalido)).willThrow(new BusinessException("Nome é obrigatório"));
-
         // Act & Assert
-        Throwable throwable = assertThrows(BusinessException.class, () -> {
+        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> {
             service.alterarBeneficio(beneficioDtoInvalido.getId(), beneficioRequestInvalido);
         });
 
-        assertEquals(BusinessException.class, throwable.getClass());
+        assertEquals(IllegalArgumentException.class, throwable.getClass());
 
         // Verifica se o método do repositório foi chamado
         then(repository).should(never()).findById(any(Long.class));
         then(repository).should(never()).saveAndFlush(any(Beneficio.class));
-        then(validator).should().validate(beneficioRequestInvalido);
     }
 
     @Test

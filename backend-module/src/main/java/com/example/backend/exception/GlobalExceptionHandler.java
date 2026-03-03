@@ -103,25 +103,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /* Manipulador para exceções de negócio, que retorna um erro 422 */
-    @ExceptionHandler({BusinessException.class, EjbServiceNotFoundException.class})
+    @ExceptionHandler({BusinessException.class})
     ResponseEntity<Object> handleBusinessException(
             @NonNull final BusinessException e, @NonNull final WebRequest request) {
         ResponseError error = responseError(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         return handleExceptionInternal(e, error, new HttpHeaders(headers()), HttpStatus.UNPROCESSABLE_ENTITY, request);
     }
-
-    /* Manipulador para exceções de não encontrado, que retorna um erro 404 */
-    /*@ExceptionHandler({ NoSuchElementException.class })
-    ResponseEntity<Object> handleNotFoundException(
-            @NonNull final NoSuchElementException e,
-            @NonNull final WebRequest request) {
-        ResponseError error = responseError(e.getMessage(), HttpStatus.NOT_FOUND);
-        return handleExceptionInternal(e,
-                error,
-                new HttpHeaders(headers()),
-                HttpStatus.NOT_FOUND,
-                request);
-    }*/
 
     /* Manipulador para exceções de argumento inválido, que retorna um erro 400 */
     @ExceptionHandler(IllegalArgumentException.class)
@@ -131,16 +118,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, error, new HttpHeaders(headers()), HttpStatus.BAD_REQUEST, request);
     }
 
-    /* Manipulador para exceções de controlador, que retorna um erro 500 com detalhes do problema */
-    /*@ExceptionHandler(value = { ControllerException.class })
-    public ResponseEntity<ProblemDetail> handleIllegalStateException(final ControllerException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR,
-                ex.getMessage());
-        problemDetail.setTitle("Controller Exception");
-        problemDetail.setDetail(ex.getErrorMessage());
-        problemDetail.setType(Objects.requireNonNull(URI.create("http://localhost:8000/errors/500")));
-        problemDetail.setProperty("isBusinessError", "true");
-        problemDetail.setProperty("timestamp", Instant.now());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problemDetail);
-    }*/
 }
