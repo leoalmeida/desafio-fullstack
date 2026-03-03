@@ -5,6 +5,7 @@ import com.example.backend.dto.BeneficioRequestDto;
 import com.example.backend.dto.BeneficioResponseDto;
 import com.example.backend.dto.TransferenciaDto;
 import com.example.backend.service.BeneficioService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,7 +43,7 @@ public class BeneficioController {
     private final BeneficioService beneficioService;
 
     public BeneficioController(final BeneficioService service) {
-        this.beneficioService = service;
+        this.beneficioService = Objects.requireNonNull(service, "BeneficioService não pode ser nulo");
     }
 
     @Operation(summary = "Listar todos os benefícios", 

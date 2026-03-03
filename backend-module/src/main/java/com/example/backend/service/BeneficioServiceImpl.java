@@ -5,10 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import com.example.backend.dto.BeneficioRequestDto;
@@ -21,6 +20,7 @@ import com.example.backend.repository.BeneficioRepository;
 import com.example.backend.validator.ObjectsValidator;
 import com.example.ejb.BeneficioEjbService;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 
@@ -28,18 +28,22 @@ import jakarta.persistence.OptimisticLockException;
  * Implementação do serviço responsável pelo gerenciamento de beneficios.
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class BeneficioServiceImpl implements BeneficioService {
 
-    @Autowired
-    private BeneficioRepository repository;
+    private final BeneficioRepository repository;
     
-    @Autowired
-    private BeneficioEjbService ejbService;
+    private final BeneficioEjbService ejbService;
     
+    private final ObjectsValidator<BeneficioRequestDto> validador;
+
     @Autowired
-    private ObjectsValidator<BeneficioRequestDto> validador;
+    public BeneficioServiceImpl(final BeneficioRepository repository, 
+                                final BeneficioEjbService ejbService) {
+        this.repository = Objects.requireNonNull(repository, "BeneficioRepository não pode ser nulo");
+        this.ejbService = Objects.requireNonNull(ejbService, "BeneficioEjbService não pode ser nulo");
+        this.validador = new ObjectsValidator<BeneficioRequestDto>();
+    }
 
     /**
      * Cria um novo benefício no sistema.
@@ -52,9 +56,9 @@ public class BeneficioServiceImpl implements BeneficioService {
      */
     @Override
     @Transactional
-    public BeneficioResponseDto criarBeneficio(@NonNull final BeneficioRequestDto dto)
+    public BeneficioResponseDto criarBeneficio(@Nonnull final BeneficioRequestDto dto)
                         throws IllegalArgumentException, BusinessException {
-        if (null == dto || null == dto.getNome() || null == dto.getValor()) {
+        if (null == dto.getNome() || null == dto.getValor()) {
             throw new IllegalArgumentException("Objeto inválido");
         }
         log.info("Criando novo benefício: {}", dto.getNome());
@@ -80,7 +84,7 @@ public class BeneficioServiceImpl implements BeneficioService {
      */
     @Override
     @Transactional
-    public void realizarTransferencia(@NonNull final TransferenciaDto dto) 
+    public void realizarTransferencia(@Nonnull final TransferenciaDto dto) 
                         throws IllegalArgumentException, BusinessException {
         validateTransferenciaDto(dto);
         try{
@@ -99,9 +103,9 @@ public class BeneficioServiceImpl implements BeneficioService {
         }
     }
 
-    private void validateTransferenciaDto(final TransferenciaDto dto) {
+    private void validateTransferenciaDto(@Nonnull final TransferenciaDto dto) {
         // Validação básica dos dados de transferência
-        if (null == dto || null == dto.getFromId() || null == dto.getToId()) {
+        if ( null == dto.getFromId() || null == dto.getToId()) {
             throw new IllegalArgumentException("IDs de origem e destino são obrigatórios");
         }
         log.info("Iniciando transferência entre benefícios ID={}, ID={}, VALOR={}", 
@@ -129,9 +133,9 @@ public class BeneficioServiceImpl implements BeneficioService {
      */
     @Override
     @Transactional
-    public BeneficioResponseDto alterarStatusBeneficio(@NonNull final Long id, final boolean status) 
+    public BeneficioResponseDto alterarStatusBeneficio(@Nonnull final Long id, final boolean status) 
                         throws BusinessException, IllegalArgumentException, EntityNotFoundException {
-        if (id == null || id <= 0) {
+        if (id <= 0) {
             throw new IllegalArgumentException("Identificador do benefício inválido");
         }
         log.info("Alterando status do benefício ID: {}", id);
@@ -157,9 +161,9 @@ public class BeneficioServiceImpl implements BeneficioService {
      */
     @Override
     @Transactional
-    public BeneficioResponseDto alterarBeneficio(@NonNull final Long id, @NonNull final BeneficioRequestDto dto) 
+    public BeneficioResponseDto alterarBeneficio(@Nonnull final Long id, @Nonnull final BeneficioRequestDto dto) 
                         throws EntityNotFoundException, IllegalArgumentException, BusinessException {
-        if (id == null || id <= 0) {
+        if ( id <= 0) {
             throw new IllegalArgumentException("Identificador inválido");
         }
         log.info("Alterando dados do benefício ID={} com os seguintes dados: {}", id, dto.toString());
@@ -188,9 +192,9 @@ public class BeneficioServiceImpl implements BeneficioService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BeneficioResponseDto buscarBeneficioPorId(@NonNull final Long id) 
+    public BeneficioResponseDto buscarBeneficioPorId(@Nonnull final Long id) 
                         throws EntityNotFoundException, IllegalArgumentException {
-        if (id == null || id <= 0) {
+        if (id <= 0) {
             throw new IllegalArgumentException("Identificador inválido");
         }
         return repository.findById(id)
@@ -253,9 +257,9 @@ public class BeneficioServiceImpl implements BeneficioService {
      */
     @Override
     @Transactional
-    public void removerBeneficio(@NonNull final Long beneficioId) 
+    public void removerBeneficio(@Nonnull final Long beneficioId) 
         throws BusinessException, IllegalArgumentException, EntityNotFoundException {
-        if (beneficioId==null || beneficioId<=0){
+        if (beneficioId<=0){
             throw new IllegalArgumentException("Identificador inválido para remoção.");
         }
         

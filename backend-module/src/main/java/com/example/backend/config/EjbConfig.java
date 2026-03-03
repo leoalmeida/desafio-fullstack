@@ -1,12 +1,12 @@
 package com.example.backend.config;
 
 import com.example.ejb.BeneficioEjbService;
+
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.lang.reflect.Field;
 
 @Configuration
 public class EjbConfig {
@@ -22,17 +22,8 @@ public class EjbConfig {
      *         injetado
      */
     @Bean
-    public BeneficioEjbService beneficioEjbService(final EntityManager em) {
-        BeneficioEjbService ejb = new BeneficioEjbService();
-
-        try {
-            Field field = BeneficioEjbService.class.getDeclaredField("em");
-            field.setAccessible(true);
-            field.set(ejb, em);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException("Não foi possível iniciar EJB service", e);
-        }
-
+    public BeneficioEjbService beneficioEjbService(@Nonnull final EntityManager em) {
+        BeneficioEjbService ejb = new BeneficioEjbService(em);
         return ejb;
     }
 

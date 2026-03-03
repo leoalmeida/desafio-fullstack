@@ -48,10 +48,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      *      código de status HTTP. 
      */
     private ResponseError responseError(final String message, final HttpStatus statusCode) {
-        ResponseError responseError = new ResponseError();
-        responseError.setStatus("error");
-        responseError.setError(message);
-        responseError.setStatusCode(statusCode.value());
+        ResponseError responseError = new ResponseError()
+                .setError(message)
+                .setStatusCode(statusCode.value());
         return responseError;
     }
 
@@ -61,21 +60,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      *  genérico de servidor se a exceção não for reconhecida.
      */
     @ExceptionHandler(Exception.class)
-    private ResponseEntity<Object> handleGeneral(
+    public ResponseEntity<Object> handleGeneral(
             @NonNull final Exception e, @NonNull final WebRequest request) {
         if (e.getClass().isAssignableFrom(UndeclaredThrowableException.class)) {
-            UndeclaredThrowableException exception = (UndeclaredThrowableException) e;
-            return handleBusinessException((BusinessException) exception.getUndeclaredThrowable(), request);
+            assert e instanceof UndeclaredThrowableException : e.getClass();
+            return handleBusinessException((BusinessException) 
+                UndeclaredThrowableException.class.cast(e).getUndeclaredThrowable(), request);
         } else if (e.getClass().isAssignableFrom(MethodArgumentNotValidException.class)) {
-            ResponseError error = handleExceptionArgumentNotValid((MethodArgumentNotValidException) e);
-            return handleExceptionInternal(e,
-                    error, new HttpHeaders(headers()), HttpStatus.BAD_REQUEST, request);
+            assert e instanceof MethodArgumentNotValidException : e.getClass();
+            ResponseError error = handleExceptionArgumentNotValid(MethodArgumentNotValidException.class.cast(e));
+            return handleExceptionInternal(e, error, new HttpHeaders(headers()), HttpStatus.BAD_REQUEST, request);
+        } else if (e.getClass().isAssignableFrom(EntityNotFoundException.class)) {
+            assert e instanceof EntityNotFoundException : e.getClass();
+            return handleEntityNotFoundException(EntityNotFoundException.class.cast(e), request);
         } else {
             String message = messageSource.getMessage("error.server", new Object[] { e.getMessage() },
                     Objects.requireNonNull(Locale.getDefault()));
-            ResponseError error = responseError(message, HttpStatus.INTERNAL_SERVER_ERROR);
-            return handleExceptionInternal(e,
-                    error, new HttpHeaders(headers()), HttpStatus.INTERNAL_SERVER_ERROR, request);
+            return handleExceptionInternal(e, responseError(message, HttpStatus.INTERNAL_SERVER_ERROR),
+                    new HttpHeaders(headers()), HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
     }
 
@@ -93,7 +95,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /* Manipulador para exceções de entidade não encontrada, que retorna um erro 404 */
     @ExceptionHandler({ EntityNotFoundException.class })
-    private ResponseEntity<Object> handleEntityNotFoundException(
+    ResponseEntity<Object> handleEntityNotFoundException(
             @NonNull final EntityNotFoundException e,
             @NonNull final WebRequest request) {
         ResponseError error = responseError(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -105,8 +107,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /* Manipulador para exceções de negócio, que retorna um erro 422 */
-    @ExceptionHandler({ BusinessException.class })
-    private ResponseEntity<Object> handleBusinessException(
+    @ExceptionHandler({ BusinessException.class, EjbServiceNotFoundException.class })
+    ResponseEntity<Object> handleBusinessException(
             @NonNull final BusinessException e,
             @NonNull final WebRequest request) {
         ResponseError error = responseError(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -119,7 +121,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /* Manipulador para exceções de não encontrado, que retorna um erro 404 */
     /*@ExceptionHandler({ NoSuchElementException.class })
-    private ResponseEntity<Object> handleNotFoundException(
+    ResponseEntity<Object> handleNotFoundException(
             @NonNull final NoSuchElementException e,
             @NonNull final WebRequest request) {
         ResponseError error = responseError(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -132,7 +134,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /* Manipulador para exceções de argumento inválido, que retorna um erro 400 */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgumentException(final IllegalArgumentException e,
+    ResponseEntity<Object> handleIllegalArgumentException(final IllegalArgumentException e,
             @NonNull final WebRequest request) {
         ResponseError error = responseError(e.getMessage(), HttpStatus.BAD_REQUEST);
         return handleExceptionInternal(e,

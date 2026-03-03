@@ -5,7 +5,7 @@ name: CI
 on: [pull_request]
 
 jobs:
-  lint-backend:
+  code-quality-backend:
     name: Lint Backend Module
     runs-on: ubuntu-latest
     steps:
@@ -37,14 +37,15 @@ jobs:
       - name: generate PMD report
         run: mvn -B -f backend-module/pom.xml pmd:pmd
       
-      #- name: Run spotbugs check
-      #  run: mvn -B -f backend-module/pom.xml spotbugs:check
+      - name: Run spotbugs check
+        run: mvn -B -f backend-module/pom.xml spotbugs:check
 
-      #- name: Generate SpotBugs report
-      #  run: mvn -B -f backend-module/pom.xml spotbugs:spotbugs
+      - name: Generate SpotBugs report
+        run: mvn -B -f backend-module/pom.xml spotbugs:spotbugs
         
   test-backend:
     name: Execute Unit tests for Backend Module
+    needs: [code-quality-backend]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -84,7 +85,6 @@ jobs:
           name: coverage-report
           path: backend-module/target/site/jacoco/
           retention-days: 7
-
 
   build-backend:
     runs-on: ubuntu-latest
