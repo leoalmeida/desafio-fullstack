@@ -15,6 +15,7 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { BeneficioDetails } from "../beneficio-details/beneficio-details";
 import { TransferDetails } from "../transfer-details/transfer-details";
 import { NotificationService } from "src/app/services/notification.service";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 interface RouteInfo {
   path: string;
@@ -30,7 +31,7 @@ interface RouteInfo {
     MatToolbarModule,
     MatIconModule,
     RouterLink,
-    BeneficioDetails
+    MatSnackBarModule
   ],
   templateUrl: "./toolbar.html",
   styleUrls: ["./toolbar.css"],

@@ -3,7 +3,7 @@
     <form [formGroup]="formTransferencia" novalidate (ngSubmit)="onSubmit()">
         <mat-form-field class="full-width">
             <mat-label>Origem</mat-label>
-            <input matInput placeholder="Origem" formControlName="fromId">
+            <input matInput placeholder="Origem" formControlName="fromId" />
             @if(formTransferencia.get('fromId')?.hasError('required')) {
             <mat-error>Benefício de origem é obrigatório</mat-error>
             }
@@ -11,7 +11,7 @@
 
         <mat-form-field class="full-width">
             <mat-label>Destino</mat-label>
-            <textarea matInput placeholder="Destino" formControlName="toId" rows="3"></textarea>
+            <input matInput placeholder="Destino" formControlName="toId" />
             @if(formTransferencia.get('toId')?.hasError('required')) {
             <mat-error>Benefício de destino é obrigatório</mat-error>
             }

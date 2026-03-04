@@ -10,17 +10,13 @@ import {
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { BeneficioType } from "../../models/beneficio-type";
 import { BeneficioService } from "../../services/beneficio.service";
-import { TokenType } from "../../models/token-type";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FormsModule } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
 import { MatDividerModule } from "@angular/material/divider";
 import { BeneficioDetails } from "../beneficio-details/beneficio-details";
-import { TransferDetails } from "../transfer-details/transfer-details";
 import { MatIconModule } from "@angular/material/icon";
-import { TransferenciaService } from "src/app/services/transferencia.service";
 import { NotificationService } from "src/app/services/notification.service";
-import { LoggerService } from "src/app/services/logger.service";
 
 @Component({
   selector: "app-beneficio-card",
