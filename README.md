@@ -1,97 +1,282 @@
-> **Aplicação Angular 21 que utiliza APIs criadas pela aplicação Spring Boot backend-module e utiliza biblioteca ejb-module.**
+> Aplicação Angular 21 que consome APIs do módulo Spring Boot (`backend-module`) e integra com biblioteca EJB legada (`ejb-module`).
 
 # 🅰️ Sobre este repositório
 
-Essa solução possui as seguintes funcionalidades implementadas:
+Este projeto é uma solução fullstack com três camadas principais:
 
-- Aplicação web SPA de cadastro de beneficios
-- Micro serviço de cadastro de beneficios
-- Biblioteca EJB Legada
+- `frontend`: SPA Angular para cadastro e gestão de benefícios
+- `backend-module`: API REST em Spring Boot (Java 17)
+- `ejb-module`: biblioteca EJB com regras de negócio de transferência
 
-A solução disponibiliza ao usuário as seguintes operações:
+Também inclui:
 
-- Cadastro de novo beneficio
-- Consulta de beneficios cadastrados
-- Desabilitar/Habilitar um beneficio
-- Remover um beneficio
-- Alterar dados de um beneficio
+- `db`: scripts SQL (`schema.sql` e `seed.sql`)
+- `docs`: materiais complementares do desafio
 
-### Descrição das funcionalidades
+## Funcionalidades
 
-A seguir serão detalhadas as tela implementadas pela aplicação, assim como os endpoints utilizados e os tipos de informações disponíveis para a interação do usuário.
+- Cadastro de novo benefício
+- Consulta de benefícios cadastrados
+- Alteração de dados de benefício
+- Ativação/Cancelamento de benefício
+- Remoção de benefício
+- Transferência entre benefícios
 
-### Tipo de tela – SELECAO
+## Fluxo da aplicação (frontend)
 
-A tela de Seleção exibe uma lista dos benefícios existentes para seleção do usuário. 
+### Tela de Seleção
 
-O aplicativo envia uma requisição GET para o endpoint de beneficios e espera o retorno de uma lista dos benefícios já cadastrados, criando um card para benefício da lista.
+Exibe a lista de benefícios existentes para seleção do usuário.
 
-```
+Requisição principal:
+
+```http
 GET /api/v1/beneficios
 ```
 
-### Tipo de tela – FORMULARIO
+### Tela de Formulário
 
-A tela de Formulário exibe as informações do benefício (ou vazio no caso de um benefício novo) que estão disponíveis para modificação pelo usuário e possui os botões de ação para Cancelar, Salvar ou Excluir na parte inferior.
+Exibe os dados de um benefício existente (ou vazio para novo cadastro) com ações de **Cancelar**, **Salvar** e **Excluir**.
 
-OBS: A ação de excluir ficará disponível apenas quando um benefício existente for selecionado.
+- **Cancelar**: descarta alterações e retorna à tela de seleção
+- **Salvar novo**: envia `POST /api/v1/beneficios`
+- **Realizar transferencia**: envia `POST /api/v1/beneficios/transferir`
+- **Salvar existente**: envia `PUT /api/v1/beneficios/{id}`
+- **Excluir**: envia `DELETE /api/v1/beneficios/{id}`
 
-Ao cancelar, o aplicativo fechar a tela de formulário, descarta as informações preenchidas e redireciona o usuário para a tela de Seleção.
+Exemplo de criação:
 
-Ao salvar um novo benefício, o aplicativo envia uma requisição POST para o endpoint de beneficios com o body definido pelo objeto criado a partir do formulário preenchido pelo usuário. Os valores informados são adicionados ao corpo da requisição. Segue exemplo de requisição que o aplicativo irá submeter fazer quando o botão “Salvar” for acionado:
-
-```
+```http
 POST /api/v1/beneficios
+Content-Type: application/json
+
 {
-    "id":1,
-    "nome":"Benefício",
-    "descricao":"Descrição do benefício",
-    "valor":100.00,
-    "ativo":true
+    "id": 1,
+    "nome": "Benefício",
+    "descricao": "Descrição do benefício",
+    "valor": 100.0,
+    "ativo": true
+}
+```
+Exemplo de transferência:
+
+```http
+POST /api/v1/beneficios/transferir
+Content-Type: application/json
+
+{
+    "fromId": 1,
+    "toId": 2,
+    "valor": 50.0
 }
 ```
 
-Ao salvar um benefício existente, o aplicativo envia uma requisição PUT para o endpoint de beneficios com o body definido pelo objeto atualizado a partir do formulário modificado pelo usuário. Os valores informados são adicionados ao corpo da requisição e o identificador anexado a URI. Segue exemplo de requisição que o aplicativo irá submeter quando o botão “Salvar” for acionado:
+Exemplo de atualização:
 
-```
+```http
 PUT /api/v1/beneficios/1
+Content-Type: application/json
+
 {
-    "id":1,
-    "nome":"Benefício Alterado",
-    "descricao":"Descrição do benefício Alterado",
-    "valor":200.00,
-    "ativo":true
+    "id": 1,
+    "nome": "Benefício Alterado",
+    "descricao": "Descrição do benefício Alterado",
+    "valor": 200.0,
+    "ativo": true
 }
 ```
 
-Ao excluir um benefício existente, o aplicativo envia uma requisição DELETE para o endpoint de beneficios passando o identificador do benefício na URI. Segue exemplo de requisição que o aplicativo irá submeter quando o botão “Excluir” for acionado:
+Exemplo de exclusão:
 
-```
+```http
 DELETE /api/v1/beneficios/1
 ```
 
-# Direcionamentos para rodar a aplicação
+---
 
-Inicialmente realizar o clone do projeto.
+# 🚀 Como executar o projeto
 
-## Procedimentos Bibliotece EJB
+## Pré-requisitos
 
-## Procedimentos MicroServiço de beneficio
-Antes de realizar o deploy acessar o arquivo `application.properties` e alterar o endereco do banco de dados.
+- Java 17
+- Maven 3.8+
+- Node.js 20+ e npm
+- Docker e Docker Compose (opcional)
 
-O banco de dados utilizado foi o H2.
-Incluir as configurações abaixo com as informações de conexão com o banco de dados:
+## 1) Clonar o projeto
 
- `spring.datasource.url=jdbc:h2:mem:testdb`
+```bash
+git clone <url-do-repositorio>
+cd bip-teste-integrado
+```
 
- `spring.datasource.username=sa`
+## 2) Build dos módulos Java (raiz)
 
- `spring.datasource.password=sa`
+Na raiz, execute:
 
-Com isso feito, basta executar o comando abaixo para subir o microserviço.
+```bash
+mvn clean install
+```
 
- `mvn spring-boot:run`
+Esse comando compila e instala `ejb-module` e `backend-module`.
 
-Com a aplicação rodando, a documentação da API pode ser acessada utilizando o endereço http://localhost:8080/swagger-ui.html para visualização e teste dos endpoints.
+## 3) Rodar o backend (`backend-module`)
 
-## Procedimentos Aplicação Angular
+```bash
+cd backend-module
+mvn spring-boot:run
+```
+
+Configuração padrão (`application.properties`):
+
+- Porta da API: `8081`
+- Banco: H2 em memória
+- URL H2 padrão: `jdbc:h2:mem:beneficiosdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE`
+
+Também é possível sobrescrever via variáveis de ambiente:
+
+- `DBURL`
+- `DBUSER`
+- `DBPASSWORD`
+- `DBDRIVER`
+
+Recursos do backend:
+
+- Swagger UI: http://localhost:8081/swagger-ui.html
+- OpenAPI JSON: http://localhost:8081/api-docs
+- Console H2: http://localhost:8081/h2-console
+
+> Observação: o backend inicializa automaticamente schema e seed via `classpath:schema.sql` e `classpath:seed.sql`.
+
+## 4) Rodar o frontend (`frontend`)
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Aplicação disponível em: http://localhost:3001
+
+Ambientes Angular:
+
+- `environment.ts` (dev): API em `http://localhost:8081/api/v1/beneficios`
+- `environment-prod.ts` (prod): API em `http://localhost:8080/api/v1/beneficios`
+
+---
+
+# 🧱 Módulos
+
+## `ejb-module`
+
+- Empacotamento: `ejb`
+- Responsável pela regra de transferência entre benefícios
+- Java 17
+
+Build/teste:
+
+```bash
+cd ejb-module
+mvn clean test
+```
+
+## `backend-module`
+
+- Spring Boot 3.2.5
+- Expõe endpoints REST de benefícios
+- Integra com `ejb-module`
+
+Build/teste:
+
+```bash
+cd backend-module
+mvn clean test
+```
+
+## `frontend`
+
+- Angular 21
+- Angular Material
+
+Comandos úteis:
+
+```bash
+npm start
+npm run build
+npm run test
+npm run lint
+```
+
+---
+
+# 🔌 Endpoints principais
+
+Base URL: `http://localhost:8081/api/v1`
+
+- `GET /beneficios` → listar benefícios
+- `GET /beneficios/{id}` → buscar benefício por ID
+- `POST /beneficios` → criar benefício
+- `PUT /beneficios/{id}` → atualizar benefício
+- `PUT /beneficios/{id}/ativar` → ativar benefício
+- `PUT /beneficios/{id}/cancelar` → cancelar benefício
+- `DELETE /beneficios/{id}` → remover benefício
+- `POST /beneficios/transferir` → transferir entre benefícios
+- `GET /home/` → endpoint de verificação simples
+
+---
+
+# 🐳 Execução com Docker (opcional)
+
+Existe `Dockerfile` para subir o backend e o frontend com Maven (`spring-boot:run` e `npm run start`).
+
+Backend:
+
+```bash
+docker build -t backend-module .
+docker run --rm -p 8081:8081 backend-module
+```
+
+Frontend:
+
+```bash
+docker build -t frontend .
+docker run --rm -p 80:3001 frontend
+```
+
+> Observação: o arquivo `docker-compose.yaml` atual contém placeholders de variáveis de ambiente que podem ser configurados criando um arquivo .env nas pastas "./backend-module" e "./frontend" antes do uso local.
+
+---
+
+# ✅ Testes e qualidade
+
+## Backend
+
+```bash
+cd backend-module
+mvn clean test
+```
+
+## EJB
+
+```bash
+cd ejb-module
+mvn clean test
+```
+
+## Frontend
+
+```bash
+cd frontend
+npm run test
+```
+
+No backend também há plugins de qualidade como Checkstyle, PMD, SpotBugs, Jacoco e Spotless configurados no Maven.
+
+---
+
+# 🛠️ Troubleshooting rápido
+
+- **Frontend não conecta no backend**: confirme backend em `http://localhost:8081`
+- **Erro de CORS**: valide origem permitida e porta usada no frontend
+- **Porta ocupada**: altere `server.port` no backend ou porta do Angular no script `start`
+- **Falha no Maven por Java**: valide `java -version` com Java 17
