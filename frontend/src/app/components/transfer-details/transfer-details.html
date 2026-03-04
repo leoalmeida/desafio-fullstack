@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Solicitar Transferência</h2>
 <mat-dialog-content>
     <form [formGroup]="formTransferencia" novalidate (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field class="full-width">
             <mat-label>Origem</mat-label>
             <input matInput placeholder="Origem" formControlName="fromId">
             @if(formTransferencia.get('fromId')?.hasError('required')) {
@@ -9,7 +9,7 @@
             }
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field class="full-width">
             <mat-label>Destino</mat-label>
             <textarea matInput placeholder="Destino" formControlName="toId" rows="3"></textarea>
             @if(formTransferencia.get('toId')?.hasError('required')) {
@@ -17,7 +17,7 @@
             }
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field class="full-width">
             <mat-label>Valor</mat-label>
             <input matInput placeholder="Valor" type="number" formControlName="valor" required step="0.01">
             @if(formTransferencia.get('valor')?.hasError('required')) {
@@ -31,7 +31,7 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button matButton (click)="onCancel()">Cancelar</button>
-    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!formTransferencia.valid">
+    <button matButton="filled" color="primary" (click)="onSubmit()" [disabled]="!formTransferencia.valid">
     Transferir
     </button>
 </mat-dialog-actions>

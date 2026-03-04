@@ -13,6 +13,8 @@ import { Title } from "@angular/platform-browser";
 import { TitleService } from "src/app/services/title.service";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { BeneficioDetails } from "../beneficio-details/beneficio-details";
+import { TransferDetails } from "../transfer-details/transfer-details";
+import { NotificationService } from "src/app/services/notification.service";
 
 interface RouteInfo {
   path: string;
@@ -44,6 +46,7 @@ export class Toolbar {
   private titleService: TitleService = inject(TitleService);
   private router = inject(Router);
   private dialogAcao: MatDialog = inject(MatDialog);
+    private notify: NotificationService = inject(NotificationService);
 
   constructor() {
     this.tokenStorageService.autenticado$.subscribe((isAuth) => {
@@ -82,8 +85,22 @@ export class Toolbar {
     // Chama serviço para criar beneficio após fechamento do diálogo
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log("Criação de beneficio solicitada:", result);
+        this.notify.showSuccess("Benefício criado com sucesso!");
       }
     });
   }
+  
+  onRealizarTransferencia(): void {
+    const refOpen = this.dialogAcao.open(TransferDetails, {
+      width: '500px', enterAnimationDuration: '0ms', exitAnimationDuration: '0ms',
+      data: {  }
+    });
+
+    refOpen.afterClosed().subscribe(result => {
+      if (result) {
+        this.notify.showSuccess("Transferência realizada com sucesso!");
+      }
+    });
+  }
+
 }

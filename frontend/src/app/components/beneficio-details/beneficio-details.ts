@@ -1,5 +1,5 @@
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { Component, inject, signal, Signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { BeneficioType } from '../../models/beneficio-type';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -51,12 +51,14 @@ export class BeneficioDetails {
       if (this.openType === 'create') {
         this.beneficioService.createOne(beneficio).subscribe({
           next: (created) => {
+            console.log('Benefício criado com sucesso!');
             this.dialogRef.close(created);
           }
         });
       } else if (this.openType === 'edit') {
         this.beneficioService.changeOne(beneficio).subscribe({
           next: (updated) => {
+            console.log('Benefício atualizado com sucesso!');
             this.dialogRef.close(updated);
           }
         });
