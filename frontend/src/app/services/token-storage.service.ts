@@ -9,6 +9,7 @@ import { TokenType } from '../models/token-type';
 export class TokenStorageService {
 
   private associado = new BehaviorSubject<AssociadoType>({} as AssociadoType);
+  private autenticado = new BehaviorSubject<boolean>(false);
   private loggedIn = signal<boolean>(false);
 
   constructor() { }
@@ -16,10 +17,12 @@ export class TokenStorageService {
   isAuthenticated = this.loggedIn.asReadonly();
   loggedUser = this.associado.getValue();
   loggedUser$ = this.associado.asObservable();
+  autenticado$ = this.autenticado.asObservable();
 
   signOut(): void {
     window.sessionStorage.clear();
     this.associado.next({} as AssociadoType);
+    this.autenticado.next(false);
     this.loggedIn.set(false);
   }
 
@@ -32,6 +35,7 @@ export class TokenStorageService {
         nome: accessToken.nome,
         email: accessToken.email,
         telefone: accessToken.telefone,
+        username: userToken.username,
         userData: userToken,
         accessToken: accessToken.accessToken,
         stats: [],
@@ -41,6 +45,7 @@ export class TokenStorageService {
       this.saveUser(associado);
 
       this.associado.next(associado);
+      this.autenticado.next(true);
       this.loggedIn.set(true);
     }
   }

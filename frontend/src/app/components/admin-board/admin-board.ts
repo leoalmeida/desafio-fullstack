@@ -32,7 +32,7 @@ export class AdminBoard implements OnInit {
   protected readonly title = signal("");
   private titleService: TitleService = inject(TitleService);
 
-  displayedColumns: string[] = ["id", "name", "role", "actions"];
+  displayedColumns: string[] = ["id", "name", "actions"];
 
   private notify: NotificationService = inject(NotificationService);
   private tokenStorageService: TokenStorageService =

@@ -1,11 +1,12 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { MatCard, MatCardModule } from "@angular/material/card";
 import { TitleService } from "src/app/services/title.service";
+import { MatAnchor, MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-acesso-negado",
   standalone: true,
-  imports: [MatCardModule],
+  imports: [MatCardModule, MatButtonModule],
   templateUrl: "./acesso-negado.html",
   styleUrls: ["./acesso-negado.css"],
 })

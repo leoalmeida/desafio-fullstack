@@ -91,7 +91,6 @@ export class BeneficioList {
     // Chama serviço para criar beneficio após fechamento do diálogo
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.beneficioService.createOne(result);
         console.log("Criação de beneficio solicitada:", result);
       }
     });

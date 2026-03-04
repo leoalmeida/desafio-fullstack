@@ -4,6 +4,7 @@ import { Injectable } from "@angular/core";
 export class TokenType {
     id: number = 0;
     sub: string = '';
+    username: string = '';
     roles: string[] = [];
     permissions: string[] = [];
     iat: number = 123;

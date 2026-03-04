@@ -1,33 +1,89 @@
-import {Component, inject, input} from '@angular/core';
-import { RouterLink, Routes } from '@angular/router';
-import { routes } from '../../app.routes';
-import { TokenStorageService } from '../../services/token-storage.service';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from "@angular/material/button";
+import { AuthService } from "src/app/services/auth.service";
+import { Component, inject, input, signal } from "@angular/core";
+import { Router, RouterLink, Routes } from "@angular/router";
+import { routes } from "../../app.routes";
+import { TokenStorageService } from "../../services/token-storage.service";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatIconModule } from "@angular/material/icon";
+import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
+import { AssociadoType } from "src/app/models/associado-type";
+import { Title } from "@angular/platform-browser";
+import { TitleService } from "src/app/services/title.service";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { BeneficioDetails } from "../beneficio-details/beneficio-details";
 
+interface RouteInfo {
+  path: string;
+  descricao: string;
+}
 @Component({
-  selector: 'app-toolbar',
-  imports: [MatSidenavModule, MatToolbarModule, MatIconModule, RouterLink],
-  templateUrl: './toolbar.html',
-  styleUrl: './toolbar.css'
+  selector: "app-toolbar",
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatDialogModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatIconModule,
+    RouterLink,
+    BeneficioDetails
+  ],
+  templateUrl: "./toolbar.html",
+  styleUrls: ["./toolbar.css"],
 })
 export class Toolbar {
-
-  title = input.required<string>();
-  loggedUser!: string;
-  routes: Routes = routes;
+  title = signal<string>(""); // Inicializa o título como uma string vazia
+  routes: RouteInfo[] = [];
   opened: boolean = false;
-  private tokenStorageService: TokenStorageService = inject(TokenStorageService);
+  private tokenStorageService: TokenStorageService =
+    inject(TokenStorageService);
+  protected isLoggedIn = signal(false);
+  protected loggedUser = signal({} as AssociadoType);
+  private titleService: TitleService = inject(TitleService);
+  private router = inject(Router);
+  private dialogAcao: MatDialog = inject(MatDialog);
 
-  constructor(){
-    this.tokenStorageService.loggedUser$.subscribe(user => 
-      this.loggedUser = user.nome
-    );
+  constructor() {
+    this.tokenStorageService.autenticado$.subscribe((isAuth) => {
+      this.isLoggedIn.set(isAuth);
+    });
+    this.tokenStorageService.loggedUser$.subscribe((user) => {
+      this.loggedUser.set(user);
+    });
+    this.titleService.title$.subscribe((title) => {
+      this.title.set(title);
+    });
+    for (const route of routes) {
+      if (route.path) {
+        if (
+          route.path !== "" &&
+          route.path !== "**" &&
+          route.path !== "login" &&
+          route.path !== "acesso-negado"
+        ) {
+          this.routes.push({
+            path: route.path,
+            descricao: route.data?.["title"],
+          });
+        }
+      }
+    }
   }
 
-  showMenu(){
+  showMenu() {}
 
+  onCreateBeneficio(): void {
+    const dialogRef = this.dialogAcao.open(BeneficioDetails, {
+      width: "500px",
+      data: {},
+    });
+    // Chama serviço para criar beneficio após fechamento do diálogo
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log("Criação de beneficio solicitada:", result);
+      }
+    });
   }
-
 }

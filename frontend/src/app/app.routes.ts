@@ -9,10 +9,10 @@ import { HomePage } from './components/home-page/home-page';
 import { AcessoNegado } from './components/acesso-negado/acesso-negado';
 
 export const routes: Routes = [
-  { path: '', component: HomePage, canActivate: [canActivateUser], data: { title: 'Sistema de Gestão de Benefícios' }},
+  { path: '', component: HomePage, canActivate: [canActivateUser], data: { title: 'Home' }},
   { path: 'admin', component: AdminBoard, canActivate: [canActivateAdmin], data: { title: 'Painel Administrativo'}},
-  { path: 'login', component: LoginPage, data: { title: 'Login' }},
+  { path: 'login', component: LoginPage, data: { title: 'Autenticação' }},
   { path: 'acesso-negado', component: AcessoNegado, data: { title: 'Acesso Negado' }},
-  { path: 'beneficios', component: BeneficioList, canActivate: [canActivateUser], data: { title: 'Benefícios' }},
+  { path: 'beneficios', component: BeneficioList, canActivate: [canActivateUser], data: { title: 'Gestão de Benefícios' }},
   { path: '**', redirectTo: '' }
 ];

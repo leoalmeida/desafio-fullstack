@@ -14,10 +14,6 @@ import { Toolbar } from './components/toolbar/toolbar';
 })
 export class AppComponent implements OnInit{
     protected readonly title = signal('');
-    private roles: string[] = [];
-    isloggedIn = false;
-    showAdminBoard = false;
-    showUserBoard = false;
     
     private titleService: TitleService = inject(TitleService);
     
@@ -29,7 +25,5 @@ export class AppComponent implements OnInit{
     }
 
     updateViewByRole(): void {
-      this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
-      this.showUserBoard = this.roles.includes('ROLE_USER');
     }
 }

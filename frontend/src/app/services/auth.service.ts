@@ -45,7 +45,7 @@ export class AuthService {
 
   login(username: string, password: string): Observable<AssociadoType>{
     //return this.http.post<any>(`${this.baseUrl}/signin`, { username, password }, httpOptions);
-    const user = this.associadoList().find(user => user.nome === username);
+    const user = this.associadoList().find(user => user.username === username);
     if (user) {
       
       this.mockHttpCall<AssociadoType>(this.apiData[0])
@@ -67,12 +67,13 @@ export class AuthService {
     this.tokenStorageService.signOut();
   }
 
-  register(username: string, email: string, telefone: string, password: string): Observable<AssociadoType> {
+  register(username: string, nome:string, email: string, telefone: string, password: string): Observable<AssociadoType> {
     //return this.http.post<any>(`${this.baseUrl}/signup`, { username, email, password }, httpOptions);
     let item:number = this.apiData.push({
       id: Number(password),
       email: email,
-      nome: username,
+      nome: nome,
+      username: username,
       telefone: telefone, // Placeholder, as telefone is not provided in the mock
       accessToken: "abc123",
       stats: [],

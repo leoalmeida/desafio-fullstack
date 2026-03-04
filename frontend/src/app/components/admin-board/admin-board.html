@@ -19,13 +19,7 @@
         <!-- Nome -->
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Nome</th>
-          <td mat-cell *matCellDef="let user">{{ user.name }}</td>
-        </ng-container>
-
-        <!-- Perfil -->
-        <ng-container matColumnDef="role">
-          <th mat-header-cell *matHeaderCellDef>Perfil</th>
-          <td mat-cell *matCellDef="let user">{{ user.role }}</td>
+          <td mat-cell *matCellDef="let user">{{ user.nome }}</td>
         </ng-container>
 
         <!-- Ações -->

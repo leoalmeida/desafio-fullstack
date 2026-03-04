@@ -6,6 +6,7 @@ export type AssociadoType = {
    email: string;
    nome: string;
    telefone: string;
+   username: string;
    userData?: TokenType;
    accessToken?: string;
    stats: { title: string; value: number }[];

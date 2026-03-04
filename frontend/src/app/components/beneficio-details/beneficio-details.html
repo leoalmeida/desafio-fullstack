@@ -1,9 +1,9 @@
-<h2 mat-dialog-title>{{ data ? 'Alterar Benefício' : 'Criar Benefício' }}</h2>
+<h2 mat-dialog-title>{{ openType === 'edit' ? 'Alterar Benefício' : 'Criar Benefício' }}</h2>
 <mat-dialog-content>
     <form [formGroup]="formBeneficio">
     <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nome</mat-label>
-        <input matInput formControlName="nome" required>
+        <input matInput placeholder="Nome do benefício" formControlName="nome" required>
         @if(formBeneficio.get('nome')?.hasError('required')) {
             <mat-error>Nome é obrigatório</mat-error>
         }
@@ -11,7 +11,7 @@
 
     <mat-form-field appearance="outline" class="full-width">
         <mat-label>Descrição</mat-label>
-        <textarea matInput formControlName="descricao" rows="3" required></textarea>
+        <textarea matInput placeholder="Descrição do benefício" formControlName="descricao" rows="2" required></textarea>
         @if(formBeneficio.get('descricao')?.hasError('required')) {
             <mat-error>Descrição é obrigatória</mat-error>
         }
@@ -19,7 +19,7 @@
 
     <mat-form-field appearance="outline" class="full-width">
         <mat-label>Valor</mat-label>
-        <input matInput type="number" formControlName="valor" required step="0.01">
+        <input matInput type="number" formControlName="valor" placeholder="Valor do benefício" required step="0.01">
         @if(formBeneficio.get('valor')?.hasError('required')) {
             <mat-error>Valor é obrigatório</mat-error>
         }
@@ -32,8 +32,8 @@
     </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()">Cancelar</button>
-    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!formBeneficio.valid">
+    <button matButton (click)="onCancel()">Cancelar</button>
+    <button matButton="filled" color="primary" (click)="onSubmit()" [disabled]="!formBeneficio.valid">
     Salvar
     </button>
 </mat-dialog-actions>
