@@ -1,35 +1,51 @@
 <mat-toolbar class="shadow">
-   <div fxShow="true" fxHide.gt-sm="true">
-      <button matIconButton
-               (click)="sidenav.toggle()">
-         <mat-icon>menu</mat-icon>
+  <div fxShow="true" fxHide.gt-sm="true">
+    <button matIconButton [disabled]="!isLoggedIn()" (click)="sidenav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+  <img
+    alt="UserImg"
+    class="brand-logo"
+    src="./assets/logo.png"
+    alt="logo"
+    aria-hidden="true"
+    title="FrontApp"
+  />
+  <p class="head-title">{{ title() }}</p>
+  <span class="fill-remaining-space"></span>
+  @if (isLoggedIn()) {
+    <div fxShow="true" fxHide.lt-md="true">
+      <ul class="nav-links">
+        <a matButton (click)="onRealizarTransferencia()">
+          <mat-icon>swap_horiz</mat-icon>
+          Transferir
+        </a>
+        <a matButton (click)="onCreateBeneficio()">Criar Benefício</a>
+      </ul>
+    </div>
+    <section>
+      <button matButton="elevated">
+        <span class="logged-user">
+          {{ loggedUser().nome }}
+        </span>
+        <span class="avatar-user">
+          <img
+            src="https://material.angular.dev/assets/img/examples/shiba2.jpg"
+            alt="{{ loggedUser().nome }}"
+            class="img-avatar-user"
+          />
+        </span>
       </button>
-   </div>
-   <img alt="Votacao" class="brand-logo" src="/assets/logo.png" alt="logo" aria-hidden="true" title="Votação App">
-   <p class="head-title">{{title()}}</p>
-   <span class="fill-remaining-space"></span>
-   @if(loggedUser) {
-      <div fxShow="true" fxHide.lt-md="true">
-         <ul class="nav-links">
-            <a mat-button [routerLink]="['/beneficio/new']">Criar Benefício</a>
-         </ul>
-      </div>
-      <section>
-         <button matButton="elevated">
-            <span class="logged-user">
-               {{loggedUser}}
-            </span>
-            <span class="avatar-user">
-               <img src="" alt="{{loggedUser}}" class="img-avatar-user">
-            </span>
-         </button>
-      </section>
-   }
+    </section>
+  }
 </mat-toolbar>
-<mat-sidenav #sidenav mode="over" [(opened)]="opened" >
-  <div>
-      @for(route of routes; track $index){
-         <a mat-button [routerLink]="route.path">{{route.title}}</a>
+<mat-sidenav #sidenav mode="over" [(opened)]="opened">
+  @if (isLoggedIn()) {
+    <div>
+      @for (route of routes; track $index) {
+        <a matButton [routerLink]="route.path">{{ route.descricao }}</a>
       }
-   </div>
+    </div>
+  }
 </mat-sidenav>

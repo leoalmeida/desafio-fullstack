@@ -12,17 +12,9 @@
     <mat-divider></mat-divider>
     <mat-card-actions class="actionbar">
       <mat-slide-toggle [(ngModel)]="beneficio().ativo" (change)="onAlterarStatus(confirmDialog, beneficio())">Status:</mat-slide-toggle>
-      <button mat-flat-button color="primary" (click)="onRealizarTransferencia(beneficio())">
-        <mat-icon>swap_horiz</mat-icon>
-        Transferir
-      </button>
       <button mat-flat-button color="warn" (click)="onUpdateBeneficio(beneficio())">
         <mat-icon>edit</mat-icon>
         Editar
-      </button>
-      <button mat-flat-button color="danger" (click)="onRemoverBeneficio(confirmDialog, beneficio())">
-        <mat-icon>delete</mat-icon>
-        Excluir
       </button>
     </mat-card-actions> 
 </mat-card>
@@ -33,7 +25,7 @@
       <p class="selected-option" #message>{{message}}</p>
     </div>
     <div mat-dialog-actions>
-        <button mat-flat-button [mat-dialog-close]="false">Cancelar</button>
-        <button mat-flat-button color="primary" [mat-dialog-close]="true">Confirmar</button>
+        <button matButton [mat-dialog-close]="false">Cancelar</button>
+        <button matButton="filled" color="primary" [mat-dialog-close]="true">Confirmar</button>
     </div>
 </ng-template>

@@ -1,41 +1,60 @@
-import { MatButtonModule } from '@angular/material/button';
-import { Component, computed, inject, Input, Signal, signal, TemplateRef } from '@angular/core';
-import { BeneficioType } from '../../models/beneficio-type';
-import { BeneficioService } from '../../services/beneficio.service';
-import { ActivatedRoute, Router, Routes } from '@angular/router';
-import { LoadingService } from '../loading-indicator/loading.service';
-import { TokenStorageService } from '../../services/token-storage.service';
-import { TokenType } from '../../models/token-type';
-import { BeneficioCard } from '../beneficio-card/beneficio-card';
-import { Searchbar } from '../searchbar/searchbar';
-import { BeneficioDetails } from '../beneficio-details/beneficio-details';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from "@angular/material/button";
+import {
+  Component,
+  computed,
+  inject,
+  Input,
+  Signal,
+  signal,
+  TemplateRef,
+} from "@angular/core";
+import { BeneficioType } from "../../models/beneficio-type";
+import { BeneficioService } from "../../services/beneficio.service";
+import { ActivatedRoute, Router, Routes } from "@angular/router";
+import { LoadingService } from "../loading-indicator/loading.service";
+import { TokenStorageService } from "../../services/token-storage.service";
+import { TokenType } from "../../models/token-type";
+import { BeneficioCard } from "../beneficio-card/beneficio-card";
+import { Searchbar } from "../searchbar/searchbar";
+import { BeneficioDetails } from "../beneficio-details/beneficio-details";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIcon, MatIconModule } from "@angular/material/icon";
+import { AssociadoType } from "src/app/models/associado-type";
+import { NotificationService } from "src/app/services/notification.service";
 
 @Component({
-  selector: 'app-beneficio-list',
-  imports: [BeneficioCard, Searchbar, MatDialogModule, MatButtonModule,MatIconModule],
-  templateUrl: './beneficio-list.html',
-  styleUrl: './beneficio-list.css'
+  selector: "app-beneficio-list",
+  standalone: true,
+  imports: [
+    BeneficioCard,
+    Searchbar,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
+  templateUrl: "./beneficio-list.html",
+  styleUrls: ["./beneficio-list.css"],
 })
 export class BeneficioList {
-  protected loggedUser = signal({} as TokenType);
-  searchQuery = signal<string>('');
+  protected loggedUser = signal({} as AssociadoType);
+  searchQuery = signal<string>("");
 
   private beneficioService: BeneficioService = inject(BeneficioService);
   private loadingService: LoadingService = inject(LoadingService);
-  private tokenStorageService: TokenStorageService = inject(TokenStorageService);
+  private tokenStorageService: TokenStorageService =
+    inject(TokenStorageService);
   private dialogAcao: MatDialog = inject(MatDialog);
+  private notify: NotificationService = inject(NotificationService);
 
   constructor() {
     try {
       this.loadingService.loadingOn();
-      this.tokenStorageService.loggedUser$.subscribe(user => {
-         this.loggedUser.set(user);
+      this.tokenStorageService.loggedUser$.subscribe((user) => {
+        this.loggedUser.set(user);
       });
       this.beneficioService.getAll();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      this.notify.showError(error.message || "Erro ao identificar usuário.");
     } finally {
       this.loadingService.loadingOff();
     }
@@ -48,32 +67,32 @@ export class BeneficioList {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
-      return this.beneficioService.items().filter(x => x?.nome.toLowerCase().includes(normalizedQuery));
-    } catch (error) {
-      console.log(error);
-      return;
+      return this.beneficioService
+        .items()
+        .filter((x) => x?.nome.toLowerCase().includes(normalizedQuery));
+    } catch (error: any) {
+      this.notify.showError(error.message || "Erro ao filtrar benefícios.");
+      return [];
     } finally {
       this.loadingService.loadingOff();
     }
   });
 
   handleMessage(message: string): void {
-    console.log('Received message from child:', message);
+    console.log("Received message from child:", message);
     this.searchQuery.set(message);
   }
 
-  onCreateBeneficio(): void{
+  onCreateBeneficio(): void {
     const dialogRef = this.dialogAcao.open(BeneficioDetails, {
-      width: '500px',
-      data: {}
+      width: "500px",
+      data: {},
     });
     // Chama serviço para criar beneficio após fechamento do diálogo
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.beneficioService.createOne(result);
-        console.log('Criação de beneficio solicitada:', result);
+        console.log("Criação de beneficio solicitada:", result);
       }
     });
   }
-
 }

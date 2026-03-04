@@ -1,43 +1,43 @@
 <mat-card>
-    <mat-card-title>Login</mat-card-title>
-    <mat-card-content>
-    @if(!isLoggedIn){
-        <form [formGroup]="loginForm" (submit)="login()">
-            <p>
-            <mat-form-field>
-                <input type="text" matInput 
-                    placeholder="Username"
-                       formControlName="username" 
-                    (blur)="updateErrorMessage()"
-                    required>
-            </mat-form-field>
-            </p>
-
-            <p>
-            <mat-form-field>
-                <input type="password" matInput 
-                placeholder="Password"
-                formControlName="password"
-                (blur)="updateErrorMessage()"
-                required>
-            </mat-form-field>
-            </p>
-
-            @if(errorMessage()){
-                <p class="errorMessage">
-                {{ errorMessage() }}
-                </p>
+  <mat-card-header>
+    <mat-card-title>Credenciais</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @if (!isLoggedIn()) {
+      <form [formGroup]="formLogin" (ngSubmit)="onSubmit()" novalidate>
+        <p>
+          <mat-form-field appearance="fill">
+            <mat-label>Username</mat-label>
+            <input type="text" matInput placeholder="Username" formControlName="username" />
+            @if (formLogin.get('username')?.hasError('required') && formLogin.get('username')?.touched) {
+                <mat-error class="error-list">Usuário é obrigatório</mat-error>
             }
-
-            <div class="button">
-            <button mat-button type="submit">Login</button>
-            </div>
-
-        </form>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field appearance="fill">
+            <mat-label>Password</mat-label>
+            <input type="password" matInput placeholder="Password" formControlName="password" />
+            @if (formLogin.get('password')?.hasError('required') && formLogin.get('password')?.touched) {
+                <mat-error class="error-list">Senha é obrigatória</mat-error>
+            }
+          </mat-form-field>
+          
+        </p>
+        <div class="button">
+          <button
+            matButton="elevated"
+            type="submit"
+            [disabled]="!formLogin.valid"
+            color="primary"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    } @else {
+      <p class="successMessage">Login realizado com sucesso!</p>
+      <button matButton (click)="reloadPage()">Entrar</button>
     }
-    @else{
-        <p class="successMessage">Login realizado com sucesso!</p>
-        <button mat-button (click)="reloadPage()">Entrar</button>
-    }
-    </mat-card-content>
+  </mat-card-content>
 </mat-card>

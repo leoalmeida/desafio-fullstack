@@ -1,17 +1,19 @@
-import { Injectable } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, map } from 'rxjs/operators';
+import { inject, Injectable } from "@angular/core";
+import { Title } from "@angular/platform-browser";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { BehaviorSubject } from "rxjs";
+import { filter, map } from "rxjs/operators";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class TitleService {
-  constructor(
-    private title: Title,
-    private router: Router,
-    private activatedRoute: ActivatedRoute
-  ) {}
+  private title = new BehaviorSubject<string>("Frontend App");
+  title$ = this.title.asObservable();
+  private titleBrowser: Title = inject(Title);
+  private router: Router = inject(Router);
+  private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  constructor() {}
   setTitle() {
     this.router.events
       .pipe(
@@ -23,22 +25,22 @@ export class TitleService {
           }
           return route;
         }),
-        filter((route) => route.outlet === 'primary'),
+        filter((route) => route.outlet === "primary"),
         map((route) => {
-          const title = route.snapshot.data['title'];
-          const detail = route.snapshot.data['detail'];
-          const type = route.snapshot.queryParams['type'];
+          const title = route.snapshot.data["title"];
+          const detail = route.snapshot.data["detail"];
+          const type = route.snapshot.queryParams["type"];
           if (!title) {
-            return 'Frontend App';
+            return "Frontend App";
           }
 
-          if (detail)
-            return ((type !== "new") ? "Criar " : "Alterar ") + title;
+          if (detail) return (type !== "new" ? "Criar " : "Alterar ") + title;
           return title;
-          
-          
-        })
+        }),
       )
-      .subscribe((title) => this.title.setTitle(title));
+      .subscribe((title) => {
+        this.titleBrowser.setTitle(title)
+        this.title.next(title);
+      });
   }
 }

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { Searchbar } from './searchbar';
 
@@ -17,7 +18,31 @@ describe('Searchbar', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('deve criar o componente', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('deve emitir uma string vazia ao chamar clear()', () => {
+    const spy = jasmine.createSpy('emitSpy');
+    component.messageEvent.subscribe(spy);
+
+    component.clear();
+
+    expect(spy).toHaveBeenCalledWith('');
+  });
+
+  it('deve emitir o termo de busca ao chamar onSearchUpdated()', () => {
+    const spy = jasmine.createSpy('emitSpy');
+    const searchTerm = 'benefício teste';
+    component.messageEvent.subscribe(spy);
+
+    component.onSearchUpdated(searchTerm);
+
+    expect(spy).toHaveBeenCalledWith(searchTerm);
+  });
+
+  it('deve conter um elemento de input no template', () => {
+    const input = fixture.debugElement.query(By.css('input'));
+    expect(input).toBeTruthy();
   });
 });
