@@ -7,6 +7,7 @@
 dist
 target
 .mvn
+.env
 mvnw
 mvnw.cmd
 *.angular
@@ -15,7 +16,6 @@ mvnw.cmd
 *.user
 *.userosscache
 *.sln.docstates
-*.env
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
