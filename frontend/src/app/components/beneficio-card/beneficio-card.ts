@@ -41,7 +41,7 @@ export class BeneficioCard {
   private notify: NotificationService = inject(NotificationService);
 
   constructor() {}
-
+  
   onUpdateBeneficio(beneficio: BeneficioType): void {
     const dialogRef = this.dialogAcao.open(BeneficioDetails, {
       width: "500px",
@@ -67,13 +67,15 @@ export class BeneficioCard {
       enterAnimationDuration: "0ms",
       exitAnimationDuration: "0ms",
       data: {
-        message: `Tem certeza que deseja "${beneficio.ativo ? "cancelar" : "ativar"}" o benefício "${beneficio.nome}"?`,
+        message: `Tem certeza que deseja ${!beneficio.ativo ? "cancelar" : "ativar"} o benefício ${beneficio.nome}?`,
       },
     });
     refOpen.afterClosed().subscribe((result) => {
       console.log("[Confirm]", result);
       if (result == true) {
         this.beneficioService.changeStatus(beneficio);
+      } else {
+        beneficio.ativo = !beneficio.ativo;
       }
     });
   }

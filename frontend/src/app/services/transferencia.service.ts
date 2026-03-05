@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { BeneficioType } from '../models/beneficio-type';
 import { TransferenciaType } from '../models/transferencia-type';
@@ -23,10 +23,17 @@ export class TransferenciaService {
 
   items = this.beneficiosList.asReadonly();
 
-  transferValue(transferencia: TransferenciaType): Observable<void> {
-    this.logger.log(`Transferindo valor ${transferencia.valor} de benefício: ${transferencia.fromId} para benefício: ${transferencia.toId}.`);
-    return this.http.post<void>(`${this.baseUrl}`, transferencia)
-              .pipe(catchError(this.handleError));
+  transferValue(transferencia: TransferenciaType): Observable<boolean> {
+    this.logger.log(
+      `Transferindo valor ${transferencia.valor} de benefício: ${transferencia.fromId} para benefício: ${transferencia.toId}.`,
+    );
+    return this.http
+      .post<any>(`${this.baseUrl}`, transferencia)
+      .pipe(
+        tap(() => console.log("HTTP request executed")), // Side effect
+        map((value) => value ? true : false),
+        catchError(this.handleError),
+      );
   }
 
   private handleError(error: HttpErrorResponse) {

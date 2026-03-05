@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { BeneficioService } from 'src/app/services/beneficio.service';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-beneficio-details',
@@ -17,6 +18,7 @@ import { BeneficioService } from 'src/app/services/beneficio.service';
           MatInputModule,
           MatButtonModule,
           MatDialogModule, 
+          MatSlideToggleModule,
           MatCheckboxModule],
   templateUrl: './beneficio-details.html',
   styleUrl: './beneficio-details.css',

@@ -1,6 +1,6 @@
 container {
-      padding: 20px;
-    }
+  padding: 20px;
+}
 
 .results {
   display: grid;
@@ -11,7 +11,7 @@ container {
   grid-auto-rows: max-content;
 }
 
-.not-found{
+.not-found {
   display: grid;
   background: var(--accent-color);
   width: 100%;
@@ -28,11 +28,11 @@ container {
 }
 
 .actions {
-      margin: 20px 0;
-      display: flex;
-      gap: 10px;
-    }
-    
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
 .ativo {
   color: rgb(49, 61, 49);
   font-weight: bold;
@@ -45,9 +45,9 @@ container {
 
 @media (min-width: 900px) and (max-width: 1200px) {
   .results {
-      grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
-  .not-found{
+  .not-found {
     min-width: 300px;
     grid-column-start: 1;
     grid-column-end: 3;
@@ -56,9 +56,9 @@ container {
 
 @media (min-width: 600px) and (max-width: 900px) {
   .results {
-      grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
-  .not-found{
+  .not-found {
     min-width: 300px;
     grid-column-start: 1;
     grid-column-end: 3;
@@ -67,9 +67,9 @@ container {
 
 @media (max-width: 600px) {
   .results {
-      grid-template-columns: repeat(auto-fill, minmax(350px, 450px));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 450px));
   }
-  .not-found{
+  .not-found {
     min-width: 200px;
     grid-column-start: 1;
     grid-column-end: 3;

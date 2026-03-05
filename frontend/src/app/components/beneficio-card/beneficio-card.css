@@ -30,32 +30,19 @@
   background-color: rgb(251, 248, 151);
 }
 
-.statusopen {
-  background-color: rgb(48, 129, 48);
+.statusativo {
+  background-color: rgb(24, 28, 230);
 }
 
-.statusclosed {
+.statuscancelado {
  background-color: rgb(111, 53, 53);
-}
-
-.registered {
-  width: 100%;
-  text-align: center;
-  padding: 0 12px;
-  line-height: var(--mat-button-toggle-height, 40px);
-  color: var(--mat-button-toggle-text-color, var(--mat-sys-on-surface));
-  background-color:rosybrown;
-  border: solid 1px var(--mat-button-toggle-divider-color, var(--mat-sys-outline));
-  border-radius: var(--mat-button-toggle-shape, var(--mat-sys-corner-extra-large));
-  font-weight: var(--mat-button-toggle-label-text-weight, var(--mat-sys-label-large-weight));
-  letter-spacing: var(--mat-button-toggle-label-text-tracking, var(--mat-sys-label-large-tracking));
 }
 
 .cardButton {
   text-align: inherit;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
+  padding: 1rem 1rem 0 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -70,12 +57,8 @@
 }
 
 .cardButton.open:hover,.cardButton.created:hover {
-  opacity: 0.9;
+  opacity: 0.8;
   transform: translateY(-2px);
-}
-
-.cardButton {
-  background-color: #b4fcb5;
 }
 
 .cardButton.created {
@@ -83,7 +66,7 @@
 }
 
 .cardButton.closed {
-  background-color: #f5bab5;
+  background-color: #eb766b;
 }
 
 .cardButton.cancelled {
@@ -105,20 +88,17 @@
 
 .category{
   margin: 0.3rem 0;
+  width: 100%;
   font-size: 0.8rem;
   text-align: right;
   font-weight: bold;
 }
 
-.description, .category {
-  color: #666;
-}
-
 .actionbar {
   display: flex;
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
   color: #888;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .toggleGroup {
@@ -128,14 +108,13 @@
   width: 50%;
 }
 
-.selected-option{
-  font-size: 1.3rem;
+.dialog-message{
+  font-size: 0.8rem;
   font-weight: 700;
   color: #000;
   text-align: center;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  background-color: #b4fccb;
 }
 
 @media (max-width: 768px) {

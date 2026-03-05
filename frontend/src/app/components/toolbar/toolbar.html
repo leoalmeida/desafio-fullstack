@@ -15,17 +15,17 @@
   <p class="head-title">{{ title() }}</p>
   <span class="fill-remaining-space"></span>
   @if (isLoggedIn()) {
-    <div fxShow="true" fxHide.lt-md="true">
+    <div class="toolbar-actions" fxShow="true" fxHide.lt-md="true">
       <ul class="nav-links">
-        <a matButton (click)="onRealizarTransferencia()">
+        <a matButton="tonal" class="link-item" (click)="onRealizarTransferencia()">
           <mat-icon>swap_horiz</mat-icon>
           Transferir
         </a>
-        <a matButton (click)="onCreateBeneficio()">Criar Benefício</a>
+        <a matButton="tonal" (click)="onCreateBeneficio()">Criar Benefício</a>
       </ul>
     </div>
-    <section>
-      <button matButton="elevated">
+    <section class="user-info" >
+      <button matButton="outlined" >
         <span class="logged-user">
           {{ loggedUser().nome }}
         </span>

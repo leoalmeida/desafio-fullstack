@@ -18,6 +18,8 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { BeneficioType } from "src/app/models/beneficio-type";
 import { TransferenciaService } from "src/app/services/transferencia.service";
+import { BeneficioService } from "src/app/services/beneficio.service";
+import { NotificationService } from "src/app/services/notification.service";
 
 @Component({
   selector: "app-transfer-details",
@@ -33,8 +35,9 @@ import { TransferenciaService } from "src/app/services/transferencia.service";
   templateUrl: "./transfer-details.html",
 })
 export class TransferDetails {
-  private transferenciaService: TransferenciaService =
-    inject(TransferenciaService);
+  private transferenciaService = inject(TransferenciaService);
+  private beneficioService = inject(BeneficioService);
+  private notify = inject(NotificationService);
   private formBuilder: FormBuilder = inject(FormBuilder);
   private dialogRef: MatDialogRef<TransferDetails> = inject(MatDialogRef);
   public data: BeneficioType = inject(MAT_DIALOG_DATA) as BeneficioType;
@@ -53,12 +56,13 @@ export class TransferDetails {
 
       this.transferenciaService.transferValue(transfer).subscribe({
         next: () => {
-          console.log("Transferência realizada com sucesso!");
+          this.notify.showSuccess("Transferência realizada com sucesso!");
+          this.beneficioService.getAll();
           this.dialogRef.close();
         },
       });
     } else {
-      console.log("Dados da transferência inválidos ou incompletos!");
+      this.notify.showError("Dados da transferência inválidos ou incompletos!");
     }
   }
 

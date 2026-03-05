@@ -1,11 +1,14 @@
 # Create image based on the official Node image from dockerhub
-FROM node:22-alpine AS build
+FROM node:24-alpine
 
 # Create app directory
-WORKDIR /usr/src/compile
+WORKDIR /usr/src/app
+
+# Install Angular CLI globally
+RUN npm install -g @angular/cli
 
 # Copy dependency definitions
-COPY package*.json /usr/src/compile
+COPY package*.json ./
 
 # Install dependecies
 #RUN npm set progress=false \
@@ -14,12 +17,8 @@ COPY package*.json /usr/src/compile
 RUN npm ci
 
 # Get all the code needed to run the app
-COPY . /usr/src/compile
+COPY . .
 
-CMD ["npm", "run", "build"]
-
-FROM node:22-alpine
-COPY --from=build /usr/src/compile/dist/app-frontend /usr/src/app
-CMD ["npm", "run", "start"]
+CMD ["ng", "serve", "--port", "4200", "--host", "0.0.0.0"]
 # Expose the port the app runs in
-EXPOSE 80
+EXPOSE 4200

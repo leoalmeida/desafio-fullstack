@@ -47,7 +47,7 @@ export class Toolbar {
   private titleService: TitleService = inject(TitleService);
   private router = inject(Router);
   private dialogAcao: MatDialog = inject(MatDialog);
-    private notify: NotificationService = inject(NotificationService);
+  private notify: NotificationService = inject(NotificationService);
 
   constructor() {
     this.tokenStorageService.autenticado$.subscribe((isAuth) => {
