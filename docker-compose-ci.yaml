@@ -6,13 +6,13 @@ services:
     image: leoalmeida/backend-module:latest
     container_name: backend-module
     ports:
-      - ${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}
+      - ${{ secrets.SPRING_LOCAL_PORT }}:${{ secrets.SPRING_DOCKER_PORT }}
     environment: 
       SPRING_APPLICATION_JSON: '{
-          "spring.datasource.url" : "${DB_URL}",
-          "spring.datasource.username" : "${DB_USERNAME}",
-          "spring.datasource.password" : "${DB_PASSWORD}",
-          "spring.datasource.driver-class-name" : "${DB_DRIVER}"
+          "spring.datasource.url" : "${{ secrets.DB_URL }}",
+          "spring.datasource.username" : "${{ secrets.DB_USERNAME }}",
+          "spring.datasource.password" : "${{ secrets.DB_PASSWORD }}",
+          "spring.datasource.driver-class-name" : "${{ secrets.DB_DRIVER }}"
         }' 
     networks:
       - app-network
@@ -24,7 +24,8 @@ services:
     image: leoalmeida/frontend:latest
     container_name: frontend
     ports:
-      - ${FRONTEND_LOCAL_PORT}:${FRONTEND_DOCKER_PORT}
+      - ${{ secrets.FRONTEND_LOCAL_PORT }}:${{ secrets.FRONTEND_DOCKER_PORT }}
+    stdin_open: true
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules

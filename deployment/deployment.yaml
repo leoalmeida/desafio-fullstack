@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fullstack-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-module
+  template:
+    spec:
+      containers:
+        - name: backend-module
+          image: leoalmeida/backend-module:{{IMAGE_TAG}}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "2"

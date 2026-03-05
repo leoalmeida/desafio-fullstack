@@ -21,6 +21,7 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatIcon, MatIconModule } from "@angular/material/icon";
 import { AssociadoType } from "src/app/models/associado-type";
 import { NotificationService } from "src/app/services/notification.service";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 
 @Component({
   selector: "app-beneficio-list",
@@ -31,6 +32,7 @@ import { NotificationService } from "src/app/services/notification.service";
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
+    MatSlideToggleModule
   ],
   templateUrl: "./beneficio-list.html",
   styleUrls: ["./beneficio-list.css"],

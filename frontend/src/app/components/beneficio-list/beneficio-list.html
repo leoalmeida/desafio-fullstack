@@ -1,9 +1,9 @@
 <app-searchbar (messageEvent)="handleMessage($event)" />
 
-  <section class="results">
-    @for (beneficio of filteredBeneficioList(); track beneficio.nome) {
-      <app-beneficio-card [beneficio]="beneficio"></app-beneficio-card>
-    } @empty {
-      <div class="not-found">Nenhum benefício disponível</div>
-    }
-  </section>
+<section class="results">
+  @for (beneficio of filteredBeneficioList(); track beneficio.nome) {
+    <app-beneficio-card [beneficio]="beneficio"></app-beneficio-card>
+  } @empty {
+    <div class="not-found">Nenhum benefício disponível</div>
+  }
+</section>

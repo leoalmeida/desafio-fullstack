@@ -1,90 +1,156 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { BeneficioType } from '../models/beneficio-type';
-import { TransferenciaType } from '../models/transferencia-type';
-import { beneficios } from 'src/mocks/beneficios';
-import { LoggerService } from './logger.service';
+import { beneficios } from "./../../mocks/beneficios";
+import { filter } from "rxjs/operators";
+import { inject, Injectable, signal } from "@angular/core";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { catchError, map, Observable, tap, throwError } from "rxjs";
+import { environment } from "../../environments/environment";
+import { BeneficioType } from "../models/beneficio-type";
+import { TransferenciaType } from "../models/transferencia-type";
+import { LoggerService } from "./logger.service";
+import { NotificationService } from "./notification.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class BeneficioService {
-  private baseUrl:string = '/api/v1/beneficios';
+  private baseUrl: string = "/api/v1/beneficios";
   private beneficiosList = signal<BeneficioType[]>([]);
 
-  //private logger = inject(Logger);
-
   private http: HttpClient = inject(HttpClient);
-  private logger: LoggerService = inject(LoggerService);
-  constructor(){
+  private notify = inject(NotificationService);
+  constructor() {
     this.baseUrl = environment.beneficiosApi;
   }
 
   items = this.beneficiosList.asReadonly();
 
-  getAll(): Observable<BeneficioType[]>{
-    return this.http.get<BeneficioType[]>(`${this.baseUrl}`)
-                  .pipe(catchError(this.handleError));
+  getAll(): void {
+    this.http.get<BeneficioType[]>(`${this.baseUrl}`).subscribe({
+      next: (lista: BeneficioType[]) => {
+        this.notify.showSuccess(
+          `Benefícios carregados com sucesso. Total de benefícios: ${lista.length}.`,
+        );
+        this.beneficiosList.set(lista);
+        return true;
+      },
+      error: (error) => this.handleError(error),
+    });
+  }
+  getAllAndReturn(): Observable<boolean> {
+    return this.http.get<BeneficioType[]>(`${this.baseUrl}`).pipe(
+      tap(() => console.log("HTTP request executed")), // Side effect
+      map((lista: BeneficioType[]) => {
+        this.notify.showSuccess(
+          `Benefícios carregados com sucesso. Total de benefícios: ${lista.length}.`,
+        );
+        this.beneficiosList.set(lista);
+        return true;
+      }),
+      catchError(this.handleError),
+    );
   }
 
-  getOne(idAssociado:number): Observable<BeneficioType[]>{
-    return this.http.get<BeneficioType[]>(`${this.baseUrl}/associado/${idAssociado}`)
-                  .pipe(catchError(this.handleError));
-  }
-
-  getAllAtivos(): Observable<BeneficioType[]> {
-    return this.http.get<BeneficioType[]>(`${this.baseUrl}/ativos`)
+  getOne(idAssociado: number): Observable<BeneficioType> {
+    return this.http
+      .get<BeneficioType>(`${this.baseUrl}/associado/${idAssociado}`)
       .pipe(catchError(this.handleError));
   }
 
-   //POST - "/"
-  createOne(beneficio: BeneficioType): Observable<BeneficioType> {
-    this.logger.log(`Solicitando a criação de novo benefício: nome: ${beneficio.nome}.`);
-    return this.http.post<BeneficioType>(`${this.baseUrl}`, beneficio)
-              .pipe(catchError(this.handleError));
-
+  getAllAtivos(): Observable<BeneficioType[]> {
+    return this.http
+      .get<BeneficioType[]>(`${this.baseUrl}/ativos`)
+      .pipe(catchError(this.handleError));
   }
 
-  changeOne(beneficio: BeneficioType): Observable<BeneficioType> {
-    this.logger.log(`Cancelando benefício: ${beneficio.id}.`);
-    return this.http.put<BeneficioType>(`${this.baseUrl}/${beneficio.id}`, beneficio)
-              .pipe(catchError(this.handleError));
-  }
-  
-  changeStatus(beneficio: BeneficioType): Observable<BeneficioType> {
-    this.logger.log(`Alterando status do benefício: ${beneficio.id} para ${beneficio.ativo ? 'cancelado' : 'ativo'}.`);
-    return this.http.put<BeneficioType>(`${this.baseUrl}/${beneficio.id}/`+ (beneficio.ativo ? 'cancelar' : 'ativar'),{})
-                  .pipe(catchError(this.handleError));  
+  //POST - "/"
+  createOne(beneficio: BeneficioType): Observable<boolean> {
+    this.notify.showSuccess(
+      `Solicitando a criação de novo benefício: nome: ${beneficio.nome}.`,
+    );
+    return this.http.post<BeneficioType>(`${this.baseUrl}`, beneficio).pipe(
+      tap(() => console.log("HTTP request executed")), // Side effect
+      map((added) => {
+        if (!added) return false;
+        var lista = this.beneficiosList();
+        lista.push(added); // Adiciona o novo item à lista
+        this.beneficiosList.set([...lista]); // Atualiza a signal para refletir as mudanças
+        return true;
+      }),
+      catchError(this.handleError),
+    );
   }
 
-  deleteOne(idBeneficio: number): Observable<void> {
-    this.logger.log(`Removendo benefício: ${idBeneficio}.`);
-    return this.http.delete<void>(`${this.baseUrl}/${idBeneficio}`)
-              .pipe(catchError(this.handleError));
-
+  changeOne(beneficio: BeneficioType): Observable<boolean> {
+    return this.http
+      .put<BeneficioType>(`${this.baseUrl}/${beneficio.id}`, beneficio)
+      .pipe(
+        tap(() => console.log("HTTP request executed")), // Side effect
+        map((beneficio) => {
+          if (!beneficio) return false;
+          var lista = this.beneficiosList();
+          var changed = lista.find((x) => x.id === beneficio.id);
+          if (changed) {
+            Object.assign(changed, beneficio); // Atualiza o item na lista com os novos dados
+            this.beneficiosList.set([...lista]); // Atualiza a signal para refletir as mudanças
+          }
+          this.notify.showSuccess(
+            `Benefício atualizado com sucesso: nome: ${beneficio.nome}.`,
+          );
+          return true;
+        }),
+        catchError(this.handleError),
+      );
   }
 
-  transferValue(transferencia: TransferenciaType): Observable<void> {
-    this.logger.log(`Transferindo valor ${transferencia.valor} de benefício: ${transferencia.fromId} para benefício: ${transferencia.toId}.`);
-    return this.http.post<void>(`${this.baseUrl}/transferir`, transferencia)
-              .pipe(catchError(this.handleError));
+  changeStatus(beneficio: BeneficioType): void {
+    this.http
+      .put<BeneficioType>(
+        `${this.baseUrl}/${beneficio.id}/${beneficio.ativo ? "ativar" : "cancelar"}`,
+        {},
+      )
+      .subscribe({
+        next: (beneficio) => {
+          if (!beneficio) return false;
+          var lista = this.beneficiosList();
+          var changed = lista.find((x) => x.id === beneficio.id);
+          if (changed) {
+            Object.assign(changed, beneficio); // Atualiza o item na lista com os novos dados
+            this.beneficiosList.set([...lista]); // Atualiza a signal para refletir as mudanças
+          }
+          this.notify.showSuccess(
+            `Benefício ${beneficio.ativo ? "ativado" : "cancelado"} com sucesso: nome: ${beneficio.nome}.`,
+          );
+          return true;
+        },
+        error: (error) => this.handleError(error),
+      });
+  }
+
+  removerBeneficio(idBeneficio: number): void {
+    this.http.delete<void>(`${this.baseUrl}/${idBeneficio}`).pipe(
+      tap(() => console.log("HTTP request executed")), // Side effect
+      map(this.getAllAndReturn),
+      catchError(this.handleError),
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Erro desconhecido';
+    let errorMessage = "Erro desconhecido";
 
     if (error.error instanceof ErrorEvent) {
       // Erro do lado do cliente
       errorMessage = `Erro: ${error.error.message}`;
+    }
+    if (error.error instanceof ProgressEvent) {
+      // Erro do lado do cliente
+      errorMessage = `Erro: ${error.error}`;
     } else {
       // Erro do lado do servidor
-      errorMessage = error.error?.message ||
-                    `Erro ${error.status}: ${error.statusText}`;
+      errorMessage =
+        error.error?.message || `Erro ${error.status}: ${error.statusText}`;
     }
 
-    this.logger.log(`Erro na requisição: ${errorMessage}`);
+    this.notify.showError(`Erro na requisição: ${errorMessage}`);
     return throwError(() => new Error(errorMessage));
   }
 }

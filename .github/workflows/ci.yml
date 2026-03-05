@@ -150,15 +150,15 @@ jobs:
 
   #zap-scan:
   #  needs: build-project
-  #  uses: ./.github/workflows/zap_scan.yml
+  #  uses: ./.github/workflows/zapscan.yml
   #  secrets: inherit
   
   #docker:
   #  needs: zap-scan
-  #  uses: ./.github/workflows/Docker.yml
+  #  uses: ./.github/workflows/docker.yml
   #  secrets: inherit
   
-  #deploy_ecs:
+  #deploy_google:
   #  needs: docker
-  #  uses: ./.github/workflows/ECS.yml
+  #  uses: ./.github/workflows/release-gcloud.yml
   #  secrets: inherit

@@ -8,13 +8,19 @@
 .head-title {
   width: 100%;
   padding: 0.5rem 1rem 0.5rem 1rem;
+}
 
+.link-item + .link-item {
+  margin-left: 10px; /* Adiciona espaço apenas entre os itens */
+}
+
+.user-info {
+  padding-left: 10px;
 }
 
 .logged-user {
   text-align: center;
 }
-
 .avatar-user {
   border-radius: 9999px;
   display: inline-flex;
@@ -39,3 +45,6 @@
   flex: 1 1 auto;
 }
 
+mat-sidenav{
+  line-height: 70px;
+}
