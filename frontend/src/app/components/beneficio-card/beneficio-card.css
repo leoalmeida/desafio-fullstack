@@ -1,29 +1,12 @@
-.example-card {
-  max-width: 400px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border: none;
-}
-
-.example-header-image {
-  background-image: url('https://material.angular.dev/assets/img/examples/shiba1.jpg');
-  background-size: cover;
-}
-
-.selectable {
-    display: flex;
-    align-items: center
-}
-
-.statusbar{
+.statusbar {
   width: 100%;
-  text-align: center;  
+  text-align: center;
   margin-bottom: 12px;
   color: rgb(255, 255, 255);
-  border-radius: var(--mat-button-toggle-shape, var(--mat-sys-corner-extra-large));
+  border-radius: var(
+    --mat-button-toggle-shape,
+    var(--mat-sys-corner-extra-large)
+  );
 }
 
 .statusnew {
@@ -35,58 +18,10 @@
 }
 
 .statuscancelado {
- background-color: rgb(111, 53, 53);
+  background-color: rgb(111, 53, 53);
 }
 
-.cardButton {
-  text-align: inherit;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 1rem 1rem 0 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border: none;
-}
-
-.cardButton.open,.cardButton.created{
-  cursor: pointer;
-  background: var(--accent-color);
-  transition: transform 0.2s ease;
-  transition: background-color 0.2s ease;
-}
-
-.cardButton.open:hover,.cardButton.created:hover {
-  opacity: 0.8;
-  transform: translateY(-2px);
-}
-
-.cardButton.created {
-  background-color: #e7e7e7;
-}
-
-.cardButton.closed {
-  background-color: #eb766b;
-}
-
-.cardButton.cancelled {
-  background-color: #00000044;
-}
-
-
-.title {
-  font-size: 1.3rem;
-  margin: 0 0 0.5rem 0;
-  color:var(--primary-color);
-  font-weight: bold;
-}
-
-.description{
-  font-size: 1rem;
-  margin: 0.6rem 0;
-}
-
-.category{
+.category {
   margin: 0.3rem 0;
   width: 100%;
   font-size: 0.8rem;
@@ -98,7 +33,26 @@
   display: flex;
   color: #888;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: right;
+}
+
+.badge-status {
+  position: absolute;
+  right: 30px;
+}
+
+.badge-status.mat-badge-accent {
+  position: absolute;
+  right: 55px;
+}
+
+.badge-status.mat-badge-primary .mat-badge-content {
+  background-color: blue;
+}
+
+.badge-status.mat-badge-accent .mat-badge-content {
+  padding: -5px 0;
+  background-color: red;
 }
 
 .toggleGroup {
@@ -108,7 +62,7 @@
   width: 50%;
 }
 
-.dialog-message{
+.dialog-message {
   font-size: 0.8rem;
   font-weight: 700;
   color: #000;

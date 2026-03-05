@@ -8,21 +8,36 @@
         <p>
           <mat-form-field appearance="fill">
             <mat-label>Username</mat-label>
-            <input type="text" matInput placeholder="Username" formControlName="username" />
-            @if (formLogin.get('username')?.hasError('required') && formLogin.get('username')?.touched) {
-                <mat-error class="error-list">Usuário é obrigatório</mat-error>
+            <input
+              type="text"
+              matInput
+              placeholder="Username"
+              formControlName="username"
+            />
+            @if (
+              formLogin.get("username")?.hasError("required") &&
+              formLogin.get("username")?.touched
+            ) {
+              <mat-error class="error-list">Usuário é obrigatório</mat-error>
             }
           </mat-form-field>
         </p>
         <p>
           <mat-form-field appearance="fill">
             <mat-label>Password</mat-label>
-            <input type="password" matInput placeholder="Password" formControlName="password" />
-            @if (formLogin.get('password')?.hasError('required') && formLogin.get('password')?.touched) {
-                <mat-error class="error-list">Senha é obrigatória</mat-error>
+            <input
+              type="password"
+              matInput
+              placeholder="Password"
+              formControlName="password"
+            />
+            @if (
+              formLogin.get("password")?.hasError("required") &&
+              formLogin.get("password")?.touched
+            ) {
+              <mat-error class="error-list">Senha é obrigatória</mat-error>
             }
           </mat-form-field>
-          
         </p>
         <div class="button">
           <button

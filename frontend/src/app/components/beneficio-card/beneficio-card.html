@@ -1,31 +1,35 @@
 <mat-card
   [class]="{ created: beneficio().ativo, closed: !beneficio().ativo }"
-  class="cardButton"
+  class="card-button"
   appearance="outlined"
+  (click)="onUpdateBeneficio(beneficio())"
 >
-  <mat-card-title class="title">{{ beneficio().nome }} </mat-card-title>
+  <mat-card-title class="title">
+    <div
+      class="badge-status"
+      [matBadge]="beneficio().ativo ? 'Ativo' : 'Cancelado'"
+      matBadgeSize="large"
+      [matBadgeColor]="beneficio().ativo ? 'primary' : 'accent'"
+    ></div>
+    {{ beneficio().nome }}
+  </mat-card-title>
   <mat-card-content class="description">
     <h2>
       {{ beneficio().descricao }}
     </h2>
   </mat-card-content>
   <mat-card-subtitle class="category">
-    Valor: {{ beneficio().valor }}</mat-card-subtitle
+    Saldo:
+    {{
+      beneficio().valor | currency: "BRL" : "symbol" : "1.2-2"
+    }}</mat-card-subtitle
   >
   <mat-divider></mat-divider>
   <mat-card-actions class="actionbar" align="end">
     <mat-slide-toggle
       [(ngModel)]="beneficio().ativo"
-      (change)="onAlterarStatus(confirmDialog, beneficio())"
+      (click)="onAlterarStatus($event, confirmDialog)"
     ></mat-slide-toggle>
-    <button
-      matButton="filled"
-      color="warn"
-      (click)="onUpdateBeneficio(beneficio())"
-    >
-      <mat-icon>edit</mat-icon>
-      Editar
-    </button>
   </mat-card-actions>
 </mat-card>
 

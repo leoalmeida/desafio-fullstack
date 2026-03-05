@@ -1,6 +1,6 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, CurrencyPipe } from "@angular/common";
 import { TransferenciaType } from "./../../models/transferencia-type";
-import { Component, inject } from "@angular/core";
+import { Component, computed, inject } from "@angular/core";
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -20,6 +20,7 @@ import { BeneficioType } from "src/app/models/beneficio-type";
 import { TransferenciaService } from "src/app/services/transferencia.service";
 import { BeneficioService } from "src/app/services/beneficio.service";
 import { NotificationService } from "src/app/services/notification.service";
+import { LoadingService } from "../loading-indicator/loading.service";
 
 @Component({
   selector: "app-transfer-details",
@@ -32,21 +33,38 @@ import { NotificationService } from "src/app/services/notification.service";
     MatDialogModule,
     MatSelectModule,
   ],
+  providers: [CurrencyPipe],
   templateUrl: "./transfer-details.html",
 })
 export class TransferDetails {
   private transferenciaService = inject(TransferenciaService);
   private beneficioService = inject(BeneficioService);
   private notify = inject(NotificationService);
+  private loadingService: LoadingService = inject(LoadingService);
   private formBuilder: FormBuilder = inject(FormBuilder);
   private dialogRef: MatDialogRef<TransferDetails> = inject(MatDialogRef);
   public data: BeneficioType = inject(MAT_DIALOG_DATA) as BeneficioType;
   formTransferencia: FormGroup = this.formBuilder.group({
-    fromId: [this.data.id || "", Validators.required],
-    toId: ["", Validators.required],
-    valor: [0.0, Validators.required],
+    fromId: [0, Validators.required],
+    toId: [0, Validators.required],
+    valor: [0.00, Validators.required, Validators.min(0.01)],
   });
+
+  listaBeneficiosAtivos: BeneficioType[] = [];
+
   constructor() {}
+
+  filteredActiveList = computed(() => {
+    try {
+      this.loadingService.loadingOn();
+      return this.beneficioService.items().filter((x) => x?.ativo === true);
+    } catch (error: any) {
+      this.notify.showError(error.message || "Erro ao filtrar benefícios.");
+      return [];
+    } finally {
+      this.loadingService.loadingOff();
+    }
+  });
 
   onSubmit(): void {
     if (this.formTransferencia.valid) {

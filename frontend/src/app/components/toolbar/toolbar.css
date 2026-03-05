@@ -1,5 +1,4 @@
-
-.brand-logo{
+.brand-logo {
   width: 34px;
   height: 34px;
   padding-left: 1rem;
@@ -19,6 +18,8 @@
 }
 
 .logged-user {
+  line-height: 2rem;
+  margin-right:5px;
   text-align: center;
 }
 .avatar-user {
@@ -26,11 +27,10 @@
   display: inline-flex;
   flex-shrink: 0;
   background: rgb(92, 84, 180);
-  color: #1A202C;
+  color: #1a202c;
   vertical-align: top;
   width: 2rem;
   height: 2rem;
-  font-size: calc(0.6rem);
   margin-right: -1.2rem;
 }
 
@@ -41,10 +41,11 @@
   border-radius: 9999px;
 }
 
-.fill-remaining-space {
-  flex: 1 1 auto;
+mat-sidenav {
+  line-height: 70px;
 }
 
-mat-sidenav{
-  line-height: 70px;
+.is-selected {
+  background-color: var(--mat-sys-primary); /* Use your theme's primary color */
+  color: var(--mat-sys-on-primary) !important; /* Ensure good contrast */
 }

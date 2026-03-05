@@ -2,15 +2,6 @@ container {
   padding: 20px;
 }
 
-.results {
-  display: grid;
-  column-gap: 14px;
-  row-gap: 14px;
-  justify-content: space-around;
-  grid-template-columns: repeat(3, minmax(350px, 350px));
-  grid-auto-rows: max-content;
-}
-
 .not-found {
   display: grid;
   background: var(--accent-color);
@@ -41,37 +32,4 @@ container {
 .cancelado {
   color: rgb(159, 159, 159);
   font-weight: bold;
-}
-
-@media (min-width: 900px) and (max-width: 1200px) {
-  .results {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .not-found {
-    min-width: 300px;
-    grid-column-start: 1;
-    grid-column-end: 3;
-  }
-}
-
-@media (min-width: 600px) and (max-width: 900px) {
-  .results {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .not-found {
-    min-width: 300px;
-    grid-column-start: 1;
-    grid-column-end: 3;
-  }
-}
-
-@media (max-width: 600px) {
-  .results {
-    grid-template-columns: repeat(auto-fill, minmax(350px, 450px));
-  }
-  .not-found {
-    min-width: 200px;
-    grid-column-start: 1;
-    grid-column-end: 3;
-  }
 }

@@ -2,21 +2,18 @@
   --content-padding: 10px;
 }
 main {
+  max-width: 1200px;
+  margin: 0 auto;
   display: block;
   position: relative;
-}
-
-.main-container {
-    display: flex;
-    height: 100vh;
-    flex-direction: column;
 }
 
 .content-container {
   padding: var(--content-padding);
 }
 
-main {
-  max-width: 1200px;
-  margin: 0 auto;
+.main-container {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
 }

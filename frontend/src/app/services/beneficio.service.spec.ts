@@ -1,114 +1,144 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { BeneficioService } from './beneficio.service';
-import { LoggerService } from './logger.service';
-import { BeneficioType } from '../models/beneficio-type';
-import { environment } from '../../environments/environment';
+import { TestBed } from "@angular/core/testing";
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from "@angular/common/http/testing";
+import { BeneficioService } from "./beneficio.service";
+import { BeneficioType } from "../models/beneficio-type";
+import { NotificationService } from "./notification.service";
+import { environment } from "../../environments/environment";
 
-describe('BeneficioService', () => {
+describe("BeneficioService", () => {
   let service: BeneficioService;
   let httpMock: HttpTestingController;
-  let loggerSpy: jasmine.SpyObj<LoggerService>;
+  let notificationSpy: jasmine.SpyObj<NotificationService>;
 
   const mockBeneficio: BeneficioType = {
     id: 1,
-    nome: 'Vale Refeição',
-    descricao: 'VR',
+    nome: "Vale Refeicao",
+    descricao: "VR",
     valor: 100,
-    ativo: true
+    ativo: true,
   };
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj('LoggerService', ['log', 'error']);
+    notificationSpy = jasmine.createSpyObj("NotificationService", [
+      "showSuccess",
+      "showError",
+    ]);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         BeneficioService,
-        { provide: LoggerService, useValue: spy }
-      ]
+        { provide: NotificationService, useValue: notificationSpy },
+      ],
     });
+
     service = TestBed.inject(BeneficioService);
     httpMock = TestBed.inject(HttpTestingController);
-    loggerSpy = TestBed.inject(LoggerService) as jasmine.SpyObj<LoggerService>;
   });
 
   afterEach(() => {
     httpMock.verify();
   });
 
-  it('deve ser criado', () => {
+  it("deve ser criado", () => {
     expect(service).toBeTruthy();
   });
 
-  it('deve buscar todos os benefícios (getAll)', () => {
+  it("deve buscar todos os beneficios (getAll) e atualizar a signal", () => {
     const mockList = [mockBeneficio];
-    service.getAll().subscribe(res => {
-      expect(res).toEqual(mockList);
-    });
+
+    service.getAll();
 
     const req = httpMock.expectOne(environment.beneficiosApi);
-    expect(req.request.method).toBe('GET');
+    expect(req.request.method).toBe("GET");
     req.flush(mockList);
+
+    expect(service.items()).toEqual(mockList);
+    expect(notificationSpy.showSuccess).toHaveBeenCalled();
   });
 
-  it('deve criar um novo benefício (createOne)', () => {
-    service.createOne(mockBeneficio).subscribe(res => {
-      expect(res).toEqual(mockBeneficio);
+  it("deve buscar todos os beneficios com retorno booleano (getAllAndReturn)", (done) => {
+    service.getAllAndReturn().subscribe((result) => {
+      expect(result).toBeTrue();
+      expect(service.items().length).toBe(1);
+      done();
     });
 
     const req = httpMock.expectOne(environment.beneficiosApi);
-    expect(req.request.method).toBe('POST');
+    expect(req.request.method).toBe("GET");
+    req.flush([mockBeneficio]);
+  });
+
+  it("deve criar um novo beneficio (createOne)", (done) => {
+    service.createOne(mockBeneficio).subscribe((result) => {
+      expect(result).toBeTrue();
+      expect(service.items().length).toBe(1);
+      done();
+    });
+
+    const req = httpMock.expectOne(environment.beneficiosApi);
+    expect(req.request.method).toBe("POST");
     expect(req.request.body).toEqual(mockBeneficio);
     req.flush(mockBeneficio);
-    expect(loggerSpy.log).toHaveBeenCalled();
   });
 
-  it('deve atualizar um benefício (changeOne)', () => {
-    service.changeOne(mockBeneficio).subscribe(res => {
-      expect(res).toEqual(mockBeneficio);
+  it("deve atualizar um beneficio existente (changeOne)", (done) => {
+    (service as any).beneficiosList.set([mockBeneficio]);
+    const updated = { ...mockBeneficio, nome: "VR Atualizado" };
+
+    service.changeOne(updated).subscribe((result) => {
+      expect(result).toBeTrue();
+      expect(service.items()[0].nome).toBe("VR Atualizado");
+      done();
     });
 
-    const req = httpMock.expectOne(`${environment.beneficiosApi}/${mockBeneficio.id}`);
-    expect(req.request.method).toBe('PUT');
+    const req = httpMock.expectOne(
+      `${environment.beneficiosApi}/${mockBeneficio.id}`,
+    );
+    expect(req.request.method).toBe("PUT");
+    req.flush(updated);
+  });
+
+  it("deve chamar endpoint ativar quando ativo for true", () => {
+    service.changeStatus(mockBeneficio);
+
+    const req = httpMock.expectOne(
+      `${environment.beneficiosApi}/${mockBeneficio.id}/ativar`,
+    );
+    expect(req.request.method).toBe("PUT");
     req.flush(mockBeneficio);
   });
 
-  it('deve alterar o status para cancelar quando ativo for true', () => {
-    service.changeStatus(mockBeneficio).subscribe();
-
-    const req = httpMock.expectOne(`${environment.beneficiosApi}/${mockBeneficio.id}/cancelar`);
-    expect(req.request.method).toBe('PUT');
-    req.flush({});
-  });
-
-  it('deve alterar o status para ativar quando ativo for false', () => {
+  it("deve chamar endpoint cancelar quando ativo for false", () => {
     const inativo = { ...mockBeneficio, ativo: false };
-    service.changeStatus(inativo).subscribe();
 
-    const req = httpMock.expectOne(`${environment.beneficiosApi}/${inativo.id}/ativar`);
-    expect(req.request.method).toBe('PUT');
-    req.flush({});
+    service.changeStatus(inativo);
+
+    const req = httpMock.expectOne(
+      `${environment.beneficiosApi}/${inativo.id}/cancelar`,
+    );
+    expect(req.request.method).toBe("PUT");
+    req.flush(inativo);
   });
 
-  it('deve remover um benefício (deleteOne)', () => {
-    service.deleteOne(1).subscribe();
-
-    const req = httpMock.expectOne(`${environment.beneficiosApi}/1`);
-    expect(req.request.method).toBe('DELETE');
-    req.flush(null);
-  });
-
-  it('deve lidar com erros de API', () => {
-    const errorMessage = 'Erro interno do servidor';
-    
-    service.getAll().subscribe({
-      error: (err) => {
-        expect(err.message).toContain(errorMessage);
-      }
+  it("deve propagar erro em getOne", (done) => {
+    service.getOne(99).subscribe({
+      next: () => fail("nao deveria retornar sucesso"),
+      error: (err: Error) => {
+        expect(err.message).toContain("Erro interno");
+        expect(notificationSpy.showError).toHaveBeenCalled();
+        done();
+      },
     });
 
-    const req = httpMock.expectOne(environment.beneficiosApi);
-    req.flush({ message: errorMessage }, { status: 500, statusText: 'Server Error' });
+    const req = httpMock.expectOne(`${environment.beneficiosApi}/associado/99`);
+    expect(req.request.method).toBe("GET");
+    req.flush(
+      { message: "Erro interno" },
+      { status: 500, statusText: "Server Error" },
+    );
   });
 });

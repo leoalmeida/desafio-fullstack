@@ -39,7 +39,7 @@ export class TitleService {
         }),
       )
       .subscribe((title) => {
-        this.titleBrowser.setTitle(title)
+        this.titleBrowser.setTitle(title);
         this.title.next(title);
       });
   }

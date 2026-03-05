@@ -1,34 +1,36 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { HomePage } from './home-page';
+import { HomePage } from "./home-page";
+import { TitleService } from "src/app/services/title.service";
 
-describe('HomePage', () => {
+describe("HomePage", () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
+  let titleServiceSpy: jasmine.SpyObj<TitleService>;
 
   beforeEach(async () => {
+    titleServiceSpy = jasmine.createSpyObj("TitleService", ["setTitle"]);
+
     await TestBed.configureTestingModule({
-      imports: [HomePage]
-    })
-    .compileComponents();
+      imports: [HomePage],
+      providers: [{ provide: TitleService, useValue: titleServiceSpy }],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HomePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve ter o título "Página Inicial"', () => {
-    expect(component.title).toEqual('Página Inicial');
+  it("deve chamar setTitle no ngOnInit", () => {
+    expect(titleServiceSpy.setTitle).toHaveBeenCalled();
   });
 
-  it('deve renderizar o título no template', () => {
+  it("deve renderizar conteúdo principal da página inicial", () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    // Assume-se que o título está em uma tag h1 ou similar no home-page.html
-    // Se não houver tag específica, verificamos o conteúdo textual geral
-    expect(compiled.textContent).toContain('Página Inicial');
+    expect(compiled.textContent).toContain("Bem-vindo");
   });
 });

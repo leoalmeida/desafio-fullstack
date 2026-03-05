@@ -21,7 +21,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
           MatSlideToggleModule,
           MatCheckboxModule],
   templateUrl: './beneficio-details.html',
-  styleUrl: './beneficio-details.css',
+  styleUrls: ['./beneficio-details.css'],
 })
 export class BeneficioDetails {
   
@@ -34,8 +34,8 @@ export class BeneficioDetails {
   formBeneficio = this.formBuilder.group({
       nome: ['', Validators.required],
       descricao: [''],
-      valor: [0.00, Validators.required],
-      ativo: [false, Validators.required]
+      valor: [0.00, Validators.required, Validators.min(0.01)],
+      ativo: [true, Validators.required]
     });
 
   constructor() {
@@ -53,14 +53,12 @@ export class BeneficioDetails {
       if (this.openType === 'create') {
         this.beneficioService.createOne(beneficio).subscribe({
           next: (created) => {
-            console.log('Benefício criado com sucesso!');
             this.dialogRef.close(created);
           }
         });
       } else if (this.openType === 'edit') {
         this.beneficioService.changeOne(beneficio).subscribe({
           next: (updated) => {
-            console.log('Benefício atualizado com sucesso!');
             this.dialogRef.close(updated);
           }
         });
