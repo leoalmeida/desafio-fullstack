@@ -1,4 +1,6 @@
 import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 import { DateFormatPipe } from './date-format.pipe';
 
 describe('DateFormatPipe', () => {
@@ -6,6 +8,7 @@ describe('DateFormatPipe', () => {
   const locale = 'pt-BR';
 
   beforeEach(() => {
+    registerLocaleData(localePt);
     pipe = new DateFormatPipe(locale);
   });
 

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot, UrlTree, provideRouter } from '@angular/router';
 import { TokenStorageService } from '../services/token-storage.service';
 import { signal } from '@angular/core';
 
@@ -19,7 +19,8 @@ describe('canActivateUser', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: TokenStorageService, useValue: spy }
+        { provide: TokenStorageService, useValue: spy },
+        provideRouter([])
       ]
     });
 
@@ -36,9 +37,10 @@ describe('canActivateUser', () => {
     expect(result).toBeTrue();
   });
 
-  it('deve retornar false se o usuário não estiver autenticado', () => {
+  it('deve redirecionar para /login se o usuário não estiver autenticado', () => {
     isAuthenticatedSignal.set(false);
     const result = executeGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
-    expect(result).toBeFalse();
+    expect(result instanceof UrlTree).toBeTrue();
+    expect((result as UrlTree).toString()).toBe('/login');
   });
 });

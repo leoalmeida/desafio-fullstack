@@ -44,7 +44,7 @@ describe('LoadingIndicator', () => {
     loadingSubject.next(true);
     fixture.detectChanges();
     
-    const spinner = fixture.debugElement.query(By.css('mat-progress-spinner'));
+    const spinner = fixture.debugElement.query(By.css('mat-spinner'));
     expect(spinner).toBeTruthy();
   });
 
@@ -52,7 +52,7 @@ describe('LoadingIndicator', () => {
     loadingSubject.next(false);
     fixture.detectChanges();
     
-    const spinner = fixture.debugElement.query(By.css('mat-progress-spinner'));
+    const spinner = fixture.debugElement.query(By.css('mat-spinner'));
     expect(spinner).toBeFalsy();
   });
 

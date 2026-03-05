@@ -12,9 +12,12 @@ describe('AuthService', () => {
   const mockUser: AssociadoType = {
     id: 1,
     nome: 'João Silva',
+    username: 'joao',
     email: 'joao@teste.com',
     telefone: '1199999999',
-    accessToken: 'abc.def.ghi'
+    accessToken: 'abc.def.ghi',
+    stats: [],
+    logs: []
   };
 
   beforeEach(() => {
@@ -41,7 +44,7 @@ describe('AuthService', () => {
   });
 
   it('deve realizar login e salvar o token', (done) => {
-    service.login('joao', '123').subscribe(user => {
+    service.login('jrrtolk', '123').subscribe(user => {
       expect(user).toBeDefined();
       expect(tokenStorageSpy.saveJsonWebToken).toHaveBeenCalled();
       done();
@@ -56,21 +59,22 @@ describe('AuthService', () => {
   it('deve registrar um novo usuário', (done) => {
     const newUser = {
       username: 'Maria',
+      nome: 'Maria',
       email: 'maria@teste.com',
       telefone: '1188888888',
       password: '100'
     };
 
-    service.register(newUser.username, newUser.email, newUser.telefone, newUser.password)
+    service.register(newUser.username, newUser.nome, newUser.email, newUser.telefone, newUser.password)
       .subscribe(user => {
-        expect(user.nome).toBe(newUser.username);
+        expect(user.nome).toBe(newUser.nome);
         expect(user.email).toBe(newUser.email);
         done();
       });
   });
 
   it('deve emitir o usuário logado através do observable loggedUser$', (done) => {
-    service.login('joao', '123');
+    service.login('jrrtolk', '123');
     service.loggedUser$.subscribe(user => {
       expect(user).toBeDefined();
       done();

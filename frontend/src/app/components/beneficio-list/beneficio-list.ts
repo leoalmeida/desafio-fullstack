@@ -81,7 +81,6 @@ export class BeneficioList {
   });
 
   handleMessage(message: string): void {
-    console.log("Received message from child:", message);
     this.searchQuery.set(message);
   }
 
@@ -90,11 +89,7 @@ export class BeneficioList {
       width: "500px",
       data: {},
     });
-    // Chama serviço para criar beneficio após fechamento do diálogo
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        console.log("Criação de beneficio solicitada:", result);
-      }
-    });
+    // Mantem o fluxo de fechamento sem side effects de log.
+    dialogRef.afterClosed().subscribe();
   }
 }

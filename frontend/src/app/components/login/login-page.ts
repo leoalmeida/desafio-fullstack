@@ -69,7 +69,6 @@ export class LoginPage implements OnInit {
             this.reloadPage();
           }
       });
-      console.log("Logging in with:", usuario.username); 
   }
 
   reloadPage() {

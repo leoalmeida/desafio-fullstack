@@ -1,10 +1,9 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, Observable, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { BeneficioType } from '../models/beneficio-type';
 import { TransferenciaType } from '../models/transferencia-type';
-import { beneficios } from 'src/mocks/beneficios';
 import { LoggerService } from './logger.service';
 
 @Injectable({
@@ -30,9 +29,8 @@ export class TransferenciaService {
     return this.http
       .post<any>(`${this.baseUrl}`, transferencia)
       .pipe(
-        tap(() => console.log("HTTP request executed")), // Side effect
         map((value) => value ? true : false),
-        catchError(this.handleError),
+        catchError((error) => this.handleError(error)),
       );
   }
 

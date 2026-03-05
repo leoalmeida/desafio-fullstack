@@ -49,24 +49,28 @@
   border: none;
 }
 
-.cardButton.open,.cardButton.created{
+.cardButton.open,
+.cardButton.created,
+.cardButton.closed{
   cursor: pointer;
   background: var(--accent-color);
   transition: transform 0.2s ease;
   transition: background-color 0.2s ease;
 }
 
-.cardButton.open:hover,.cardButton.created:hover {
+.cardButton.open:hover,
+.cardButton.created:hover,
+.cardButton.closed:hover {
   opacity: 0.8;
   transform: translateY(-2px);
 }
 
 .cardButton.created {
-  background-color: #e7e7e7;
+  background-color: #b4cff9;
 }
 
 .cardButton.closed {
-  background-color: #eb766b;
+  background-color: #e2a8a3;
 }
 
 .cardButton.cancelled {
@@ -98,7 +102,27 @@
   display: flex;
   color: #888;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: right;
+}
+
+.badge-status{
+  position: absolute;
+  right:30px;
+}
+
+.badge-status.mat-badge-accent{
+  position: absolute;
+  right: 55px;
+}
+
+.badge-status.mat-badge-primary .mat-badge-content {
+  
+  background-color: blue;
+}
+
+.badge-status.mat-badge-accent .mat-badge-content {
+  padding: -5px 0;
+  background-color: red;
 }
 
 .toggleGroup {

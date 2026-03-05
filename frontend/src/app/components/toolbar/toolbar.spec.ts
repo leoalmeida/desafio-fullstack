@@ -4,23 +4,44 @@ import { TokenStorageService } from '../../services/token-storage.service';
 import { BehaviorSubject } from 'rxjs';
 import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { TitleService } from '../../services/title.service';
+import { AssociadoType } from 'src/app/models/associado-type';
 
 describe('Toolbar', () => {
   let component: Toolbar;
   let fixture: ComponentFixture<Toolbar>;
   let tokenStorageSpy: jasmine.SpyObj<TokenStorageService>;
-  let loggedUserSubject: BehaviorSubject<any>;
+  let titleServiceSpy: jasmine.SpyObj<TitleService>;
+  let loggedUserSubject: BehaviorSubject<AssociadoType>;
+  let autenticadoSubject: BehaviorSubject<boolean>;
+  let titleSubject: BehaviorSubject<string>;
 
   beforeEach(async () => {
-    loggedUserSubject = new BehaviorSubject<any>({ username: 'Usuário Teste' });
+    loggedUserSubject = new BehaviorSubject<AssociadoType>({
+      id: 1,
+      nome: 'Usuario Teste',
+      email: 'user@test.com',
+      telefone: '11999990000',
+      username: 'user',
+      stats: [],
+      logs: []
+    });
+    autenticadoSubject = new BehaviorSubject<boolean>(false);
+    titleSubject = new BehaviorSubject<string>('Frontend App');
+
     tokenStorageSpy = jasmine.createSpyObj('TokenStorageService', [], {
-      loggedUser$: loggedUserSubject.asObservable()
+      loggedUser$: loggedUserSubject.asObservable(),
+      autenticado$: autenticadoSubject.asObservable()
+    });
+    titleServiceSpy = jasmine.createSpyObj('TitleService', [], {
+      title$: titleSubject.asObservable()
     });
 
     await TestBed.configureTestingModule({
       imports: [Toolbar],
       providers: [
         { provide: TokenStorageService, useValue: tokenStorageSpy },
+        { provide: TitleService, useValue: titleServiceSpy },
         provideRouter([])
       ]
     })
@@ -28,7 +49,6 @@ describe('Toolbar', () => {
 
     fixture = TestBed.createComponent(Toolbar);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('title', 'BIP App');
     fixture.detectChanges();
   });
 
@@ -36,16 +56,27 @@ describe('Toolbar', () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve exibir o título recebido via input', () => {
-    const titleElement = fixture.debugElement.query(By.css('span')).nativeElement;
+  it('deve exibir o título recebido do TitleService', () => {
+    titleSubject.next('BIP App');
+    fixture.detectChanges();
+
+    const titleElement = fixture.debugElement.query(By.css('.head-title')).nativeElement as HTMLElement;
     expect(titleElement.textContent).toContain('BIP App');
   });
 
   it('deve atualizar loggedUser quando o serviço emitir um novo usuário', () => {
-    const novoUsuario = { username: 'Admin' };
+    const novoUsuario: AssociadoType = {
+      id: 2,
+      nome: 'Admin',
+      email: 'admin@test.com',
+      telefone: '11888887777',
+      username: 'admin',
+      stats: [],
+      logs: []
+    };
     loggedUserSubject.next(novoUsuario);
     
-    expect(component.loggedUser).toBe('Admin');
+    expect((component as any).loggedUser().nome).toBe('Admin');
   });
 
   it('deve alternar o estado de "opened" ao interagir com o menu (simulação lógica)', () => {
@@ -55,17 +86,27 @@ describe('Toolbar', () => {
   });
 
   it('deve renderizar os links de navegação baseados nas rotas', () => {
+    autenticadoSubject.next(true);
+    fixture.detectChanges();
+
     const links = fixture.debugElement.queryAll(By.css('a'));
-    // Verifica se existem links (o componente usa routerLink no template)
     expect(links.length).toBeGreaterThan(0);
   });
 
   it('deve exibir o nome do usuário logado no template', () => {
-    loggedUserSubject.next({ username: 'Carlos Silva' });
+    autenticadoSubject.next(true);
+    loggedUserSubject.next({
+      id: 3,
+      nome: 'Carlos Silva',
+      email: 'carlos@test.com',
+      telefone: '11777776666',
+      username: 'carlos',
+      stats: [],
+      logs: []
+    });
     fixture.detectChanges();
     
     const compiled = fixture.nativeElement as HTMLElement;
-    // Verifica se o nome aparece em algum lugar da toolbar (ex: mat-toolbar)
     expect(compiled.textContent).toContain('Carlos Silva');
   });
 });

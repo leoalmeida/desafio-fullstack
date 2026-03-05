@@ -48,10 +48,10 @@ export class AuthService {
     const user = this.associadoList().find(user => user.username === username);
     if (user) {
       
-      this.mockHttpCall<AssociadoType>(this.apiData[0])
-              .subscribe((user: AssociadoType) => {
-                this.loggedUser.next(user);
-                this.tokenStorageService.saveJsonWebToken(user);
+      this.mockHttpCall<AssociadoType>(user)
+              .subscribe((logged: AssociadoType) => {
+                this.loggedUser.next(logged);
+                this.tokenStorageService.saveJsonWebToken(logged);
               });
       return this.loggedUser.asObservable();
     } else {
@@ -69,7 +69,7 @@ export class AuthService {
 
   register(username: string, nome:string, email: string, telefone: string, password: string): Observable<AssociadoType> {
     //return this.http.post<any>(`${this.baseUrl}/signup`, { username, email, password }, httpOptions);
-    let item:number = this.apiData.push({
+    const createdUser: AssociadoType = {
       id: Number(password),
       email: email,
       nome: nome,
@@ -78,8 +78,9 @@ export class AuthService {
       accessToken: "abc123",
       stats: [],
       logs: []
-    });
-    return this.mockHttpCall<AssociadoType>(this.apiData[item] as AssociadoType);
+    };
+    this.apiData.push(createdUser);
+    return this.mockHttpCall<AssociadoType>(createdUser);
   }
 
 }

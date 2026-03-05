@@ -10,6 +10,7 @@ describe('PermissionService', () => {
     roles: ['ROLE_USER', 'ROLE_ADMIN'],
     permissions: ['READ', 'WRITE'],
     sub: 'joao@teste.com',
+    username: 'joao',
     iat: 123456,
     exp: 789012
   };

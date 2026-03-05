@@ -8,8 +8,11 @@ import { DatePipe } from '@angular/common';
 export class DateFormatPipe implements PipeTransform {
     constructor(@Inject(LOCALE_ID) private locale: string) {}
     transform(value: string) {
-       var datePipe = new DatePipe(this.locale);
-        value = datePipe.transform(value, 'dd/MM/yyyy HH:mm:ss') || '';
-        return value;
+       try {
+        const datePipe = new DatePipe(this.locale);
+        return datePipe.transform(value, 'dd/MM/yyyy HH:mm:ss') || '';
+       } catch {
+        return '';
+       }
     }
 }

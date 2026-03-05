@@ -4,11 +4,14 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BeneficioType } from '../../models/beneficio-type';
+import { BeneficioService } from 'src/app/services/beneficio.service';
+import { of } from 'rxjs';
 
 describe('BeneficioDetails', () => {
   let component: BeneficioDetails;
   let fixture: ComponentFixture<BeneficioDetails>;
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<BeneficioDetails>>;
+  let beneficioServiceSpy: jasmine.SpyObj<BeneficioService>;
 
   const mockBeneficio: BeneficioType = {
     id: 1,
@@ -20,12 +23,16 @@ describe('BeneficioDetails', () => {
 
   beforeEach(async () => {
     dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+    beneficioServiceSpy = jasmine.createSpyObj('BeneficioService', ['createOne', 'changeOne']);
+    beneficioServiceSpy.changeOne.and.returnValue(of(true));
+    beneficioServiceSpy.createOne.and.returnValue(of(true));
 
     await TestBed.configureTestingModule({
       imports: [BeneficioDetails, ReactiveFormsModule, NoopAnimationsModule],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
-        { provide: MAT_DIALOG_DATA, useValue: mockBeneficio }
+        { provide: MAT_DIALOG_DATA, useValue: mockBeneficio },
+        { provide: BeneficioService, useValue: beneficioServiceSpy }
       ]
     })
     .compileComponents();
@@ -55,7 +62,7 @@ describe('BeneficioDetails', () => {
     expect(component.formBeneficio.valid).toBeFalse();
   });
 
-  it('deve fechar o diálogo com os dados do formulário ao chamar onSubmit se válido', () => {
+  it('deve fechar o diálogo com true ao chamar onSubmit se válido', () => {
     const updatedValue = {
       nome: 'Novo Nome',
       descricao: 'Nova Descrição',
@@ -66,10 +73,8 @@ describe('BeneficioDetails', () => {
 
     component.onSubmit();
 
-    expect(dialogRefSpy.close).toHaveBeenCalledWith({
-      ...mockBeneficio,
-      ...updatedValue
-    });
+    expect(beneficioServiceSpy.changeOne).toHaveBeenCalled();
+    expect(dialogRefSpy.close).toHaveBeenCalledWith(true);
   });
 
   it('não deve fechar o diálogo ao chamar onSubmit se o formulário for inválido', () => {

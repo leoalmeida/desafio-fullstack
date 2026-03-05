@@ -17,9 +17,11 @@
         }
     </mat-form-field>
 
-    <mat-form-field class="full-width">
-        <mat-label>Valor</mat-label>
-        <input matInput type="number" formControlName="valor" placeholder="Valor do benefício" required step="0.01">
+    <mat-form-field class="full-width" floatLabel="always">
+        <mat-label>Saldo</mat-label>
+        <span matTextPrefix>R$&nbsp;</span>
+        <input matInput type="number" class="input-valor" formControlName="valor" placeholder="0.00" required step="0.01" min="0.01">
+        <span matTextSuffix>.00</span>
         @if(formBeneficio.get('valor')?.hasError('required')) {
             <mat-error>Valor é obrigatório</mat-error>
         }

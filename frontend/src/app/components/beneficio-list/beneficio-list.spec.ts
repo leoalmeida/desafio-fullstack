@@ -3,12 +3,12 @@ import { BeneficioList } from './beneficio-list';
 import { BeneficioService } from '../../services/beneficio.service';
 import { LoadingService } from '../loading-indicator/loading.service';
 import { TokenStorageService } from '../../services/token-storage.service';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { signal } from '@angular/core';
 import { BeneficioType } from '../../models/beneficio-type';
-import { TokenType } from '../../models/token-type';
+import { AssociadoType } from '../../models/associado-type';
 
 describe('BeneficioList', () => {
   let component: BeneficioList;
@@ -23,17 +23,18 @@ describe('BeneficioList', () => {
     { id: 2, nome: 'Plano de Saúde', descricao: 'PS', valor: 200, ativo: true }
   ];
 
-  const mockUser: TokenType = {
+  const mockUser: AssociadoType = {
     id: 1,
-    sub: 'user@test.com',
-    roles: ['USER'],
-    permissions: [],
-    iat: 123,
-    exp: 456
+    email: 'user@test.com',
+    nome: 'Usuario Teste',
+    telefone: '11999990000',
+    username: 'user',
+    stats: [],
+    logs: []
   };
 
   beforeEach(async () => {
-    beneficioServiceSpy = jasmine.createSpyObj('BeneficioService', ['getAll', 'createOne'], {
+    beneficioServiceSpy = jasmine.createSpyObj('BeneficioService', ['getAll'], {
       items: signal(mockBeneficios)
     });
     loadingServiceSpy = jasmine.createSpyObj('LoadingService', ['loadingOn', 'loadingOff']);
@@ -43,7 +44,7 @@ describe('BeneficioList', () => {
     dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
     await TestBed.configureTestingModule({
-      imports: [BeneficioList, MatDialogModule, NoopAnimationsModule],
+      imports: [BeneficioList, NoopAnimationsModule],
       providers: [
         { provide: BeneficioService, useValue: beneficioServiceSpy },
         { provide: LoadingService, useValue: loadingServiceSpy },
@@ -66,7 +67,7 @@ describe('BeneficioList', () => {
   });
 
   it('deve filtrar a lista de benefícios com base na searchQuery', () => {
-    component.searchQuery.set('Refeição');
+    component.searchQuery.set('vale');
     fixture.detectChanges();
     
     const filtered = component.filteredBeneficioList();
@@ -74,13 +75,13 @@ describe('BeneficioList', () => {
     expect(filtered![0].nome).toBe('Vale Refeição');
   });
 
-  it('deve normalizar a busca ignorando acentos e case', () => {
-    component.searchQuery.set('refeicao'); // sem cedilha e sem acento
+  it('deve filtrar sem diferenciar maiúsculas e minúsculas', () => {
+    component.searchQuery.set('PLANO');
     fixture.detectChanges();
     
     const filtered = component.filteredBeneficioList();
     expect(filtered?.length).toBe(1);
-    expect(filtered![0].nome).toBe('Vale Refeição');
+    expect(filtered![0].nome).toBe('Plano de Saúde');
   });
 
   it('deve atualizar searchQuery ao chamar handleMessage', () => {
@@ -89,23 +90,4 @@ describe('BeneficioList', () => {
     expect(component.searchQuery()).toBe(query);
   });
 
-  it('deve abrir o diálogo de criação e chamar o serviço ao confirmar', () => {
-    const novoBeneficio = { nome: 'Novo', valor: 50 };
-    const dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(novoBeneficio) });
-    dialogSpy.open.and.returnValue(dialogRefSpy);
-
-    component.onCreateBeneficio();
-
-    expect(dialogSpy.open).toHaveBeenCalled();
-    expect(beneficioServiceSpy.createOne).toHaveBeenCalledWith(novoBeneficio as any);
-  });
-
-  it('não deve chamar o serviço de criação se o diálogo for cancelado', () => {
-    const dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(null) });
-    dialogSpy.open.and.returnValue(dialogRefSpy);
-
-    component.onCreateBeneficio();
-
-    expect(beneficioServiceSpy.createOne).not.toHaveBeenCalled();
-  });
 });

@@ -2,7 +2,7 @@ import { beneficios } from "./../../mocks/beneficios";
 import { filter } from "rxjs/operators";
 import { inject, Injectable, signal } from "@angular/core";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { catchError, map, Observable, tap, throwError } from "rxjs";
+import { catchError, map, Observable, throwError } from "rxjs";
 import { environment } from "../../environments/environment";
 import { BeneficioType } from "../models/beneficio-type";
 import { TransferenciaType } from "../models/transferencia-type";
@@ -38,7 +38,6 @@ export class BeneficioService {
   }
   getAllAndReturn(): Observable<boolean> {
     return this.http.get<BeneficioType[]>(`${this.baseUrl}`).pipe(
-      tap(() => console.log("HTTP request executed")), // Side effect
       map((lista: BeneficioType[]) => {
         this.notify.showSuccess(
           `Benefícios carregados com sucesso. Total de benefícios: ${lista.length}.`,
@@ -46,20 +45,20 @@ export class BeneficioService {
         this.beneficiosList.set(lista);
         return true;
       }),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
     );
   }
 
   getOne(idAssociado: number): Observable<BeneficioType> {
     return this.http
       .get<BeneficioType>(`${this.baseUrl}/associado/${idAssociado}`)
-      .pipe(catchError(this.handleError));
+        .pipe(catchError((error) => this.handleError(error)));
   }
 
   getAllAtivos(): Observable<BeneficioType[]> {
     return this.http
       .get<BeneficioType[]>(`${this.baseUrl}/ativos`)
-      .pipe(catchError(this.handleError));
+        .pipe(catchError((error) => this.handleError(error)));
   }
 
   //POST - "/"
@@ -68,7 +67,6 @@ export class BeneficioService {
       `Solicitando a criação de novo benefício: nome: ${beneficio.nome}.`,
     );
     return this.http.post<BeneficioType>(`${this.baseUrl}`, beneficio).pipe(
-      tap(() => console.log("HTTP request executed")), // Side effect
       map((added) => {
         if (!added) return false;
         var lista = this.beneficiosList();
@@ -76,7 +74,7 @@ export class BeneficioService {
         this.beneficiosList.set([...lista]); // Atualiza a signal para refletir as mudanças
         return true;
       }),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
     );
   }
 
@@ -84,7 +82,6 @@ export class BeneficioService {
     return this.http
       .put<BeneficioType>(`${this.baseUrl}/${beneficio.id}`, beneficio)
       .pipe(
-        tap(() => console.log("HTTP request executed")), // Side effect
         map((beneficio) => {
           if (!beneficio) return false;
           var lista = this.beneficiosList();
@@ -98,7 +95,7 @@ export class BeneficioService {
           );
           return true;
         }),
-        catchError(this.handleError),
+        catchError((error) => this.handleError(error)),
       );
   }
 
@@ -128,9 +125,8 @@ export class BeneficioService {
 
   removerBeneficio(idBeneficio: number): void {
     this.http.delete<void>(`${this.baseUrl}/${idBeneficio}`).pipe(
-      tap(() => console.log("HTTP request executed")), // Side effect
       map(this.getAllAndReturn),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
     );
   }
 

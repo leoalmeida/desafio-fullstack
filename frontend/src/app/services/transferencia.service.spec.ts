@@ -41,7 +41,7 @@ describe('TransferenciaService', () => {
 
   it('deve realizar uma transferência com sucesso (transferValue)', () => {
     service.transferValue(mockTransferencia).subscribe(res => {
-      expect(res).toBeUndefined();
+      expect(res).toBeFalse();
     });
 
     const req = httpMock.expectOne(`${environment.beneficiosApi}/transferir`);
@@ -71,8 +71,7 @@ describe('TransferenciaService', () => {
     );
 
     expect(loggerSpy.error).toHaveBeenCalledWith(
-      jasmine.stringMatching(/Erro na requisição:/),
-      jasmine.stringMatching(errorMsg)
+      jasmine.stringMatching(/Erro na requisição:.*Saldo insuficiente/)
     );
   });
 });

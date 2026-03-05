@@ -5,8 +5,8 @@ import { AssociadoType } from '../models/associado-type';
 describe('TokenStorageService', () => {
   let service: TokenStorageService;
 
-  // Payload base64 para {"id":1,"sub":"joao@teste.com","roles":["ROLE_USER"]}
-  const mockToken = 'header.eyJpZCI6MSwic3ViIjoiam9hb0B0ZXN0ZS5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.signature';
+  // Payload base64 para {"id":1,"sub":"joao@teste.com","username":"joao","roles":["ROLE_USER"],"permissions":[],"iat":0,"exp":0}
+  const mockToken = 'header.eyJpZCI6MSwic3ViIjoiam9hb0B0ZXN0ZS5jb20iLCJ1c2VybmFtZSI6ImpvYW8iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwicGVybWlzc2lvbnMiOltdLCJpYXQiOjAsImV4cCI6MH0.signature';
   const mockUsername = 'João Silva';
   const mockEmail = 'joao@teste.com';
   const mockTelefone = '1199999999';
@@ -14,10 +14,13 @@ describe('TokenStorageService', () => {
   const mockUser: AssociadoType = {
     id: 1,
     nome: mockUsername,
+    username: 'joao',
     email: mockEmail,
     telefone: mockTelefone,
     accessToken: mockToken,
-    userData: { id: 1, sub: 'joao@teste.com', roles: ['ROLE_USER'], permissions: [], exp: 0, iat: 0 }
+    stats: [],
+    logs: [],
+    userData: { id: 1, sub: 'joao@teste.com', username: 'joao', roles: ['ROLE_USER'], permissions: [], exp: 0, iat: 0 }
   };
 
   beforeEach(() => {
@@ -31,7 +34,7 @@ describe('TokenStorageService', () => {
   });
 
   it('deve salvar o token JWT e atualizar o estado de autenticação', (done) => {
-    service.saveJsonWebToken(mockToken, mockUsername, mockEmail, mockTelefone);
+    service.saveJsonWebToken(mockUser);
 
     expect(window.sessionStorage.getItem('user')).toBeTruthy();
     expect(service.isAuthenticated()).toBeTrue();
@@ -59,7 +62,7 @@ describe('TokenStorageService', () => {
 
   it('deve limpar o storage e resetar o estado no signOut', (done) => {
     // Setup inicial
-    service.saveJsonWebToken(mockToken, mockUsername);
+    service.saveJsonWebToken(mockUser);
     window.sessionStorage.setItem('user', JSON.stringify(mockUser));
 
     service.signOut();
@@ -76,14 +79,14 @@ describe('TokenStorageService', () => {
   it('não deve fazer nada no saveJsonWebToken se o accessToken for vazio', () => {
     const spySet = spyOn(window.sessionStorage, 'setItem');
     
-    service.saveJsonWebToken('', mockUsername);
+    service.saveJsonWebToken({ ...mockUser, accessToken: '' });
     
     expect(spySet).not.toHaveBeenCalled();
     expect(service.isAuthenticated()).toBeFalse();
   });
 
   it('deve verificar se o usuário possui uma role específica', () => {
-    service.saveJsonWebToken(mockToken, mockUsername);
+    service.saveJsonWebToken(mockUser);
     
     expect(service.hasRole('ROLE_USER')).toBeTrue();
     expect(service.hasRole('ROLE_ADMIN')).toBeFalse();

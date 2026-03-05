@@ -53,14 +53,12 @@ export class BeneficioDetails {
       if (this.openType === 'create') {
         this.beneficioService.createOne(beneficio).subscribe({
           next: (created) => {
-            console.log('Benefício criado com sucesso!');
             this.dialogRef.close(created);
           }
         });
       } else if (this.openType === 'edit') {
         this.beneficioService.changeOne(beneficio).subscribe({
           next: (updated) => {
-            console.log('Benefício atualizado com sucesso!');
             this.dialogRef.close(updated);
           }
         });

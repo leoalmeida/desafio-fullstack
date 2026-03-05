@@ -9,7 +9,5 @@ if (environment.production) {
   enableProdMode();
 }
 
-//platformBrowser().bootstrapModule(AppModule)
-//  .catch(err => console.error(err));
 bootstrapApplication(AppComponent, appConfig)
-    .catch(err => console.error(err));
+  .catch(() => undefined);

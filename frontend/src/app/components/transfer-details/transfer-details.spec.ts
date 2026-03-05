@@ -4,11 +4,18 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BeneficioType } from 'src/app/models/beneficio-type';
+import { TransferenciaService } from 'src/app/services/transferencia.service';
+import { BeneficioService } from 'src/app/services/beneficio.service';
+import { NotificationService } from 'src/app/services/notification.service';
+import { of } from 'rxjs';
 
 describe('TransferDetails', () => {
   let component: TransferDetails;
   let fixture: ComponentFixture<TransferDetails>;
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<TransferDetails>>;
+  let transferenciaServiceSpy: jasmine.SpyObj<TransferenciaService>;
+  let beneficioServiceSpy: jasmine.SpyObj<BeneficioService>;
+  let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
   const mockBeneficio: BeneficioType = {
     id: 1,
@@ -20,12 +27,19 @@ describe('TransferDetails', () => {
 
   beforeEach(async () => {
     dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+    transferenciaServiceSpy = jasmine.createSpyObj('TransferenciaService', ['transferValue']);
+    transferenciaServiceSpy.transferValue.and.returnValue(of(true));
+    beneficioServiceSpy = jasmine.createSpyObj('BeneficioService', ['getAll']);
+    notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
 
     await TestBed.configureTestingModule({
       imports: [TransferDetails, ReactiveFormsModule, NoopAnimationsModule],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
-        { provide: MAT_DIALOG_DATA, useValue: mockBeneficio }
+        { provide: MAT_DIALOG_DATA, useValue: mockBeneficio },
+        { provide: TransferenciaService, useValue: transferenciaServiceSpy },
+        { provide: BeneficioService, useValue: beneficioServiceSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy }
       ]
     })
     .compileComponents();
@@ -51,7 +65,7 @@ describe('TransferDetails', () => {
     expect(component.formTransferencia.valid).toBeFalse();
   });
 
-  it('deve fechar o diálogo com os dados da transferência ao chamar onSubmit se válido', () => {
+  it('deve fechar o diálogo ao chamar onSubmit se válido', () => {
     fixture.detectChanges();
     const transferData = {
       fromId: 1,
@@ -62,7 +76,8 @@ describe('TransferDetails', () => {
 
     component.onSubmit();
 
-    expect(dialogRefSpy.close).toHaveBeenCalledWith(jasmine.objectContaining(transferData));
+    expect(transferenciaServiceSpy.transferValue).toHaveBeenCalledWith(jasmine.objectContaining(transferData));
+    expect(dialogRefSpy.close).toHaveBeenCalledWith();
   });
 
   it('não deve fechar o diálogo ao chamar onSubmit se o formulário for inválido', () => {
