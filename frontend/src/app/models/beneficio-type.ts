@@ -5,4 +5,4 @@ export type BeneficioType = {
   valor: number;
   ativo: boolean;
   version?: number;
-}
+};

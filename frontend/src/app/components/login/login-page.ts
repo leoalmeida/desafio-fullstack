@@ -38,7 +38,7 @@ interface IUsuario {
     MatCardModule,
   ],
   templateUrl: "./login-page.html",
-  styleUrls: ["./login-page.css"]
+  styleUrls: ["./login-page.css"],
 })
 export class LoginPage implements OnInit {
   isLoggedIn = signal(false);
@@ -49,9 +49,9 @@ export class LoginPage implements OnInit {
   private navigator = inject(Router);
   private formBuilder = inject(FormBuilder);
   formLogin: FormGroup = this.formBuilder.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required]]
-    });
+    username: ["", [Validators.required]],
+    password: ["", [Validators.required]],
+  });
 
   constructor() {}
 
@@ -60,21 +60,21 @@ export class LoginPage implements OnInit {
   }
 
   onSubmit() {
-    if(this.formLogin.invalid) return;
+    if (this.formLogin.invalid) return;
     var usuario = this.formLogin.getRawValue() as IUsuario;
     this.authService
-        .login(usuario.username, usuario.password)
-        .subscribe((user) => {
-          if (user) {
-            this.reloadPage();
-          }
+      .login(usuario.username, usuario.password)
+      .subscribe((user) => {
+        if (user) {
+          this.reloadPage();
+        }
       });
   }
 
   reloadPage() {
     this.isLoggedIn.set(this.tokenStorage.isAuthenticated());
     if (this.isLoggedIn()) {
-      this.navigator.navigate(['beneficios']);
+      this.navigator.navigate(["beneficios"]);
     }
   }
 }

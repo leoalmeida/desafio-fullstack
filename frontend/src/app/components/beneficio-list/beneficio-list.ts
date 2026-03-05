@@ -32,7 +32,7 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
   ],
   templateUrl: "./beneficio-list.html",
   styleUrls: ["./beneficio-list.css"],

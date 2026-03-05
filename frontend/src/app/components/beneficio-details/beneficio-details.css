@@ -1,13 +1,8 @@
 mat-dialog-content {
-    min-width: 500px;
-    padding: 20px;
-}
-
-.full-width {
-    width: 100%;
-    margin-bottom: 15px;
+  min-width: 500px;
+  padding: 20px;
 }
 
 mat-checkbox {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }

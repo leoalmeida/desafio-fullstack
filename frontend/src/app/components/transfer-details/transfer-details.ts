@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, CurrencyPipe } from "@angular/common";
 import { TransferenciaType } from "./../../models/transferencia-type";
 import { Component, computed, inject } from "@angular/core";
 import {
@@ -33,6 +33,7 @@ import { LoadingService } from "../loading-indicator/loading.service";
     MatDialogModule,
     MatSelectModule,
   ],
+  providers: [CurrencyPipe],
   templateUrl: "./transfer-details.html",
 })
 export class TransferDetails {
@@ -44,22 +45,19 @@ export class TransferDetails {
   private dialogRef: MatDialogRef<TransferDetails> = inject(MatDialogRef);
   public data: BeneficioType = inject(MAT_DIALOG_DATA) as BeneficioType;
   formTransferencia: FormGroup = this.formBuilder.group({
-    fromId: [0 , Validators.required],
+    fromId: [0, Validators.required],
     toId: [0, Validators.required],
-    valor: [0.0, Validators.required],
+    valor: [0.00, Validators.required, Validators.min(0.01)],
   });
-    
-  listaBeneficiosAtivos: BeneficioType[] = []
-  
-  constructor() {
-  }
+
+  listaBeneficiosAtivos: BeneficioType[] = [];
+
+  constructor() {}
 
   filteredActiveList = computed(() => {
-    try {      
+    try {
       this.loadingService.loadingOn();
-      return this.beneficioService
-        .items()
-        .filter((x) => x?.ativo === true);
+      return this.beneficioService.items().filter((x) => x?.ativo === true);
     } catch (error: any) {
       this.notify.showError(error.message || "Erro ao filtrar benefícios.");
       return [];

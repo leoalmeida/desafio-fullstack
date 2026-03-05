@@ -43,12 +43,11 @@ export class AdminBoard implements OnInit {
   constructor() {
     try {
       this.tokenStorageService.loggedUser$.subscribe((user) => {
-          this.loggedUser.set(user);
-        });
+        this.loggedUser.set(user);
+      });
     } catch (error: any) {
       this.notify.showError(error.message || "Erro ao identificar usuário");
     }
-    
   }
 
   ngOnInit(): void {
@@ -57,7 +56,9 @@ export class AdminBoard implements OnInit {
   }
 
   removeUser(id: number) {
-    this.dataSource.data = this.dataSource.data.filter((user) => user.id !== id);
+    this.dataSource.data = this.dataSource.data.filter(
+      (user) => user.id !== id,
+    );
 
     this.notify.showSuccess("Usuário removido com sucesso!", {
       duration: 3000,

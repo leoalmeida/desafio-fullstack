@@ -1,7 +1,9 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
+
 import { MatCard, MatCardModule } from "@angular/material/card";
 import { TitleService } from "src/app/services/title.service";
 import { MatAnchor, MatButtonModule } from "@angular/material/button";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-acesso-negado",
@@ -13,12 +15,13 @@ import { MatAnchor, MatButtonModule } from "@angular/material/button";
 export class AcessoNegado implements OnInit {
   protected readonly title = signal("");
   private titleService: TitleService = inject(TitleService);
+  private navigator = inject(Router);
 
   ngOnInit(): void {
     this.titleService.setTitle();
   }
 
   voltar() {
-    window.location.href = "/";
+    this.navigator.navigate(["home"]);
   }
 }

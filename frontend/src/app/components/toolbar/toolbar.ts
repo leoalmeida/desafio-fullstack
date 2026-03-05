@@ -1,7 +1,7 @@
 import { MatButtonModule } from "@angular/material/button";
 import { AuthService } from "src/app/services/auth.service";
 import { Component, inject, input, signal } from "@angular/core";
-import { Router, RouterLink, Routes } from "@angular/router";
+import { Router, RouterLink, Routes, VERSION } from "@angular/router";
 import { routes } from "../../app.routes";
 import { TokenStorageService } from "../../services/token-storage.service";
 import { MatSidenavModule } from "@angular/material/sidenav";
@@ -31,7 +31,7 @@ interface RouteInfo {
     MatToolbarModule,
     MatIconModule,
     RouterLink,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   templateUrl: "./toolbar.html",
   styleUrls: ["./toolbar.css"],
@@ -59,17 +59,22 @@ export class Toolbar {
     this.titleService.title$.subscribe((title) => {
       this.title.set(title);
     });
-    for (const route of routes) {
-      if (route.path) {
+    
+  }
+  
+  ngAfterViewInit(): void {
+    // Fetch the routes from the router
+    var routesConf = this.router.config;
+    for (const route of routesConf) {
+      if (route) {
         if (
-          route.path !== "" &&
           route.path !== "**" &&
           route.path !== "login" &&
           route.path !== "acesso-negado"
         ) {
           this.routes.push({
-            path: route.path,
-            descricao: route.data?.["title"],
+            path: route.path || "",
+            descricao: route.data?.["title"] || "",
           });
         }
       }
@@ -90,18 +95,19 @@ export class Toolbar {
       }
     });
   }
-  
+
   onRealizarTransferencia(): void {
     const refOpen = this.dialogAcao.open(TransferDetails, {
-      width: '500px', enterAnimationDuration: '0ms', exitAnimationDuration: '0ms',
-      data: {  }
+      width: "500px",
+      enterAnimationDuration: "0ms",
+      exitAnimationDuration: "0ms",
+      data: {},
     });
 
-    refOpen.afterClosed().subscribe(result => {
+    refOpen.afterClosed().subscribe((result) => {
       if (result) {
         this.notify.showSuccess("Transferência realizada com sucesso!");
       }
     });
   }
-
 }

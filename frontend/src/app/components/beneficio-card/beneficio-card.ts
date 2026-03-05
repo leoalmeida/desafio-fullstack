@@ -24,7 +24,7 @@ import { CurrencyPipe } from "@angular/common";
     MatButtonModule,
     MatSlideToggleModule,
     MatBadgeModule,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: "./beneficio-card.html",
   styleUrl: "./beneficio-card.css",
@@ -72,7 +72,7 @@ export class BeneficioCard {
     refOpen.afterClosed().subscribe((result) => {
       if (result == true) {
         this.beneficioService.changeStatus(this.beneficio());
-      }else{       
+      } else {
         this.beneficio().ativo = !this.beneficio().ativo;
       }
     });

@@ -1,4 +1,4 @@
-<mat-toolbar class="shadow">
+<mat-toolbar class="shadow" color="primary">
   <div fxShow="true" fxHide.gt-sm="true">
     <button matIconButton [disabled]="!isLoggedIn()" (click)="sidenav.toggle()">
       <mat-icon>menu</mat-icon>
@@ -17,7 +17,11 @@
   @if (isLoggedIn()) {
     <div class="toolbar-actions" fxShow="true" fxHide.lt-md="true">
       <ul class="nav-links">
-        <a matButton="tonal" class="link-item" (click)="onRealizarTransferencia()">
+        <a
+          matButton="tonal"
+          class="link-item"
+          (click)="onRealizarTransferencia()"
+        >
           <mat-icon>swap_horiz</mat-icon>
           Transferir
         </a>
@@ -25,7 +29,7 @@
       </ul>
     </div>
     <section class="user-info" >
-      <button matButton="outlined" >
+      <button matButton="filled" disable="true">
         <span class="logged-user">
           {{ loggedUser().nome }}
         </span>
@@ -44,7 +48,7 @@
   @if (isLoggedIn()) {
     <div>
       @for (route of routes; track $index) {
-        <a matButton [routerLink]="route.path">{{ route.descricao }}</a>
+        <button matButton [class.is-selected]="route.descricao == title()"  [routerLink]="route.path" selected>{{ route.descricao }}</button>
       }
     </div>
   }

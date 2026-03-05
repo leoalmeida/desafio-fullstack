@@ -1,48 +1,48 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { TitleService } from './services/title.service';
-import { provideRouter } from '@angular/router';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AppComponent } from "./app.component";
+import { TitleService } from "./services/title.service";
+import { provideRouter } from "@angular/router";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
-describe('AppComponent', () => {
+describe("AppComponent", () => {
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
   let titleServiceSpy: jasmine.SpyObj<TitleService>;
 
   beforeEach(async () => {
-    titleServiceSpy = jasmine.createSpyObj('TitleService', ['setTitle']);
+    titleServiceSpy = jasmine.createSpyObj("TitleService", ["setTitle"]);
 
     TestBed.overrideComponent(AppComponent, {
-      set: { template: '' }
+      set: { template: "" },
     });
 
     await TestBed.configureTestingModule({
       imports: [AppComponent, NoopAnimationsModule, HttpClientTestingModule],
       providers: [
         { provide: TitleService, useValue: titleServiceSpy },
-        provideRouter([])
-      ]
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
   });
 
-  it('deve criar o app', () => {
+  it("deve criar o app", () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve chamar setTitle do TitleService no ngOnInit', () => {
+  it("deve chamar setTitle do TitleService no ngOnInit", () => {
     fixture.detectChanges();
     expect(titleServiceSpy.setTitle).toHaveBeenCalled();
   });
 
-  it('deve iniciar o título como string vazia', () => {
-    expect(component['title']()).toBe('');
+  it("deve iniciar o título como string vazia", () => {
+    expect(component["title"]()).toBe("");
   });
 
-  it('deve executar updateViewByRole sem lançar erro', () => {
+  it("deve executar updateViewByRole sem lançar erro", () => {
     component.updateViewByRole();
     expect().nothing();
   });

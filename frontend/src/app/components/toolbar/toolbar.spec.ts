@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Toolbar } from './toolbar';
-import { TokenStorageService } from '../../services/token-storage.service';
-import { BehaviorSubject } from 'rxjs';
-import { provideRouter } from '@angular/router';
-import { By } from '@angular/platform-browser';
-import { TitleService } from '../../services/title.service';
-import { AssociadoType } from 'src/app/models/associado-type';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { Toolbar } from "./toolbar";
+import { TokenStorageService } from "../../services/token-storage.service";
+import { BehaviorSubject } from "rxjs";
+import { provideRouter } from "@angular/router";
+import { By } from "@angular/platform-browser";
+import { TitleService } from "../../services/title.service";
+import { AssociadoType } from "src/app/models/associado-type";
 
-describe('Toolbar', () => {
+describe("Toolbar", () => {
   let component: Toolbar;
   let fixture: ComponentFixture<Toolbar>;
   let tokenStorageSpy: jasmine.SpyObj<TokenStorageService>;
@@ -19,22 +19,22 @@ describe('Toolbar', () => {
   beforeEach(async () => {
     loggedUserSubject = new BehaviorSubject<AssociadoType>({
       id: 1,
-      nome: 'Usuario Teste',
-      email: 'user@test.com',
-      telefone: '11999990000',
-      username: 'user',
+      nome: "Usuario Teste",
+      email: "user@test.com",
+      telefone: "11999990000",
+      username: "user",
       stats: [],
-      logs: []
+      logs: [],
     });
     autenticadoSubject = new BehaviorSubject<boolean>(false);
-    titleSubject = new BehaviorSubject<string>('Frontend App');
+    titleSubject = new BehaviorSubject<string>("Frontend App");
 
-    tokenStorageSpy = jasmine.createSpyObj('TokenStorageService', [], {
+    tokenStorageSpy = jasmine.createSpyObj("TokenStorageService", [], {
       loggedUser$: loggedUserSubject.asObservable(),
-      autenticado$: autenticadoSubject.asObservable()
+      autenticado$: autenticadoSubject.asObservable(),
     });
-    titleServiceSpy = jasmine.createSpyObj('TitleService', [], {
-      title$: titleSubject.asObservable()
+    titleServiceSpy = jasmine.createSpyObj("TitleService", [], {
+      title$: titleSubject.asObservable(),
     });
 
     await TestBed.configureTestingModule({
@@ -42,41 +42,41 @@ describe('Toolbar', () => {
       providers: [
         { provide: TokenStorageService, useValue: tokenStorageSpy },
         { provide: TitleService, useValue: titleServiceSpy },
-        provideRouter([])
-      ]
-    })
-    .compileComponents();
+        provideRouter([]),
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Toolbar);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('deve criar o componente', () => {
+  it("deve criar o componente", () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve exibir o título recebido do TitleService', () => {
-    titleSubject.next('BIP App');
+  it("deve exibir o título recebido do TitleService", () => {
+    titleSubject.next("BIP App");
     fixture.detectChanges();
 
-    const titleElement = fixture.debugElement.query(By.css('.head-title')).nativeElement as HTMLElement;
-    expect(titleElement.textContent).toContain('BIP App');
+    const titleElement = fixture.debugElement.query(By.css(".head-title"))
+      .nativeElement as HTMLElement;
+    expect(titleElement.textContent).toContain("BIP App");
   });
 
-  it('deve atualizar loggedUser quando o serviço emitir um novo usuário', () => {
+  it("deve atualizar loggedUser quando o serviço emitir um novo usuário", () => {
     const novoUsuario: AssociadoType = {
       id: 2,
-      nome: 'Admin',
-      email: 'admin@test.com',
-      telefone: '11888887777',
-      username: 'admin',
+      nome: "Admin",
+      email: "admin@test.com",
+      telefone: "11888887777",
+      username: "admin",
       stats: [],
-      logs: []
+      logs: [],
     };
     loggedUserSubject.next(novoUsuario);
-    
-    expect((component as any).loggedUser().nome).toBe('Admin');
+
+    expect((component as any).loggedUser().nome).toBe("Admin");
   });
 
   it('deve alternar o estado de "opened" ao interagir com o menu (simulação lógica)', () => {
@@ -85,28 +85,28 @@ describe('Toolbar', () => {
     expect(component.opened).toBeTrue();
   });
 
-  it('deve renderizar os links de navegação baseados nas rotas', () => {
+  it("deve renderizar os links de navegação baseados nas rotas", () => {
     autenticadoSubject.next(true);
     fixture.detectChanges();
 
-    const links = fixture.debugElement.queryAll(By.css('a'));
+    const links = fixture.debugElement.queryAll(By.css("a"));
     expect(links.length).toBeGreaterThan(0);
   });
 
-  it('deve exibir o nome do usuário logado no template', () => {
+  it("deve exibir o nome do usuário logado no template", () => {
     autenticadoSubject.next(true);
     loggedUserSubject.next({
       id: 3,
-      nome: 'Carlos Silva',
-      email: 'carlos@test.com',
-      telefone: '11777776666',
-      username: 'carlos',
+      nome: "Carlos Silva",
+      email: "carlos@test.com",
+      telefone: "11777776666",
+      username: "carlos",
       stats: [],
-      logs: []
+      logs: [],
     });
     fixture.detectChanges();
-    
+
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Carlos Silva');
+    expect(compiled.textContent).toContain("Carlos Silva");
   });
 });

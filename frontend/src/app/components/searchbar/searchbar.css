@@ -14,12 +14,12 @@
   border-radius: 25px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  box-shadow: 0 10px 40px 0 #B0C1D9;
+  box-shadow: 0 10px 40px 0 #b0c1d9;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #4caf50;
   box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
 }
 
@@ -36,7 +36,7 @@
 }
 
 .searchButton:hover {
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 .clearButton {

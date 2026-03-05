@@ -52,13 +52,13 @@ export class BeneficioService {
   getOne(idAssociado: number): Observable<BeneficioType> {
     return this.http
       .get<BeneficioType>(`${this.baseUrl}/associado/${idAssociado}`)
-        .pipe(catchError((error) => this.handleError(error)));
+      .pipe(catchError((error) => this.handleError(error)));
   }
 
   getAllAtivos(): Observable<BeneficioType[]> {
     return this.http
       .get<BeneficioType[]>(`${this.baseUrl}/ativos`)
-        .pipe(catchError((error) => this.handleError(error)));
+      .pipe(catchError((error) => this.handleError(error)));
   }
 
   //POST - "/"
