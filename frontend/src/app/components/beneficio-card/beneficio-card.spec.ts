@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { BeneficioCard } from "./beneficio-card";
-import { BeneficioService } from "../../services/beneficio.service";
-import { NotificationService } from "src/app/services/notification.service";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { TemplateRef } from "@angular/core";
-import { BeneficioType } from "../../models/beneficio-type";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BeneficioCard } from './beneficio-card';
+import { BeneficioService } from '../../services/beneficio.service';
+import { NotificationService } from 'src/app/services/notification.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TemplateRef } from '@angular/core';
+import { BeneficioType } from '../../models/beneficio-type';
 
-describe("BeneficioCard", () => {
+describe('BeneficioCard', () => {
   let component: BeneficioCard;
   let fixture: ComponentFixture<BeneficioCard>;
   let beneficioServiceSpy: jasmine.SpyObj<BeneficioService>;
@@ -16,21 +16,21 @@ describe("BeneficioCard", () => {
 
   const mockBeneficio: BeneficioType = {
     id: 1,
-    nome: "Vale Alimentação",
-    descricao: "Benefício para alimentação",
+    nome: 'Vale Alimentação',
+    descricao: 'Benefício para alimentação',
     valor: 500,
     ativo: true,
   };
 
   beforeEach(async () => {
-    beneficioServiceSpy = jasmine.createSpyObj("BeneficioService", [
-      "changeStatus",
+    beneficioServiceSpy = jasmine.createSpyObj('BeneficioService', [
+      'changeStatus',
     ]);
-    notificationServiceSpy = jasmine.createSpyObj("NotificationService", [
-      "showSuccess",
-      "showError",
+    notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
+      'showSuccess',
+      'showError',
     ]);
-    dialogSpy = jasmine.createSpyObj("MatDialog", ["open"]);
+    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
     await TestBed.configureTestingModule({
       imports: [BeneficioCard, MatDialogModule, NoopAnimationsModule],
@@ -45,22 +45,22 @@ describe("BeneficioCard", () => {
     component = fixture.componentInstance;
 
     // Set required input
-    fixture.componentRef.setInput("beneficio", mockBeneficio);
+    fixture.componentRef.setInput('beneficio', mockBeneficio);
     fixture.detectChanges();
   });
 
-  it("deve criar o componente", () => {
+  it('deve criar o componente', () => {
     expect(component).toBeTruthy();
   });
 
-  it("deve mostrar erro quando não houver id do benefício para alterar status", () => {
+  it('deve mostrar erro quando não houver id do benefício para alterar status', () => {
     const beneficioSemId = { ...mockBeneficio, id: undefined };
     const mockEvent = {
-      preventDefault: jasmine.createSpy("preventDefault"),
-      stopPropagation: jasmine.createSpy("stopPropagation"),
+      preventDefault: jasmine.createSpy('preventDefault'),
+      stopPropagation: jasmine.createSpy('stopPropagation'),
     } as unknown as MouseEvent;
 
-    fixture.componentRef.setInput("beneficio", beneficioSemId);
+    fixture.componentRef.setInput('beneficio', beneficioSemId);
     fixture.detectChanges();
 
     component.onAlterarStatus(mockEvent, {} as TemplateRef<any>);
@@ -68,7 +68,7 @@ describe("BeneficioCard", () => {
     expect(mockEvent.preventDefault).toHaveBeenCalled();
     expect(mockEvent.stopPropagation).toHaveBeenCalled();
     expect(notificationServiceSpy.showError).toHaveBeenCalledWith(
-      "Nenhum benefício selecionado.",
+      'Nenhum benefício selecionado.',
     );
     expect(dialogSpy.open).not.toHaveBeenCalled();
   });

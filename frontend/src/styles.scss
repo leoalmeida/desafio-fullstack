@@ -3,14 +3,16 @@
 @include mat.core();
 
 :root {
-  @include mat.theme((
+  @include mat.theme(
+    (
       color: (
         primary: mat.$cyan-palette,
         accent: mat.$blue-palette,
         tertiary: mat.$orange-palette,
-        error: mat.$red-palette
-      )
-    ));
+        error: mat.$red-palette,
+      ),
+    )
+  );
 }
 
 html {
@@ -39,8 +41,6 @@ body {
   margin: 0;
   height: 100%;
 }
-
-
 
 html,
 body {

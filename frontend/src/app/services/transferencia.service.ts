@@ -1,23 +1,23 @@
-import { inject, Injectable, signal } from "@angular/core";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { catchError, map, Observable, throwError } from "rxjs";
-import { environment } from "../../environments/environment";
-import { BeneficioType } from "../models/beneficio-type";
-import { TransferenciaType } from "../models/transferencia-type";
-import { LoggerService } from "./logger.service";
+import { inject, Injectable, signal } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, map, Observable, throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { BeneficioType } from '../models/beneficio-type';
+import { TransferenciaType } from '../models/transferencia-type';
+import { LoggerService } from './logger.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class TransferenciaService {
-  private baseUrl: string = "/api/v1/beneficios";
+  private baseUrl = '/api/v1/beneficios';
   private beneficiosList = signal<BeneficioType[]>([]);
 
   private logger = inject(LoggerService);
 
   private http: HttpClient = inject(HttpClient);
   constructor() {
-    this.baseUrl = environment.beneficiosApi + "/transferir";
+    this.baseUrl = environment.beneficiosApi + '/transferir';
   }
 
   items = this.beneficiosList.asReadonly();
@@ -33,7 +33,7 @@ export class TransferenciaService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    let errorMessage = "Erro desconhecido";
+    let errorMessage = 'Erro desconhecido';
 
     if (error.error instanceof ErrorEvent) {
       // Erro do lado do cliente

@@ -5,7 +5,7 @@ on:
 
 jobs:
   code-quality-backend:
-    uses: ./.github/workflows/code-quality.yml
+    uses: ./.github/workflows/code-quality-backend.yml
     secrets: inherit
   
   test-backend:

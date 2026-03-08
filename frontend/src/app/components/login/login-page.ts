@@ -4,22 +4,22 @@ import {
   inject,
   OnInit,
   signal,
-} from "@angular/core";
+} from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
   FormControl,
   FormBuilder,
   Validators,
-} from "@angular/forms";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatCardModule } from "@angular/material/card";
-import { AuthService } from "../../services/auth.service";
-import { TokenStorageService } from "../../services/token-storage.service";
-import { Router } from "@angular/router";
-import { MatInputModule } from "@angular/material/input";
-import { MatButtonModule } from "@angular/material/button";
-import { CommonModule } from "@angular/common";
+} from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { AuthService } from '../../services/auth.service';
+import { TokenStorageService } from '../../services/token-storage.service';
+import { Router } from '@angular/router';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
 
 interface IUsuario {
   username: string;
@@ -27,7 +27,7 @@ interface IUsuario {
 }
 
 @Component({
-  selector: "app-login-page",
+  selector: 'app-login-page',
   standalone: true,
   imports: [
     CommonModule,
@@ -37,8 +37,8 @@ interface IUsuario {
     MatInputModule,
     MatCardModule,
   ],
-  templateUrl: "./login-page.html",
-  styleUrls: ["./login-page.css"],
+  templateUrl: './login-page.html',
+  styleUrls: ['./login-page.css'],
 })
 export class LoginPage implements OnInit {
   isLoggedIn = signal(false);
@@ -49,8 +49,8 @@ export class LoginPage implements OnInit {
   private navigator = inject(Router);
   private formBuilder = inject(FormBuilder);
   formLogin: FormGroup = this.formBuilder.group({
-    username: ["", [Validators.required]],
-    password: ["", [Validators.required]],
+    username: ['', [Validators.required]],
+    password: ['', [Validators.required]],
   });
 
   constructor() {}
@@ -61,7 +61,7 @@ export class LoginPage implements OnInit {
 
   onSubmit() {
     if (this.formLogin.invalid) return;
-    var usuario = this.formLogin.getRawValue() as IUsuario;
+    const usuario = this.formLogin.getRawValue() as IUsuario;
     this.authService
       .login(usuario.username, usuario.password)
       .subscribe((user) => {
@@ -74,7 +74,7 @@ export class LoginPage implements OnInit {
   reloadPage() {
     this.isLoggedIn.set(this.tokenStorage.isAuthenticated());
     if (this.isLoggedIn()) {
-      this.navigator.navigate(["beneficios"]);
+      this.navigator.navigate(['beneficios']);
     }
   }
 }

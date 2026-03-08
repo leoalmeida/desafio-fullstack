@@ -1,20 +1,20 @@
-import { MatButtonModule } from "@angular/material/button";
-import { Component, inject, input, TemplateRef } from "@angular/core";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { BeneficioType } from "../../models/beneficio-type";
-import { BeneficioService } from "../../services/beneficio.service";
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { FormsModule } from "@angular/forms";
-import { MatCardModule } from "@angular/material/card";
-import { MatBadgeModule } from "@angular/material/badge";
-import { MatDividerModule } from "@angular/material/divider";
-import { BeneficioDetails } from "../beneficio-details/beneficio-details";
-import { MatIconModule } from "@angular/material/icon";
-import { NotificationService } from "src/app/services/notification.service";
-import { CurrencyPipe } from "@angular/common";
+import { MatButtonModule } from '@angular/material/button';
+import { Component, inject, input, TemplateRef } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { BeneficioType } from '../../models/beneficio-type';
+import { BeneficioService } from '../../services/beneficio.service';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatDividerModule } from '@angular/material/divider';
+import { BeneficioDetails } from '../beneficio-details/beneficio-details';
+import { MatIconModule } from '@angular/material/icon';
+import { NotificationService } from 'src/app/services/notification.service';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
-  selector: "app-beneficio-card",
+  selector: 'app-beneficio-card',
   imports: [
     CurrencyPipe,
     MatCardModule,
@@ -26,13 +26,13 @@ import { CurrencyPipe } from "@angular/common";
     MatBadgeModule,
     FormsModule,
   ],
-  templateUrl: "./beneficio-card.html",
-  styleUrl: "./beneficio-card.css",
+  templateUrl: './beneficio-card.html',
+  styleUrl: './beneficio-card.css',
 })
 export class BeneficioCard {
   beneficio = input.required<BeneficioType>();
   private beneficioService: BeneficioService = inject(BeneficioService);
-  message: string = "";
+  message = '';
 
   private dialogAcao: MatDialog = inject(MatDialog);
   private notify: NotificationService = inject(NotificationService);
@@ -41,14 +41,14 @@ export class BeneficioCard {
 
   onUpdateBeneficio(beneficio: BeneficioType): void {
     const dialogRef = this.dialogAcao.open(BeneficioDetails, {
-      width: "500px",
+      width: '500px',
       data: { ...beneficio },
     });
 
     // Chama serviço para atualizar beneficio após fechamento do diálogo
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.notify.showSuccess("Atualização realizada com sucesso!");
+        this.notify.showSuccess('Atualização realizada com sucesso!');
       }
     });
   }
@@ -58,15 +58,15 @@ export class BeneficioCard {
     event.preventDefault();
     event.stopPropagation();
     if (!this.beneficio().id) {
-      this.notify.showError("Nenhum benefício selecionado.");
+      this.notify.showError('Nenhum benefício selecionado.');
       return;
     }
     const refOpen = this.dialogAcao.open(dialogRef, {
-      width: "250px",
-      enterAnimationDuration: "0ms",
-      exitAnimationDuration: "0ms",
+      width: '250px',
+      enterAnimationDuration: '0ms',
+      exitAnimationDuration: '0ms',
       data: {
-        message: `Tem certeza que deseja ${!this.beneficio().ativo ? "cancelar" : "ativar"} o benefício ${this.beneficio().nome}?`,
+        message: `Tem certeza que deseja ${!this.beneficio().ativo ? 'cancelar' : 'ativar'} o benefício ${this.beneficio().nome}?`,
       },
     });
     refOpen.afterClosed().subscribe((result) => {

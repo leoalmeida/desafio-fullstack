@@ -1,6 +1,6 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable } from '@angular/core';
 
-import { TokenType } from "../models/token-type";
+import { TokenType } from '../models/token-type';
 
 @Injectable()
 export class PermissionService {
