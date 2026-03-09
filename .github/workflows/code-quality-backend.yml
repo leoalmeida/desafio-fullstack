@@ -39,9 +39,9 @@ jobs:
       - name: generate PMD report
         run: mvn -B -f backend-module/pom.xml pmd:pmd
       
-      #- name: Run spotbugs check
-      #  run: mvn -B -f backend-module/pom.xml spotbugs:check
+      - name: Run spotbugs check
+        run: mvn -B -f backend-module/pom.xml spotbugs:check
   
-      #- name: Generate SpotBugs report
-      #  run: mvn -B -f backend-module/pom.xml spotbugs:spotbugs
+      - name: Generate SpotBugs report
+        run: mvn -B -f backend-module/pom.xml spotbugs:spotbugs
         
