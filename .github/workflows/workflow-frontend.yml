@@ -4,13 +4,13 @@ on:
   workflow_call:
 
 jobs:
-  #code-quality-frontend:
-  #  uses: ./.github/workflows/code-quality.yml
-  #  secrets: inherit
+  code-quality-frontend:
+    uses: ./.github/workflows/code-quality.yml
+    secrets: inherit
   
-  #test-frontend:
-  #  uses: ./.github/workflows/testes-frontend.yml
-  #  secrets: inherit
+  test-frontend:
+    uses: ./.github/workflows/testes-frontend.yml
+    secrets: inherit
 
   build-frontend:
     uses: ./.github/workflows/build-frontend.yml
