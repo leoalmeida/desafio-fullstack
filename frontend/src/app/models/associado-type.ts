@@ -1,4 +1,3 @@
-import { Token } from '@angular/compiler';
 import { TokenType } from './token-type';
 
 export interface AssociadoType {
