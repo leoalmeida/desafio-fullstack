@@ -3,22 +3,16 @@ import {
   Component,
   computed,
   inject,
-  Input,
-  Signal,
   signal,
-  TemplateRef,
 } from '@angular/core';
-import { BeneficioType } from '../../models/beneficio-type';
 import { BeneficioService } from '../../services/beneficio.service';
-import { ActivatedRoute, Router, Routes } from '@angular/router';
 import { LoadingService } from '../loading-indicator/loading.service';
 import { TokenStorageService } from '../../services/token-storage.service';
-import { TokenType } from '../../models/token-type';
 import { BeneficioCard } from '../beneficio-card/beneficio-card';
 import { Searchbar } from '../searchbar/searchbar';
 import { BeneficioDetails } from '../beneficio-details/beneficio-details';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { AssociadoType } from 'src/app/models/associado-type';
 import { NotificationService } from 'src/app/services/notification.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';

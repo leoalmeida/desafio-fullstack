@@ -59,9 +59,9 @@ class BackendApplicationTests extends AbstractIntegrationTest {
         startMockMvc(webApplicationContext);
         repository.deleteAll();
         // Cria beneficios para testes
-        beneficio1 = repository.save(TestFactory.gerarBeneficio(true));
-        beneficio2 = repository.save(TestFactory.gerarBeneficio(true));
-        beneficio3 = repository.save(TestFactory.gerarBeneficio(false));
+        beneficio1 = repository.save(TestFactory.gerarBeneficio(true, new BigDecimal("100.00")));
+        beneficio2 = repository.save(TestFactory.gerarBeneficio(true, new BigDecimal("200.00")));
+        beneficio3 = repository.save(TestFactory.gerarBeneficio(false, new BigDecimal("300.00")));
         beneficioAssets.addAll(Arrays.asList(beneficio1, beneficio2, beneficio3));
     }
 
@@ -74,7 +74,7 @@ class BackendApplicationTests extends AbstractIntegrationTest {
     @Test
     @DisplayName("Deve criar um novo benefício válido e retornar o benefício criado")
     void integradoAoCriarNovoBeneficioValido_RetornaBeneficioCriado() throws Exception {
-        BeneficioRequestDto dto = TestFactory.gerarBeneficioRequestDto(true);
+        BeneficioRequestDto dto = TestFactory.gerarBeneficioRequestDto(true, new BigDecimal("100.00"));
         BeneficioResponseDto response = performPostRequest(
                 TestFactory.BENEFICIOS_API_ENDPOINT,
                 dto,
@@ -93,7 +93,7 @@ class BackendApplicationTests extends AbstractIntegrationTest {
     @Test
     @DisplayName("Deve retornar erro ao criar um novo benefício Sem nome e retornar status Bad Request")
     void integradoAoCriarNovoBeneficioInvalido_RetornaErro() throws Exception {
-        BeneficioRequestDto dto = TestFactory.gerarBeneficioRequestDto(false);
+        BeneficioRequestDto dto = TestFactory.gerarBeneficioRequestDto(false, new BigDecimal("100.00"));
         dto.setNome("");
 
         performPostRequest(

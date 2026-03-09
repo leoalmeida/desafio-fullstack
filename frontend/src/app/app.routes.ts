@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { BeneficioList } from './components/beneficio-list/beneficio-list';
-import { BeneficioDetails } from './components/beneficio-details/beneficio-details';
 import { LoginPage } from './components/login/login-page';
 import { canActivateUser } from './guards/can-activate-user';
 import { AdminBoard } from './components/admin-board/admin-board';

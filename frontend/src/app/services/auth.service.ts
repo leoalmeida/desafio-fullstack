@@ -1,18 +1,10 @@
 import { associados } from './../../mocks/associados';
 import { AssociadoType } from 'src/app/models/associado-type';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable, Signal, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TokenType } from '../models/token-type';
 import { TokenStorageService } from './token-storage.service';
-import { BeneficioType } from '../models/beneficio-type';
-
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-  }),
-};
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +36,7 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<AssociadoType> {
+    void password;
     //return this.http.post<any>(`${this.baseUrl}/signin`, { username, password }, httpOptions);
     const user = this.associadoList().find(
       (user) => user.username === username,

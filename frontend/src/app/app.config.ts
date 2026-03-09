@@ -10,7 +10,6 @@ import {
 } from '@angular/common/http';
 import {
   provideClientHydration,
-  provideProtractorTestingSupport,
   withIncrementalHydration,
 } from '@angular/platform-browser';
 import { provideRouter, withViewTransitions } from '@angular/router';

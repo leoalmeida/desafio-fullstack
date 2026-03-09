@@ -12,7 +12,6 @@ import { signal } from '@angular/core';
 import { canActivateUser } from './can-activate-user';
 
 describe('canActivateUser', () => {
-  let tokenStorageSpy: jasmine.SpyObj<TokenStorageService>;
   const isAuthenticatedSignal = signal(false);
 
   const executeGuard: CanActivateFn = (...guardParameters) =>
@@ -30,9 +29,7 @@ describe('canActivateUser', () => {
       ],
     });
 
-    tokenStorageSpy = TestBed.inject(
-      TokenStorageService,
-    ) as jasmine.SpyObj<TokenStorageService>;
+    TestBed.inject(TokenStorageService);
   });
 
   it('deve ser criado', () => {

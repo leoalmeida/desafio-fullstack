@@ -50,12 +50,17 @@ public class TestFactory {
     }
 
     public static Beneficio gerarBeneficio(boolean ativo) {
+        Beneficio produto = gerarBeneficio(ativo, new BigDecimal(Math.random() * 1000).setScale(2, RoundingMode.HALF_UP));
+        return produto;
+    }
+
+    public static Beneficio gerarBeneficio(boolean ativo, BigDecimal valor) {
         Long regBeneficio = (long) (Math.random() * 999) + 1;
         Beneficio produto = Beneficio.builder()
                 .id(regBeneficio)
                 .nome("Beneficio " + regBeneficio)
                 .descricao("Descrição da Beneficio " + regBeneficio)
-                .valor(new BigDecimal(Math.random() * 1000).setScale(2, RoundingMode.HALF_UP))
+                .valor(valor)
                 .ativo(ativo)
                 .version(1L)
                 .build();

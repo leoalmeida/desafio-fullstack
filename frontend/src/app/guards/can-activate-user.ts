@@ -1,16 +1,8 @@
-import {
-  ActivatedRouteSnapshot,
-  CanActivateFn,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { TokenStorageService } from '../services/token-storage.service';
 
-export const canActivateUser: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot,
-) => {
+export const canActivateUser: CanActivateFn = () => {
   const router = inject(Router);
   const tokenService = inject(TokenStorageService);
   return tokenService.isAuthenticated() ? true : router.parseUrl('/login');

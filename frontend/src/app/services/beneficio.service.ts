@@ -1,12 +1,8 @@
-import { beneficios } from './../../mocks/beneficios';
-import { filter } from 'rxjs/operators';
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { BeneficioType } from '../models/beneficio-type';
-import { TransferenciaType } from '../models/transferencia-type';
-import { LoggerService } from './logger.service';
 import { NotificationService } from './notification.service';
 
 @Injectable({

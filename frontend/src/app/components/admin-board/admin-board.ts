@@ -4,14 +4,12 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AssociadoType } from 'src/app/models/associado-type';
-import { TokenType } from 'src/app/models/token-type';
 import { NotificationService } from 'src/app/services/notification.service';
 import { TitleService } from 'src/app/services/title.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-admin-board',

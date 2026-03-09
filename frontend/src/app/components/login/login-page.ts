@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   inject,
   OnInit,
@@ -8,7 +7,6 @@ import {
 import {
   ReactiveFormsModule,
   FormGroup,
-  FormControl,
   FormBuilder,
   Validators,
 } from '@angular/forms';
@@ -52,8 +50,6 @@ export class LoginPage implements OnInit {
     username: ['', [Validators.required]],
     password: ['', [Validators.required]],
   });
-
-  constructor() {}
 
   ngOnInit() {
     this.reloadPage();

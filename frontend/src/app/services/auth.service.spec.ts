@@ -5,23 +5,11 @@ import {
 } from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
 import { TokenStorageService } from './token-storage.service';
-import { AssociadoType } from '../models/associado-type';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
   let tokenStorageSpy: jasmine.SpyObj<TokenStorageService>;
-
-  const mockUser: AssociadoType = {
-    id: 1,
-    nome: 'João Silva',
-    username: 'joao',
-    email: 'joao@teste.com',
-    telefone: '1199999999',
-    accessToken: 'abc.def.ghi',
-    stats: [],
-    logs: [],
-  };
 
   beforeEach(() => {
     const spy = jasmine.createSpyObj('TokenStorageService', [

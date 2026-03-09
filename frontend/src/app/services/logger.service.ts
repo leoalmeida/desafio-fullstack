@@ -4,7 +4,13 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class LoggerService {
-  log(..._msgs: any[]) {}
-  error(..._msgs: any[]) {}
-  warn(..._msgs: any[]) {}
+  log(...msgs: unknown[]) {
+    void msgs;
+  }
+  error(...msgs: unknown[]) {
+    void msgs;
+  }
+  warn(...msgs: unknown[]) {
+    void msgs;
+  }
 }
