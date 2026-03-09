@@ -26,4 +26,4 @@ jobs:
 
     - name: Run Frontend Tests
       working-directory: frontend
-      run: npm test -- --watch=false --browsers=ChromeHeadless
+      run: npm test -- --watch=false --browsers=ChromeHeadless --code-coverage
