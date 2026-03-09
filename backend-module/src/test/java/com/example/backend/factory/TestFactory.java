@@ -27,10 +27,16 @@ public class TestFactory {
 
     public static BeneficioRequestDto gerarBeneficioRequestDto(boolean ativo) {
         Long regBeneficio = (long) (Math.random() * 999) + 1;
+        BeneficioRequestDto produto = gerarBeneficioRequestDto(ativo, new BigDecimal(Math.random() * 1000).setScale(2, RoundingMode.HALF_UP));
+        return produto;
+    }
+    
+    public static BeneficioRequestDto gerarBeneficioRequestDto(boolean ativo, BigDecimal valor) {
+        Long regBeneficio = (long) (Math.random() * 999) + 1;
         BeneficioRequestDto produto = BeneficioRequestDto.builder()
                 .nome("Beneficio " + regBeneficio)
                 .descricao("Descrição da Beneficio " + regBeneficio)
-                .valor(new BigDecimal(Math.random() * 1000).setScale(2, RoundingMode.HALF_UP))
+                .valor(valor)
                 .ativo(ativo)
                 .build();
         return produto;
