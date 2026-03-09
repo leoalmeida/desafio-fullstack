@@ -1,10 +1,8 @@
 package com.example.ejb;
 
-import jakarta.annotation.Nonnull;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import lombok.NonNull;
 
 import java.math.BigDecimal;
 import java.util.logging.Logger;
@@ -19,11 +17,7 @@ public class BeneficioEjbService {
     private static final Logger logger = Logger.getLogger(BeneficioEjbService.class.getName());
 
     @PersistenceContext
-    private final EntityManager em;
-
-    public BeneficioEjbService(@Nonnull final EntityManager entityManager) {
-        this.em = entityManager;
-    }
+    private EntityManager em;
     /**
      * Método deve transferir um valor de um benefício para outro, 
      *  garantindo que o saldo do benefício de origem não fique negativo. 

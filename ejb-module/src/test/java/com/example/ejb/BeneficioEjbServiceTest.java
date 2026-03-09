@@ -12,6 +12,7 @@ import com.example.ejb.entity.Beneficio;
 import com.example.ejb.exception.BusinessException;
 
 import java.math.BigDecimal;
+import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 
@@ -28,7 +29,18 @@ public class BeneficioEjbServiceTest {
     @BeforeEach
     void setup() {
         em = mock(EntityManager.class);
-        service = new BeneficioEjbService(em);
+        service = new BeneficioEjbService();
+        injectEntityManager(service, em);
+    }
+
+    private void injectEntityManager(BeneficioEjbService target, EntityManager entityManager) {
+        try {
+            Field field = BeneficioEjbService.class.getDeclaredField("em");
+            field.setAccessible(true);
+            field.set(target, entityManager);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("Falha ao injetar EntityManager no teste", e);
+        }
     }
 
     @Test
