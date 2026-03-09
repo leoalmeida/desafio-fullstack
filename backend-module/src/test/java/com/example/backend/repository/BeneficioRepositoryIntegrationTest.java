@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
@@ -59,6 +60,7 @@ public class BeneficioRepositoryIntegrationTest {
     @DisplayName("Deve alterar benefício sem alterar quantidade de registros")
     void aoAlterarBeneficio_entaoQuantidadeRegistrosNaoAltera() {
         // given
+        long quantidadeInicial = repository.count();
         Beneficio beneficio1 = repository.save(Objects.requireNonNull(TestFactory.gerarBeneficio()));
 
         beneficio1.setNome("Beneficio Alterado");
@@ -72,7 +74,9 @@ public class BeneficioRepositoryIntegrationTest {
 
         // then
         assertFalse(retrieved.isEmpty());
-        assertEquals(3, retrieved.size());
+        assertEquals(quantidadeInicial + 1, retrieved.size());
+
+        repository.deleteById(Objects.requireNonNull(saved.getId()));
     }
 
     @Test
@@ -121,20 +125,27 @@ public class BeneficioRepositoryIntegrationTest {
     @DisplayName("Não deve remover benefício com ID inválido")
     void aoRemoverBeneficioComIdInValido_entaoNenhumRegistroRemovido() {
         // given
-        repository.deleteAll();
         Beneficio beneficio1 = TestFactory.gerarBeneficio();
         Beneficio beneficio2 = TestFactory.gerarBeneficio();
         Beneficio beneficio3 = TestFactory.gerarBeneficio();
         List<Beneficio> array = new ArrayList<>();
         array.addAll(Arrays.asList(beneficio1, beneficio2, beneficio3));
-        repository.saveAll(array);
+        List<Beneficio> saved = repository.saveAll(array);
+        long quantidadeEsperada = repository.count();
+
+        long idInvalido = Long.MAX_VALUE;
+
         // when
-        repository.deleteById(1L);
+        try {
+            repository.deleteById(idInvalido);
+        } catch (EmptyResultDataAccessException ignored) {
+            // Some JPA configurations throw for missing IDs. This path is valid for this test.
+        }
         List<Beneficio> retrieved = repository.findAll();
 
         // then
         assertFalse(retrieved.isEmpty());
-        assertEquals(3, retrieved.size());
+        assertEquals(quantidadeEsperada, retrieved.size());
 
         repository.deleteAll();
     }

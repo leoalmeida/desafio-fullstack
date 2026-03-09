@@ -1,19 +1,19 @@
-import { beneficios } from "./../../mocks/beneficios";
-import { filter } from "rxjs/operators";
-import { inject, Injectable, signal } from "@angular/core";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { catchError, map, Observable, throwError } from "rxjs";
-import { environment } from "../../environments/environment";
-import { BeneficioType } from "../models/beneficio-type";
-import { TransferenciaType } from "../models/transferencia-type";
-import { LoggerService } from "./logger.service";
-import { NotificationService } from "./notification.service";
+import { beneficios } from './../../mocks/beneficios';
+import { filter } from 'rxjs/operators';
+import { inject, Injectable, signal } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, map, Observable, throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { BeneficioType } from '../models/beneficio-type';
+import { TransferenciaType } from '../models/transferencia-type';
+import { LoggerService } from './logger.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class BeneficioService {
-  private baseUrl: string = "/api/v1/beneficios";
+  private baseUrl = '/api/v1/beneficios';
   private beneficiosList = signal<BeneficioType[]>([]);
 
   private http: HttpClient = inject(HttpClient);
@@ -69,7 +69,7 @@ export class BeneficioService {
     return this.http.post<BeneficioType>(`${this.baseUrl}`, beneficio).pipe(
       map((added) => {
         if (!added) return false;
-        var lista = this.beneficiosList();
+        const lista = this.beneficiosList();
         lista.push(added); // Adiciona o novo item à lista
         this.beneficiosList.set([...lista]); // Atualiza a signal para refletir as mudanças
         return true;
@@ -84,8 +84,8 @@ export class BeneficioService {
       .pipe(
         map((beneficio) => {
           if (!beneficio) return false;
-          var lista = this.beneficiosList();
-          var changed = lista.find((x) => x.id === beneficio.id);
+          const lista = this.beneficiosList();
+          const changed = lista.find((x) => x.id === beneficio.id);
           if (changed) {
             Object.assign(changed, beneficio); // Atualiza o item na lista com os novos dados
             this.beneficiosList.set([...lista]); // Atualiza a signal para refletir as mudanças
@@ -102,20 +102,20 @@ export class BeneficioService {
   changeStatus(beneficio: BeneficioType): void {
     this.http
       .put<BeneficioType>(
-        `${this.baseUrl}/${beneficio.id}/${beneficio.ativo ? "ativar" : "cancelar"}`,
+        `${this.baseUrl}/${beneficio.id}/${beneficio.ativo ? 'ativar' : 'cancelar'}`,
         {},
       )
       .subscribe({
         next: (beneficio) => {
           if (!beneficio) return false;
-          var lista = this.beneficiosList();
-          var changed = lista.find((x) => x.id === beneficio.id);
+          const lista = this.beneficiosList();
+          const changed = lista.find((x) => x.id === beneficio.id);
           if (changed) {
             Object.assign(changed, beneficio); // Atualiza o item na lista com os novos dados
             this.beneficiosList.set([...lista]); // Atualiza a signal para refletir as mudanças
           }
           this.notify.showSuccess(
-            `Benefício ${beneficio.ativo ? "ativado" : "cancelado"} com sucesso: nome: ${beneficio.nome}.`,
+            `Benefício ${beneficio.ativo ? 'ativado' : 'cancelado'} com sucesso: nome: ${beneficio.nome}.`,
           );
           return true;
         },
@@ -131,7 +131,7 @@ export class BeneficioService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    let errorMessage = "Erro desconhecido";
+    let errorMessage = 'Erro desconhecido';
 
     if (error.error instanceof ErrorEvent) {
       // Erro do lado do cliente

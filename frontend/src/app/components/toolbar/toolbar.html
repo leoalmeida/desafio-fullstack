@@ -28,8 +28,8 @@
         <a matButton="tonal" (click)="onCreateBeneficio()">Criar Benefício</a>
       </ul>
     </div>
-    <section class="user-info" >
-      <button matButton="filled" disable="true">
+    <section class="user-info">
+      <button matButton="filled" disabled>
         <span class="logged-user">
           {{ loggedUser().nome }}
         </span>
@@ -48,7 +48,14 @@
   @if (isLoggedIn()) {
     <div>
       @for (route of routes; track $index) {
-        <button matButton [class.is-selected]="route.descricao == title()"  [routerLink]="route.path" selected>{{ route.descricao }}</button>
+        <button
+          matButton
+          [class.is-selected]="route.descricao == title()"
+          [routerLink]="route.path"
+          selected
+        >
+          {{ route.descricao }}
+        </button>
       }
     </div>
   }

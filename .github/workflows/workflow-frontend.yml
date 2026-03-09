@@ -5,9 +5,12 @@ on:
 
 jobs:
   code-quality-frontend:
-    uses: ./.github/workflows/code-quality.yml
+    uses: ./.github/workflows/code-quality-frontend.yml
     secrets: inherit
   
+  test-frontend:
+    uses: ./.github/workflows/testes-frontend.yml
+    secrets: inherit
   test-frontend:
     uses: ./.github/workflows/testes-frontend.yml
     secrets: inherit

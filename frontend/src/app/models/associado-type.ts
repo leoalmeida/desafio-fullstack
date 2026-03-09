@@ -1,7 +1,6 @@
-import { Token } from "@angular/compiler";
-import { TokenType } from "./token-type";
+import { TokenType } from './token-type';
 
-export type AssociadoType = {
+export interface AssociadoType {
   id: number;
   email: string;
   nome: string;
@@ -11,4 +10,4 @@ export type AssociadoType = {
   accessToken?: string;
   stats: { title: string; value: number }[];
   logs: string[];
-};
+}

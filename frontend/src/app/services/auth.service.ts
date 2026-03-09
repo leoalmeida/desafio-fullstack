@@ -1,24 +1,24 @@
-import { associados } from "./../../mocks/associados";
-import { AssociadoType } from "src/app/models/associado-type";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { inject, Injectable, Signal, signal } from "@angular/core";
-import { environment } from "../../environments/environment";
-import { BehaviorSubject, Observable } from "rxjs";
-import { TokenType } from "../models/token-type";
-import { TokenStorageService } from "./token-storage.service";
-import { BeneficioType } from "../models/beneficio-type";
+import { associados } from './../../mocks/associados';
+import { AssociadoType } from 'src/app/models/associado-type';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { inject, Injectable, Signal, signal } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { TokenType } from '../models/token-type';
+import { TokenStorageService } from './token-storage.service';
+import { BeneficioType } from '../models/beneficio-type';
 
 const httpOptions = {
   headers: new HttpHeaders({
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   }),
 };
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl: string = "";
+  private baseUrl = '';
   private http: HttpClient = inject(HttpClient);
   private apiData = [...associados];
   private associadoList = signal<AssociadoType[]>([]);
@@ -37,7 +37,7 @@ export class AuthService {
   items = this.associadoList.asReadonly();
 
   constructor() {
-    this.baseUrl = environment.authApi || "/api/v1/auth"; // Default to a fallback URL if not define
+    this.baseUrl = environment.authApi || '/api/v1/auth'; // Default to a fallback URL if not define
     this.mockHttpCall<any>(this.apiData).subscribe((xs) =>
       this.associadoList.set(xs),
     );
@@ -58,7 +58,7 @@ export class AuthService {
       return this.loggedUser.asObservable();
     } else {
       return new Observable<AssociadoType>((s) => {
-        s.error(new Error("Usuário ou senha inválidos"));
+        s.error(new Error('Usuário ou senha inválidos'));
         s.complete();
       });
     }
@@ -83,7 +83,7 @@ export class AuthService {
       nome: nome,
       username: username,
       telefone: telefone, // Placeholder, as telefone is not provided in the mock
-      accessToken: "abc123",
+      accessToken: 'abc123',
       stats: [],
       logs: [],
     };

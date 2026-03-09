@@ -1,14 +1,14 @@
-import { TestBed } from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 import {
   HttpClientTestingModule,
   HttpTestingController,
-} from "@angular/common/http/testing";
-import { TransferenciaService } from "./transferencia.service";
-import { LoggerService } from "./logger.service";
-import { TransferenciaType } from "../models/transferencia-type";
-import { environment } from "../../environments/environment";
+} from '@angular/common/http/testing';
+import { TransferenciaService } from './transferencia.service';
+import { LoggerService } from './logger.service';
+import { TransferenciaType } from '../models/transferencia-type';
+import { environment } from '../../environments/environment';
 
-describe("TransferenciaService", () => {
+describe('TransferenciaService', () => {
   let service: TransferenciaService;
   let httpMock: HttpTestingController;
   let loggerSpy: jasmine.SpyObj<LoggerService>;
@@ -20,7 +20,7 @@ describe("TransferenciaService", () => {
   };
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj("LoggerService", ["log", "error"]);
+    const spy = jasmine.createSpyObj('LoggerService', ['log', 'error']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -38,17 +38,17 @@ describe("TransferenciaService", () => {
     httpMock.verify();
   });
 
-  it("deve ser criado", () => {
+  it('deve ser criado', () => {
     expect(service).toBeTruthy();
   });
 
-  it("deve realizar uma transferência com sucesso (transferValue)", () => {
+  it('deve realizar uma transferência com sucesso (transferValue)', () => {
     service.transferValue(mockTransferencia).subscribe((res) => {
       expect(res).toBeFalse();
     });
 
     const req = httpMock.expectOne(`${environment.beneficiosApi}/transferir`);
-    expect(req.request.method).toBe("POST");
+    expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockTransferencia);
 
     req.flush(null);
@@ -59,11 +59,11 @@ describe("TransferenciaService", () => {
     );
   });
 
-  it("deve lidar com erro do servidor na transferência", () => {
-    const errorMsg = "Saldo insuficiente";
+  it('deve lidar com erro do servidor na transferência', () => {
+    const errorMsg = 'Saldo insuficiente';
 
     service.transferValue(mockTransferencia).subscribe({
-      next: () => fail("Deveria ter falhado"),
+      next: () => fail('Deveria ter falhado'),
       error: (error) => {
         expect(error.message).toContain(errorMsg);
       },
@@ -72,7 +72,7 @@ describe("TransferenciaService", () => {
     const req = httpMock.expectOne(`${environment.beneficiosApi}/transferir`);
     req.flush(
       { message: errorMsg },
-      { status: 400, statusText: "Bad Request" },
+      { status: 400, statusText: 'Bad Request' },
     );
 
     expect(loggerSpy.error).toHaveBeenCalledWith(

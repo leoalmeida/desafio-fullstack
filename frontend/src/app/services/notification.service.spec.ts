@@ -1,19 +1,19 @@
-import { TestBed } from "@angular/core/testing";
-import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { NotificationService } from "./notification.service";
-import { LoggerService } from "./logger.service";
+import { TestBed } from '@angular/core/testing';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { NotificationService } from './notification.service';
+import { LoggerService } from './logger.service';
 
-describe("NotificationService", () => {
+describe('NotificationService', () => {
   let service: NotificationService;
   let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
   let loggerSpy: jasmine.SpyObj<LoggerService>;
 
   beforeEach(() => {
-    const snackSpy = jasmine.createSpyObj("MatSnackBar", ["open"]);
-    const logSpy = jasmine.createSpyObj("LoggerService", [
-      "log",
-      "error",
-      "warn",
+    const snackSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
+    const logSpy = jasmine.createSpyObj('LoggerService', [
+      'log',
+      'error',
+      'warn',
     ]);
 
     TestBed.configureTestingModule({
@@ -30,12 +30,12 @@ describe("NotificationService", () => {
     loggerSpy = TestBed.inject(LoggerService) as jasmine.SpyObj<LoggerService>;
   });
 
-  it("deve ser criado", () => {
+  it('deve ser criado', () => {
     expect(service).toBeTruthy();
   });
 
-  it("deve apresentar um snackbar de informação quando show for chamado", () => {
-    const message = "Test Message";
+  it('deve apresentar um snackbar de informação quando show for chamado', () => {
+    const message = 'Test Message';
     service.show(message);
 
     expect(loggerSpy.log).toHaveBeenCalledWith(
@@ -44,13 +44,13 @@ describe("NotificationService", () => {
     );
     expect(snackBarSpy.open).toHaveBeenCalledWith(
       message,
-      "OK",
-      jasmine.objectContaining({ panelClass: ["snackbar-default"] }),
+      'OK',
+      jasmine.objectContaining({ panelClass: ['snackbar-default'] }),
     );
   });
 
-  it("deve apresentar um snackbar de erro quando showError for chamado", () => {
-    const message = "Error Message";
+  it('deve apresentar um snackbar de erro quando showError for chamado', () => {
+    const message = 'Error Message';
     service.showError(message);
 
     expect(loggerSpy.error).toHaveBeenCalledWith(
@@ -59,13 +59,13 @@ describe("NotificationService", () => {
     );
     expect(snackBarSpy.open).toHaveBeenCalledWith(
       message,
-      "Close",
-      jasmine.objectContaining({ panelClass: ["snackbar-error"] }),
+      'Close',
+      jasmine.objectContaining({ panelClass: ['snackbar-error'] }),
     );
   });
 
-  it("deve apresentar um snackbar de aviso quando showWarning for chamado", () => {
-    const message = "Warning Message";
+  it('deve apresentar um snackbar de aviso quando showWarning for chamado', () => {
+    const message = 'Warning Message';
     service.showWarning(message);
 
     expect(loggerSpy.warn).toHaveBeenCalledWith(
@@ -74,13 +74,13 @@ describe("NotificationService", () => {
     );
     expect(snackBarSpy.open).toHaveBeenCalledWith(
       message,
-      "Close",
-      jasmine.objectContaining({ panelClass: ["snackbar-warning"] }),
+      'Close',
+      jasmine.objectContaining({ panelClass: ['snackbar-warning'] }),
     );
   });
 
-  it("deve apresentar um snackbar de sucesso quando showSuccess for chamado", () => {
-    const message = "Success Message";
+  it('deve apresentar um snackbar de sucesso quando showSuccess for chamado', () => {
+    const message = 'Success Message';
     service.showSuccess(message);
 
     expect(loggerSpy.log).toHaveBeenCalledWith(
@@ -89,8 +89,8 @@ describe("NotificationService", () => {
     );
     expect(snackBarSpy.open).toHaveBeenCalledWith(
       message,
-      "Close",
-      jasmine.objectContaining({ panelClass: ["snackbar-success"] }),
+      'Close',
+      jasmine.objectContaining({ panelClass: ['snackbar-success'] }),
     );
   });
 });

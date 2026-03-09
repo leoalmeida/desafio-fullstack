@@ -2,22 +2,25 @@ import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
-} from "@angular/core";
+} from '@angular/core';
 import {
   HttpInterceptorFn,
   provideHttpClient,
   withInterceptors,
-} from "@angular/common/http";
+} from '@angular/common/http';
 import {
   provideClientHydration,
   provideProtractorTestingSupport,
   withIncrementalHydration,
-} from "@angular/platform-browser";
-import { provideRouter, withViewTransitions } from "@angular/router";
-import { routes } from "./app.routes";
+} from '@angular/platform-browser';
+import { provideRouter, withViewTransitions } from '@angular/router';
+import { routes } from './app.routes';
+import { environment } from '../environments/environment';
 
 export const appInterceptor: HttpInterceptorFn = (req, next) => {
-  console.log("Request made with URL:", req.url);
+  if (!environment.production) {
+    console.log('Request made with URL:', req.url);
+  }
   return next(req);
 };
 

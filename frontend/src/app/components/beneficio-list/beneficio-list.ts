@@ -1,4 +1,4 @@
-import { MatButtonModule } from "@angular/material/button";
+import { MatButtonModule } from '@angular/material/button';
 import {
   Component,
   computed,
@@ -7,24 +7,24 @@ import {
   Signal,
   signal,
   TemplateRef,
-} from "@angular/core";
-import { BeneficioType } from "../../models/beneficio-type";
-import { BeneficioService } from "../../services/beneficio.service";
-import { ActivatedRoute, Router, Routes } from "@angular/router";
-import { LoadingService } from "../loading-indicator/loading.service";
-import { TokenStorageService } from "../../services/token-storage.service";
-import { TokenType } from "../../models/token-type";
-import { BeneficioCard } from "../beneficio-card/beneficio-card";
-import { Searchbar } from "../searchbar/searchbar";
-import { BeneficioDetails } from "../beneficio-details/beneficio-details";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { MatIcon, MatIconModule } from "@angular/material/icon";
-import { AssociadoType } from "src/app/models/associado-type";
-import { NotificationService } from "src/app/services/notification.service";
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+} from '@angular/core';
+import { BeneficioType } from '../../models/beneficio-type';
+import { BeneficioService } from '../../services/beneficio.service';
+import { ActivatedRoute, Router, Routes } from '@angular/router';
+import { LoadingService } from '../loading-indicator/loading.service';
+import { TokenStorageService } from '../../services/token-storage.service';
+import { TokenType } from '../../models/token-type';
+import { BeneficioCard } from '../beneficio-card/beneficio-card';
+import { Searchbar } from '../searchbar/searchbar';
+import { BeneficioDetails } from '../beneficio-details/beneficio-details';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { AssociadoType } from 'src/app/models/associado-type';
+import { NotificationService } from 'src/app/services/notification.service';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
-  selector: "app-beneficio-list",
+  selector: 'app-beneficio-list',
   standalone: true,
   imports: [
     BeneficioCard,
@@ -34,12 +34,12 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
     MatIconModule,
     MatSlideToggleModule,
   ],
-  templateUrl: "./beneficio-list.html",
-  styleUrls: ["./beneficio-list.css"],
+  templateUrl: './beneficio-list.html',
+  styleUrls: ['./beneficio-list.css'],
 })
 export class BeneficioList {
   protected loggedUser = signal({} as AssociadoType);
-  searchQuery = signal<string>("");
+  searchQuery = signal<string>('');
 
   private beneficioService: BeneficioService = inject(BeneficioService);
   private loadingService: LoadingService = inject(LoadingService);
@@ -56,7 +56,7 @@ export class BeneficioList {
       });
       this.beneficioService.getAll();
     } catch (error: any) {
-      this.notify.showError(error.message || "Erro ao identificar usuário.");
+      this.notify.showError(error.message || 'Erro ao identificar usuário.');
     } finally {
       this.loadingService.loadingOff();
     }
@@ -66,14 +66,14 @@ export class BeneficioList {
     try {
       this.loadingService.loadingOn();
       const normalizedQuery = this.searchQuery()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase();
       return this.beneficioService
         .items()
         .filter((x) => x?.nome.toLowerCase().includes(normalizedQuery));
     } catch (error: any) {
-      this.notify.showError(error.message || "Erro ao filtrar benefícios.");
+      this.notify.showError(error.message || 'Erro ao filtrar benefícios.');
       return [];
     } finally {
       this.loadingService.loadingOff();
@@ -86,7 +86,7 @@ export class BeneficioList {
 
   onCreateBeneficio(): void {
     const dialogRef = this.dialogAcao.open(BeneficioDetails, {
-      width: "500px",
+      width: '500px',
       data: {},
     });
     // Mantem o fluxo de fechamento sem side effects de log.

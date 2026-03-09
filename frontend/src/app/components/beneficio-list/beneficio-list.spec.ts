@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { BeneficioList } from "./beneficio-list";
-import { BeneficioService } from "../../services/beneficio.service";
-import { LoadingService } from "../loading-indicator/loading.service";
-import { TokenStorageService } from "../../services/token-storage.service";
-import { MatDialog } from "@angular/material/dialog";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { of } from "rxjs";
-import { signal } from "@angular/core";
-import { BeneficioType } from "../../models/beneficio-type";
-import { AssociadoType } from "../../models/associado-type";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BeneficioList } from './beneficio-list';
+import { BeneficioService } from '../../services/beneficio.service';
+import { LoadingService } from '../loading-indicator/loading.service';
+import { TokenStorageService } from '../../services/token-storage.service';
+import { MatDialog } from '@angular/material/dialog';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { of } from 'rxjs';
+import { signal } from '@angular/core';
+import { BeneficioType } from '../../models/beneficio-type';
+import { AssociadoType } from '../../models/associado-type';
 
-describe("BeneficioList", () => {
+describe('BeneficioList', () => {
   let component: BeneficioList;
   let fixture: ComponentFixture<BeneficioList>;
   let beneficioServiceSpy: jasmine.SpyObj<BeneficioService>;
@@ -19,32 +19,32 @@ describe("BeneficioList", () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>;
 
   const mockBeneficios: BeneficioType[] = [
-    { id: 1, nome: "Vale Refeição", descricao: "VR", valor: 100, ativo: true },
-    { id: 2, nome: "Plano de Saúde", descricao: "PS", valor: 200, ativo: true },
+    { id: 1, nome: 'Vale Refeição', descricao: 'VR', valor: 100, ativo: true },
+    { id: 2, nome: 'Plano de Saúde', descricao: 'PS', valor: 200, ativo: true },
   ];
 
   const mockUser: AssociadoType = {
     id: 1,
-    email: "user@test.com",
-    nome: "Usuario Teste",
-    telefone: "11999990000",
-    username: "user",
+    email: 'user@test.com',
+    nome: 'Usuario Teste',
+    telefone: '11999990000',
+    username: 'user',
     stats: [],
     logs: [],
   };
 
   beforeEach(async () => {
-    beneficioServiceSpy = jasmine.createSpyObj("BeneficioService", ["getAll"], {
+    beneficioServiceSpy = jasmine.createSpyObj('BeneficioService', ['getAll'], {
       items: signal(mockBeneficios),
     });
-    loadingServiceSpy = jasmine.createSpyObj("LoadingService", [
-      "loadingOn",
-      "loadingOff",
+    loadingServiceSpy = jasmine.createSpyObj('LoadingService', [
+      'loadingOn',
+      'loadingOff',
     ]);
-    tokenStorageServiceSpy = jasmine.createSpyObj("TokenStorageService", [], {
+    tokenStorageServiceSpy = jasmine.createSpyObj('TokenStorageService', [], {
       loggedUser$: of(mockUser),
     });
-    dialogSpy = jasmine.createSpyObj("MatDialog", ["open"]);
+    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
     await TestBed.configureTestingModule({
       imports: [BeneficioList, NoopAnimationsModule],
@@ -61,33 +61,33 @@ describe("BeneficioList", () => {
     fixture.detectChanges();
   });
 
-  it("deve criar o componente e carregar dados iniciais", () => {
+  it('deve criar o componente e carregar dados iniciais', () => {
     expect(component).toBeTruthy();
     expect(beneficioServiceSpy.getAll).toHaveBeenCalled();
     expect(loadingServiceSpy.loadingOn).toHaveBeenCalled();
     expect(loadingServiceSpy.loadingOff).toHaveBeenCalled();
   });
 
-  it("deve filtrar a lista de benefícios com base na searchQuery", () => {
-    component.searchQuery.set("vale");
+  it('deve filtrar a lista de benefícios com base na searchQuery', () => {
+    component.searchQuery.set('vale');
     fixture.detectChanges();
 
     const filtered = component.filteredBeneficioList();
     expect(filtered?.length).toBe(1);
-    expect(filtered![0].nome).toBe("Vale Refeição");
+    expect(filtered![0].nome).toBe('Vale Refeição');
   });
 
-  it("deve filtrar sem diferenciar maiúsculas e minúsculas", () => {
-    component.searchQuery.set("PLANO");
+  it('deve filtrar sem diferenciar maiúsculas e minúsculas', () => {
+    component.searchQuery.set('PLANO');
     fixture.detectChanges();
 
     const filtered = component.filteredBeneficioList();
     expect(filtered?.length).toBe(1);
-    expect(filtered![0].nome).toBe("Plano de Saúde");
+    expect(filtered![0].nome).toBe('Plano de Saúde');
   });
 
-  it("deve atualizar searchQuery ao chamar handleMessage", () => {
-    const query = "nova busca";
+  it('deve atualizar searchQuery ao chamar handleMessage', () => {
+    const query = 'nova busca';
     component.handleMessage(query);
     expect(component.searchQuery()).toBe(query);
   });
