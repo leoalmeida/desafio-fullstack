@@ -47,12 +47,14 @@ export class TransferDetails {
   formTransferencia: FormGroup = this.formBuilder.group({
     fromId: [0, Validators.required],
     toId: [0, Validators.required],
-    valor: [0.0, Validators.required, Validators.min(0.01)],
+    valor: [0.0, [Validators.required, Validators.min(0.01)]],
   });
 
   listaBeneficiosAtivos: BeneficioType[] = [];
 
-  constructor() {}
+  constructor() {
+    this.formTransferencia.patchValue({ fromId: this.data?.id ?? 0 });
+  }
 
   filteredActiveList = computed(() => {
     try {

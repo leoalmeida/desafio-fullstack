@@ -45,7 +45,7 @@ export class BeneficioDetails {
   formBeneficio = this.formBuilder.group({
     nome: ['', Validators.required],
     descricao: [''],
-    valor: [0.0, Validators.required, Validators.min(0.01)],
+    valor: [0.0, [Validators.required, Validators.min(0.01)]],
     ativo: [true, Validators.required],
   });
 
