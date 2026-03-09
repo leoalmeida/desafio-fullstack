@@ -1,10 +1,5 @@
 import { MatButtonModule } from '@angular/material/button';
-import {
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { BeneficioService } from '../../services/beneficio.service';
 import { LoadingService } from '../loading-indicator/loading.service';
 import { TokenStorageService } from '../../services/token-storage.service';

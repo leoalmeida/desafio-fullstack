@@ -29,7 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:80", "http://localhost:4200"}, maxAge = BeneficioController.MAX_AGE)
+@CrossOrigin(
+        origins = {"http://localhost:80", "http://localhost:4200"},
+        maxAge = BeneficioController.MAX_AGE)
 @RequestMapping("/api/v1/beneficios")
 @Tag(name = "Benefícios", description = "Endpoint de gestão de benefícios bancários")
 @Slf4j

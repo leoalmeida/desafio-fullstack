@@ -99,7 +99,7 @@ public class BeneficioServiceImpl implements BeneficioService {
         } catch (Exception ex) {
             log.error("Erro ao realizar transferência: {}", ex.getMessage());
             throw new BusinessException("Erro ao realizar transferência: " + ex.getMessage(), ex);
-        } 
+        }
     }
 
     private void validateTransferenciaDto(@Nonnull final TransferenciaDto dto) {

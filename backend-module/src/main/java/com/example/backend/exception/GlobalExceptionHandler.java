@@ -117,5 +117,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseError error = responseError(e.getMessage(), HttpStatus.BAD_REQUEST);
         return handleExceptionInternal(e, error, new HttpHeaders(headers()), HttpStatus.BAD_REQUEST, request);
     }
-
 }

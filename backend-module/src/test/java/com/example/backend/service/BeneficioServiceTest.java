@@ -17,7 +17,6 @@ import com.example.backend.repository.*;
 import com.example.backend.validator.ObjectsValidator;
 import com.example.ejb.BeneficioEjbService;
 import com.example.ejb.entity.Beneficio;
-import com.example.ejb.exception.BusinessException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,7 +79,7 @@ public class BeneficioServiceTest {
         assertEquals(IllegalArgumentException.class, throwable.getClass());
         then(repository).should(never()).findById(any(Long.class));
         then(repository).should(never()).save(any(Beneficio.class));
-        then(validator).should(never()).validate(input); //Validação ocorre antes do validador
+        then(validator).should(never()).validate(input); // Validação ocorre antes do validador
     }
 
     @Test

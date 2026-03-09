@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,9 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.context.WebApplicationContext;
 
 @ContextConfiguration(classes = BackendApplication.class)
@@ -194,7 +190,6 @@ class BackendApplicationTests extends AbstractIntegrationTest {
         assertNotNull(response);
     }
 
-
     @Test
     @DisplayName("Deve realizar transferência válida entre benefícios e retornar status Ok")
     void integradoAoRealizarTransferenciaValida_RetornaStatusOk() throws Exception {
@@ -213,5 +208,4 @@ class BackendApplicationTests extends AbstractIntegrationTest {
                 beneficio2.getValor().add(new BigDecimal("50.00")),
                 destinoDto.get().getValor());
     }
-
 }

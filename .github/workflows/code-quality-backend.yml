@@ -22,7 +22,7 @@ jobs:
         run: mvn -B -f ejb-module/pom.xml clean install -DskipTests
 
       - name: Run Checkstyle
-        run: mvn -B -f backend-module/pom.xml spotless:apply
+        run: mvn -B -f backend-module/pom.xml spotless:check
 
       - name: Compile Backend Module
         run: mvn -B -f backend-module/pom.xml clean package -DskipTests

@@ -1,9 +1,4 @@
-import {
-  Component,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
