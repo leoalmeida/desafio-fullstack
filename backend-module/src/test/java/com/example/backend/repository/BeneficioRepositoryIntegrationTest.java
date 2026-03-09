@@ -133,12 +133,7 @@ public class BeneficioRepositoryIntegrationTest {
         List<Beneficio> saved = repository.saveAll(array);
         long quantidadeEsperada = repository.count();
 
-        Long maiorId = saved.stream()
-                .map(Beneficio::getId)
-                .filter(Objects::nonNull)
-                .max(Long::compareTo)
-                .orElse(0L);
-        long idInvalido = maiorId + 999L;
+        long idInvalido = Long.MAX_VALUE;
 
         // when
         try {
