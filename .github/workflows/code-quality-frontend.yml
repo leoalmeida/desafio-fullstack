@@ -18,7 +18,7 @@ jobs:
           with:
              node-version: ${{ matrix.node-version }}
              cache: "npm"
-             cache-dependency-path: ./package-lock.json
+             cache-dependency-path: frontend/package-lock.json
 
         - name: Install Dependencies
           working-directory: frontend
@@ -26,8 +26,8 @@ jobs:
 
         - name: Run Prettier check to ensure code formatting
           working-directory: frontend
-          run: npm run prettier
+          run: npx prettier . --check
 
         - name: Run lint check to ensure code formatting
           working-directory: frontend
-          run: npm run lint -- --fix 
+          run: npm run lint 
