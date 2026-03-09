@@ -15,9 +15,12 @@ import {
 } from '@angular/platform-browser';
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { routes } from './app.routes';
+import { environment } from '../environments/environment';
 
 export const appInterceptor: HttpInterceptorFn = (req, next) => {
-  console.log('Request made with URL:', req.url);
+  if (!environment.production) {
+    console.log('Request made with URL:', req.url);
+  }
   return next(req);
 };
 
