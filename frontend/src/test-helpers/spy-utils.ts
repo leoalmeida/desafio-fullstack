@@ -7,7 +7,7 @@ type MethodKeys<T> = {
 export type SpyObj<
   T extends object,
   M extends MethodKeys<T> = never,
-> = Partial<T> & { [K in M]: ReturnType<typeof vi.fn> };
+> = Partial<T> & Record<M, ReturnType<typeof vi.fn>>;
 
 export function createSpyObj<
   T extends object,
