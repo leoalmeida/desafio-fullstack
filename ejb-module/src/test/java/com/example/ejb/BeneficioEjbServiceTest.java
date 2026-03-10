@@ -29,8 +29,7 @@ public class BeneficioEjbServiceTest {
     @BeforeEach
     void setup() {
         em = mock(EntityManager.class);
-        service = new BeneficioEjbService();
-        injectEntityManager(service, em);
+        service = new BeneficioEjbService(em);
     }
 
     private void injectEntityManager(BeneficioEjbService target, EntityManager entityManager) {
