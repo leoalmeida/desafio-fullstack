@@ -7,41 +7,41 @@
 ![Java](https://img.shields.io/badge/java-17-orange)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 
-Aplicacao fullstack com frontend Angular, backend Spring Boot e modulo EJB para regras de transferencia de beneficios.
+Fullstack application with Angular frontend, Spring Boot backend, and an EJB module for benefit transfer business rules.
 
-## Sumario
+## Table of Contents
 
-- [Visao Geral](#visao-geral)
-- [Requisitos](#requisitos)
-- [Estrutura](#estrutura)
-- [Configuracao](#configuracao)
-- [Como Rodar](#como-rodar)
+- [Overview](#overview)
+- [Requirements](#requirements)
+- [Structure](#structure)
+- [Configuration](#configuration)
+- [How to Run](#how-to-run)
 - [API](#api)
 - [Docker](#docker)
-- [Testes e Qualidade](#testes-e-qualidade)
+- [Tests and Quality](#tests-and-quality)
 - [Troubleshooting](#troubleshooting)
 
-## Visao Geral
+## Overview
 
-Camadas da solucao:
+Solution layers:
 
-- `frontend`: SPA Angular 21 para operacoes de beneficios
-- `backend-module`: API REST Spring Boot (porta `8081`)
-- `ejb-module`: modulo EJB com regra de transferencia
+- `frontend`: Angular 21 SPA for benefit operations
+- `backend-module`: Spring Boot REST API (port `8081`)
+- `ejb-module`: EJB module with transfer rules
 
-Pastas auxiliares:
+Supporting folders:
 
-- `db`: scripts de banco (`schema.sql` e `seed.sql`)
-- `deployment`: arquivos de apoio para deploy
+- `db`: database scripts (`schema.sql` and `seed.sql`)
+- `deployment`: deployment support files
 
-## Requisitos
+## Requirements
 
 - Java 17
 - Maven 3.8+
-- Node.js 20+ e npm
-- Docker e Docker Compose (opcional)
+- Node.js 20+ and npm
+- Docker and Docker Compose (optional)
 
-## Estrutura
+## Structure
 
 ```text
 desafio-fullstack/
@@ -55,16 +55,16 @@ desafio-fullstack/
     pom.xml
 ```
 
-## Configuracao
+## Configuration
 
 ### Backend
 
-`backend-module` usa H2 em memoria por padrao com:
+`backend-module` uses in-memory H2 by default:
 
 - `server.port=8081`
 - `spring.datasource.url=jdbc:h2:mem:beneficiosdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE`
 
-Variaveis opcionais para sobrescrever conexao:
+Optional environment variables to override DB connection:
 
 - `DBURL`
 - `DBUSER`
@@ -73,37 +73,37 @@ Variaveis opcionais para sobrescrever conexao:
 
 ### Frontend
 
-Ambiente de desenvolvimento aponta para:
+Development environment points to:
 
 - `http://localhost:8081/api/v1/beneficios`
 
-Script local sobe em:
+Local script serves on:
 
 - `http://localhost:4200`
 
-## Como Rodar
+## How to Run
 
-### 1. Build Java na raiz
+### 1. Build Java modules from root
 
 ```powershell
 Set-Location "c:\Users\leo_a\projetos\desafio-fullstack"
 mvn clean install
 ```
 
-### 2. Subir backend
+### 2. Start backend
 
 ```powershell
 Set-Location "c:\Users\leo_a\projetos\desafio-fullstack\backend-module"
 mvn spring-boot:run
 ```
 
-Recursos do backend:
+Backend resources:
 
 - Swagger UI: `http://localhost:8081/swagger-ui.html`
 - OpenAPI JSON: `http://localhost:8081/api-docs`
 - H2 Console: `http://localhost:8081/h2-console`
 
-### 3. Subir frontend
+### 3. Start frontend
 
 ```powershell
 Set-Location "c:\Users\leo_a\projetos\desafio-fullstack\frontend"
@@ -111,7 +111,7 @@ npm install
 npm start
 ```
 
-Frontend disponivel em `http://localhost:4200`.
+Frontend available at `http://localhost:4200`.
 
 ## API
 
@@ -126,7 +126,7 @@ Base URL: `http://localhost:8081/api/v1`
 - `DELETE /beneficios/{id}`
 - `POST /beneficios/transferir`
 
-Exemplo de criacao:
+Create payload example:
 
 ```json
 {
@@ -140,20 +140,20 @@ Exemplo de criacao:
 
 ## Docker
 
-Existe `docker-compose.yaml` na raiz para subir backend + frontend.
+A root `docker-compose.yaml` is available to run backend + frontend.
 
 ```powershell
 Set-Location "c:\Users\leo_a\projetos\desafio-fullstack"
 docker compose up --build
 ```
 
-O compose usa variaveis de ambiente como:
+Compose uses environment variables such as:
 
 - `SPRING_LOCAL_PORT`, `SPRING_DOCKER_PORT`
 - `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DRIVER`
 - `FRONTEND_LOCAL_PORT`, `FRONTEND_DOCKER_PORT`
 
-## Testes e Qualidade
+## Tests and Quality
 
 Backend:
 
@@ -177,11 +177,11 @@ npm run test
 npm run lint
 ```
 
-No backend estao configurados plugins como Jacoco, Checkstyle, PMD, SpotBugs e Spotless.
+Backend includes quality plugins such as Jacoco, Checkstyle, PMD, SpotBugs, and Spotless.
 
 ## Troubleshooting
 
-- Frontend nao conecta no backend: confirme backend ativo em `http://localhost:8081`.
-- Porta ocupada: ajuste porta do Angular em `frontend/package.json` ou `server.port` no backend.
-- Erro de variavel no Docker Compose: confira variaveis obrigatorias no shell ou `.env`.
-- Falha de build Java: valide `java -version` com Java 17.
+- Frontend cannot connect to backend: confirm backend running at `http://localhost:8081`.
+- Port conflict: change Angular port in `frontend/package.json` or backend `server.port`.
+- Docker Compose variable errors: verify required variables in shell or `.env`.
+- Java build failures: verify `java -version` with Java 17.
