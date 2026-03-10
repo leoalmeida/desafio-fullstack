@@ -32,7 +32,6 @@ describe('canActivateAdmin', () => {
         { provide: Router, useValue: routerSpy },
       ],
     });
-
   });
 
   it('deve ser criado', () => {

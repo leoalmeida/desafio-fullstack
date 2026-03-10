@@ -12,7 +12,10 @@ import { firstValueFrom } from 'rxjs';
 describe('BeneficioService', () => {
   let service: BeneficioService;
   let httpMock: HttpTestingController;
-  let notificationSpy: { showSuccess: ReturnType<typeof vi.fn>; showError: ReturnType<typeof vi.fn> };
+  let notificationSpy: {
+    showSuccess: ReturnType<typeof vi.fn>;
+    showError: ReturnType<typeof vi.fn>;
+  };
 
   const mockBeneficio: BeneficioType = {
     id: 1,

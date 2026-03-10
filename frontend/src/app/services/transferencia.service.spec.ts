@@ -64,7 +64,9 @@ describe('TransferenciaService', () => {
     const errorMsg = 'Saldo insuficiente';
 
     service.transferValue(mockTransferencia).subscribe({
-      next: () => { throw new Error('Deveria ter falhado'); },
+      next: () => {
+        throw new Error('Deveria ter falhado');
+      },
       error: (error) => {
         expect(error.message).toContain(errorMsg);
       },

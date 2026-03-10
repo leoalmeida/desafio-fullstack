@@ -12,10 +12,7 @@ export type SpyObj<
 export function createSpyObj<
   T extends object,
   M extends MethodKeys<T> = MethodKeys<T>,
->(
-  methods: M[],
-  properties: Partial<T> = {},
-): SpyObj<T, M> {
+>(methods: M[], properties: Partial<T> = {}): SpyObj<T, M> {
   const spy = {} as SpyObj<T, M>;
 
   for (const method of methods) {

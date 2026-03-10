@@ -83,7 +83,7 @@ describe('LoginPage', () => {
 
     component.reloadPage();
 
-  expect(component.isLoggedIn()).toBe(false);
+    expect(component.isLoggedIn()).toBe(false);
     expect(routerSpy.navigate).not.toHaveBeenCalled();
   });
 });

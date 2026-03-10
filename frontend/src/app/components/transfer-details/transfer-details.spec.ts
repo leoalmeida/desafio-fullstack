@@ -16,7 +16,10 @@ describe('TransferDetails', () => {
   let dialogRefSpy: SpyObj<MatDialogRef<TransferDetails>, 'close'>;
   let transferenciaServiceSpy: SpyObj<TransferenciaService, 'transferValue'>;
   let beneficioServiceSpy: SpyObj<BeneficioService, 'getAll'>;
-  let notificationServiceSpy: SpyObj<NotificationService, 'showSuccess' | 'showError'>;
+  let notificationServiceSpy: SpyObj<
+    NotificationService,
+    'showSuccess' | 'showError'
+  >;
 
   const mockBeneficio: BeneficioType = {
     id: 1,

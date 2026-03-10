@@ -38,7 +38,10 @@ describe('BeneficioList', () => {
     beneficioServiceSpy = createSpyObj<BeneficioService>(['getAll'], {
       items: signal(mockBeneficios),
     } as Partial<BeneficioService>);
-    loadingServiceSpy = createSpyObj<LoadingService>(['loadingOn', 'loadingOff']);
+    loadingServiceSpy = createSpyObj<LoadingService>([
+      'loadingOn',
+      'loadingOff',
+    ]);
     tokenStorageServiceSpy = createSpyObj<TokenStorageService>([], {
       loggedUser$: of(mockUser),
     } as Partial<TokenStorageService>);
