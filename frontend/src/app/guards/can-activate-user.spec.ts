@@ -18,9 +18,9 @@ describe('canActivateUser', () => {
     TestBed.runInInjectionContext(() => canActivateUser(...guardParameters));
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj('TokenStorageService', [], {
+    const spy = {
       isAuthenticated: isAuthenticatedSignal.asReadonly(),
-    });
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -42,7 +42,7 @@ describe('canActivateUser', () => {
       {} as ActivatedRouteSnapshot,
       {} as RouterStateSnapshot,
     );
-    expect(result).toBeTrue();
+    expect(result).toBe(true);
   });
 
   it('deve redirecionar para /login se o usuário não estiver autenticado', () => {
@@ -51,7 +51,7 @@ describe('canActivateUser', () => {
       {} as ActivatedRouteSnapshot,
       {} as RouterStateSnapshot,
     );
-    expect(result instanceof UrlTree).toBeTrue();
+    expect(result instanceof UrlTree).toBe(true);
     expect((result as UrlTree).toString()).toBe('/login');
   });
 });

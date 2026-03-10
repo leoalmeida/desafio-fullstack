@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TokenStorageService } from './token-storage.service';
 import { AssociadoType } from '../models/associado-type';
+import { firstValueFrom } from 'rxjs';
 
 describe('TokenStorageService', () => {
   let service: TokenStorageService;
@@ -42,17 +43,15 @@ describe('TokenStorageService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('deve salvar o token JWT e atualizar o estado de autenticação', (done) => {
+  it('deve salvar o token JWT e atualizar o estado de autenticação', async () => {
     service.saveJsonWebToken(mockUser);
 
     expect(window.sessionStorage.getItem('user')).toBeTruthy();
-    expect(service.isAuthenticated()).toBeTrue();
+    expect(service.isAuthenticated()).toBe(true);
 
-    service.loggedUser$.subscribe((user) => {
-      expect(user.id).toBe(1);
-      expect(user.nome).toBe(mockUsername);
-      done();
-    });
+    const user = await firstValueFrom(service.loggedUser$);
+    expect(user.id).toBe(1);
+    expect(user.nome).toBe(mockUsername);
   });
 
   it('deve salvar e recuperar o objeto de usuário', () => {
@@ -69,7 +68,7 @@ describe('TokenStorageService', () => {
     expect(user).toEqual({} as AssociadoType);
   });
 
-  it('deve limpar o storage e resetar o estado no signOut', (done) => {
+  it('deve limpar o storage e resetar o estado no signOut', async () => {
     // Setup inicial
     service.saveJsonWebToken(mockUser);
     window.sessionStorage.setItem('user', JSON.stringify(mockUser));
@@ -77,27 +76,25 @@ describe('TokenStorageService', () => {
     service.signOut();
 
     expect(window.sessionStorage.length).toBe(0);
-    expect(service.isAuthenticated()).toBeFalse();
+    expect(service.isAuthenticated()).toBe(false);
 
-    service.loggedUser$.subscribe((user) => {
-      expect(user).toEqual({} as any);
-      done();
-    });
+    const user = await firstValueFrom(service.loggedUser$);
+    expect(user).toEqual({} as any);
   });
 
   it('não deve fazer nada no saveJsonWebToken se o accessToken for vazio', () => {
-    const spySet = spyOn(window.sessionStorage, 'setItem');
+    const spySet = vi.spyOn(window.sessionStorage, 'setItem');
 
     service.saveJsonWebToken({ ...mockUser, accessToken: '' });
 
     expect(spySet).not.toHaveBeenCalled();
-    expect(service.isAuthenticated()).toBeFalse();
+    expect(service.isAuthenticated()).toBe(false);
   });
 
   it('deve verificar se o usuário possui uma role específica', () => {
     service.saveJsonWebToken(mockUser);
 
-    expect(service.hasRole('ROLE_USER')).toBeTrue();
-    expect(service.hasRole('ROLE_ADMIN')).toBeFalse();
+    expect(service.hasRole('ROLE_USER')).toBe(true);
+    expect(service.hasRole('ROLE_ADMIN')).toBe(false);
   });
 });

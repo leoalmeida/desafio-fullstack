@@ -9,14 +9,15 @@ import { of } from 'rxjs';
 import { signal } from '@angular/core';
 import { BeneficioType } from '../../models/beneficio-type';
 import { AssociadoType } from '../../models/associado-type';
+import { createSpyObj, SpyObj } from '../../../test-helpers/spy-utils';
 
 describe('BeneficioList', () => {
   let component: BeneficioList;
   let fixture: ComponentFixture<BeneficioList>;
-  let beneficioServiceSpy: jasmine.SpyObj<BeneficioService>;
-  let loadingServiceSpy: jasmine.SpyObj<LoadingService>;
-  let tokenStorageServiceSpy: jasmine.SpyObj<TokenStorageService>;
-  let dialogSpy: jasmine.SpyObj<MatDialog>;
+  let beneficioServiceSpy: SpyObj<BeneficioService>;
+  let loadingServiceSpy: SpyObj<LoadingService>;
+  let tokenStorageServiceSpy: SpyObj<TokenStorageService>;
+  let dialogSpy: SpyObj<MatDialog>;
 
   const mockBeneficios: BeneficioType[] = [
     { id: 1, nome: 'Vale Refeição', descricao: 'VR', valor: 100, ativo: true },
@@ -34,17 +35,14 @@ describe('BeneficioList', () => {
   };
 
   beforeEach(async () => {
-    beneficioServiceSpy = jasmine.createSpyObj('BeneficioService', ['getAll'], {
+    beneficioServiceSpy = createSpyObj<BeneficioService>(['getAll'], {
       items: signal(mockBeneficios),
-    });
-    loadingServiceSpy = jasmine.createSpyObj('LoadingService', [
-      'loadingOn',
-      'loadingOff',
-    ]);
-    tokenStorageServiceSpy = jasmine.createSpyObj('TokenStorageService', [], {
+    } as Partial<BeneficioService>);
+    loadingServiceSpy = createSpyObj<LoadingService>(['loadingOn', 'loadingOff']);
+    tokenStorageServiceSpy = createSpyObj<TokenStorageService>([], {
       loggedUser$: of(mockUser),
-    });
-    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+    } as Partial<TokenStorageService>);
+    dialogSpy = createSpyObj<MatDialog>(['open']);
 
     await TestBed.configureTestingModule({
       imports: [BeneficioList, NoopAnimationsModule],

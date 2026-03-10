@@ -6,12 +6,13 @@ import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { TitleService } from '../../services/title.service';
 import { AssociadoType } from 'src/app/models/associado-type';
+import { createSpyObj, SpyObj } from '../../../test-helpers/spy-utils';
 
 describe('Toolbar', () => {
   let component: Toolbar;
   let fixture: ComponentFixture<Toolbar>;
-  let tokenStorageSpy: jasmine.SpyObj<TokenStorageService>;
-  let titleServiceSpy: jasmine.SpyObj<TitleService>;
+  let tokenStorageSpy: SpyObj<TokenStorageService>;
+  let titleServiceSpy: SpyObj<TitleService>;
   let loggedUserSubject: BehaviorSubject<AssociadoType>;
   let autenticadoSubject: BehaviorSubject<boolean>;
   let titleSubject: BehaviorSubject<string>;
@@ -29,13 +30,13 @@ describe('Toolbar', () => {
     autenticadoSubject = new BehaviorSubject<boolean>(false);
     titleSubject = new BehaviorSubject<string>('Frontend App');
 
-    tokenStorageSpy = jasmine.createSpyObj('TokenStorageService', [], {
+    tokenStorageSpy = createSpyObj<TokenStorageService>([], {
       loggedUser$: loggedUserSubject.asObservable(),
       autenticado$: autenticadoSubject.asObservable(),
-    });
-    titleServiceSpy = jasmine.createSpyObj('TitleService', [], {
+    } as Partial<TokenStorageService>);
+    titleServiceSpy = createSpyObj<TitleService>([], {
       title$: titleSubject.asObservable(),
-    });
+    } as Partial<TitleService>);
 
     await TestBed.configureTestingModule({
       imports: [Toolbar],
@@ -80,9 +81,9 @@ describe('Toolbar', () => {
   });
 
   it('deve alternar o estado de "opened" ao interagir com o menu (simulação lógica)', () => {
-    expect(component.opened).toBeFalse();
+    expect(component.opened).toBe(false);
     component.opened = !component.opened;
-    expect(component.opened).toBeTrue();
+    expect(component.opened).toBe(true);
   });
 
   it('deve renderizar os links de navegação baseados nas rotas', () => {

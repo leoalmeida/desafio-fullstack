@@ -4,7 +4,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["jasmine"]
+    "types": ["vitest/globals"],
+    "lib": ["ES2022", "dom", "ESNext"]
   },
   "include": ["src/**/*.ts"]
 }

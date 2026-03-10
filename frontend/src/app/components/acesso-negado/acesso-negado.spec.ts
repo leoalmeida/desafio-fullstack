@@ -2,14 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AcessoNegado } from './acesso-negado';
 import { TitleService } from 'src/app/services/title.service';
+import { createSpyObj, SpyObj } from '../../../test-helpers/spy-utils';
 
 describe('AcessoNegado', () => {
   let component: AcessoNegado;
   let fixture: ComponentFixture<AcessoNegado>;
-  let titleServiceSpy: jasmine.SpyObj<TitleService>;
+  let titleServiceSpy: SpyObj<TitleService>;
 
   beforeEach(async () => {
-    titleServiceSpy = jasmine.createSpyObj('TitleService', ['setTitle']);
+    titleServiceSpy = createSpyObj<TitleService>(['setTitle']);
 
     await TestBed.configureTestingModule({
       imports: [AcessoNegado],

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">4.34% </span>
+                <span class="strong">11.53% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/23</span>
+                <span class='fraction'>3/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">27.27% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>3/11</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">4.54% </span>
+                <span class="strong">8.69% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/22</span>
+                <span class='fraction'>2/23</span>
             </div>
         
             
@@ -109,7 +109,7 @@
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
 <a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L47'></a><a href='#L47'>47</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -118,7 +118,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -164,7 +164,7 @@ import { filter, map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class TitleService {
+export class <span class="cstat-no" title="statement not covered" >TitleService {</span>
   private <span class="cstat-no" title="statement not covered" >title = new BehaviorSubject&lt;string&gt;('Frontend App');</span>
 <span class="cstat-no" title="statement not covered" >  title$ = this.title.asObservable();</span>
   private <span class="cstat-no" title="statement not covered" >titleBrowser: Title = inject(Title);</span>
@@ -175,7 +175,7 @@ export class TitleService {
 <span class="cstat-no" title="statement not covered" >    this.router.events</span>
       .pipe(
         filter(<span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; <span class="cstat-no" title="statement not covered" >event instanceof NavigationEnd)</span>,
-        map(<span class="fstat-no" title="function not covered" >() =</span>&gt; {
+        map(<span class="fstat-no" title="function not covered" >() =&gt; </span>{
           let route = <span class="cstat-no" title="statement not covered" >this.activatedRoute;</span>
 <span class="cstat-no" title="statement not covered" >          while (route.firstChild) {</span>
 <span class="cstat-no" title="statement not covered" >            route = route.firstChild;</span>
@@ -187,11 +187,11 @@ export class TitleService {
           const title = <span class="cstat-no" title="statement not covered" >route.snapshot.data['title'];</span>
           const detail = <span class="cstat-no" title="statement not covered" >route.snapshot.data['detail'];</span>
           const type = <span class="cstat-no" title="statement not covered" >route.snapshot.queryParams['type'];</span>
-<span class="cstat-no" title="statement not covered" >          <span class="missing-if-branch" title="if path not taken" >I</span>if (!title) {</span>
+<span class="cstat-no" title="statement not covered" >          if (!title) {</span>
 <span class="cstat-no" title="statement not covered" >            return 'Frontend App';</span>
           }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >          <span class="missing-if-branch" title="if path not taken" >I</span>if (detail) <span class="cstat-no" title="statement not covered" >return (type !== 'new' ? 'Criar ' : 'Alterar ') + title;</span></span>
+<span class="cstat-no" title="statement not covered" >          if (detail) <span class="cstat-no" title="statement not covered" >return (type !== 'new' ? 'Criar ' : 'Alterar ') + title;</span></span>
 <span class="cstat-no" title="statement not covered" >          return title;</span>
         }),
       )
@@ -208,7 +208,7 @@ export class TitleService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-09T00:36:15.810Z
+                at 2026-03-10T22:36:44.916Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

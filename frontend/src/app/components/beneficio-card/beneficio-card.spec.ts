@@ -6,13 +6,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TemplateRef } from '@angular/core';
 import { BeneficioType } from '../../models/beneficio-type';
+import { createSpyObj, SpyObj } from '../../../test-helpers/spy-utils';
 
 describe('BeneficioCard', () => {
   let component: BeneficioCard;
   let fixture: ComponentFixture<BeneficioCard>;
-  let beneficioServiceSpy: jasmine.SpyObj<BeneficioService>;
-  let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
-  let dialogSpy: jasmine.SpyObj<MatDialog>;
+  let beneficioServiceSpy: SpyObj<BeneficioService>;
+  let notificationServiceSpy: SpyObj<NotificationService>;
+  let dialogSpy: SpyObj<MatDialog>;
 
   const mockBeneficio: BeneficioType = {
     id: 1,
@@ -23,14 +24,12 @@ describe('BeneficioCard', () => {
   };
 
   beforeEach(async () => {
-    beneficioServiceSpy = jasmine.createSpyObj('BeneficioService', [
-      'changeStatus',
-    ]);
-    notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
+    beneficioServiceSpy = createSpyObj<BeneficioService>(['changeStatus']);
+    notificationServiceSpy = createSpyObj<NotificationService>([
       'showSuccess',
       'showError',
     ]);
-    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+    dialogSpy = createSpyObj<MatDialog>(['open']);
 
     await TestBed.configureTestingModule({
       imports: [BeneficioCard, MatDialogModule, NoopAnimationsModule],
@@ -56,8 +55,8 @@ describe('BeneficioCard', () => {
   it('deve mostrar erro quando não houver id do benefício para alterar status', () => {
     const beneficioSemId = { ...mockBeneficio, id: undefined };
     const mockEvent = {
-      preventDefault: jasmine.createSpy('preventDefault'),
-      stopPropagation: jasmine.createSpy('stopPropagation'),
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
     } as unknown as MouseEvent;
 
     fixture.componentRef.setInput('beneficio', beneficioSemId);

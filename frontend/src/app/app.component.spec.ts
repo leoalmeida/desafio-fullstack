@@ -4,14 +4,15 @@ import { TitleService } from './services/title.service';
 import { provideRouter } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { createSpyObj, SpyObj } from '../test-helpers/spy-utils';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
-  let titleServiceSpy: jasmine.SpyObj<TitleService>;
+  let titleServiceSpy: SpyObj<TitleService>;
 
   beforeEach(async () => {
-    titleServiceSpy = jasmine.createSpyObj('TitleService', ['setTitle']);
+    titleServiceSpy = createSpyObj<TitleService>(['setTitle']);
 
     TestBed.overrideComponent(AppComponent, {
       set: { template: '' },
@@ -44,6 +45,5 @@ describe('AppComponent', () => {
 
   it('deve executar updateViewByRole sem lançar erro', () => {
     component.updateViewByRole();
-    expect().nothing();
   });
 });

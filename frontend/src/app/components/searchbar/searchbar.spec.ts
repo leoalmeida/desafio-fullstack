@@ -22,7 +22,7 @@ describe('Searchbar', () => {
   });
 
   it('deve emitir uma string vazia ao chamar clear()', () => {
-    const spy = jasmine.createSpy('emitSpy');
+    const spy = vi.fn();
     component.messageEvent.subscribe(spy);
 
     component.clear();
@@ -31,7 +31,7 @@ describe('Searchbar', () => {
   });
 
   it('deve emitir o termo de busca ao chamar onSearchUpdated()', () => {
-    const spy = jasmine.createSpy('emitSpy');
+    const spy = vi.fn();
     const searchTerm = 'benefício teste';
     component.messageEvent.subscribe(spy);
 

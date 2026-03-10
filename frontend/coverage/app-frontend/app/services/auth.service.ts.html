@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.32% </span>
+                <span class="strong">91.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/31</span>
+                <span class='fraction'>33/36</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">72.72% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>8/11</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.32% </span>
+                <span class="strong">91.17% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>28/31</span>
+                <span class='fraction'>31/34</span>
             </div>
         
             
@@ -149,33 +149,18 @@
 <a name='L84'></a><a href='#L84'>84</a>
 <a name='L85'></a><a href='#L85'>85</a>
 <a name='L86'></a><a href='#L86'>86</a>
-<a name='L87'></a><a href='#L87'>87</a>
-<a name='L88'></a><a href='#L88'>88</a>
-<a name='L89'></a><a href='#L89'>89</a>
-<a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a>
-<a name='L92'></a><a href='#L92'>92</a>
-<a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L87'></a><a href='#L87'>87</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -202,6 +187,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -251,19 +237,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { associados } from './../../mocks/associados';
 import { AssociadoType } from 'src/app/models/associado-type';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable, Signal, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TokenType } from '../models/token-type';
 import { TokenStorageService } from './token-storage.service';
-import { BeneficioType } from '../models/beneficio-type';
-&nbsp;
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-  }),
-};
 &nbsp;
 @Injectable({
   providedIn: 'root',
@@ -272,7 +250,7 @@ export class AuthService {
   private baseUrl = '';
   private http: HttpClient = inject(HttpClient);
   private apiData = [...associados];
-  private associadoList = signal&lt;AssociadoType[]&gt;([]);
+  private associadoList = signal&lt;AssociadoType[]&gt;([]<span class="branch-1 cbranch-no" title="branch not covered" >);</span>
   private loggedUser = new BehaviorSubject&lt;AssociadoType&gt;({} as AssociadoType);
 &nbsp;
   private tokenStorageService = inject(TokenStorageService);
@@ -288,13 +266,14 @@ export class AuthService {
   items = this.associadoList.asReadonly();
 &nbsp;
   constructor() {
-    this.baseUrl = environment.authApi || <span class="branch-1 cbranch-no" title="branch not covered" >'/api/v1/auth';</span> // Default to a fallback URL if not define
+    this.baseUrl = environment.authApi || <span class="branch-1 cbranch-no" title="branch not covered" >'/api/v1/auth'; // Default to a fallback URL if not define</span>
     this.mockHttpCall&lt;any&gt;(this.apiData).subscribe((xs) =&gt;
       this.associadoList.set(xs),
     );
   }
 &nbsp;
   login(username: string, password: string): Observable&lt;AssociadoType&gt; {
+    void password;
     //return this.http.post&lt;any&gt;(`${this.baseUrl}/signin`, { username, password }, httpOptions);
     const user = this.associadoList().find(
       (user) =&gt; user.username === username,
@@ -349,7 +328,7 @@ export class AuthService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-09T00:36:15.810Z
+                at 2026-03-10T22:36:44.916Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

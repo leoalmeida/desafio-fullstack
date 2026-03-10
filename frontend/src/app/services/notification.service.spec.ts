@@ -2,19 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NotificationService } from './notification.service';
 import { LoggerService } from './logger.service';
+import { createSpyObj, SpyObj } from '../../test-helpers/spy-utils';
 
 describe('NotificationService', () => {
   let service: NotificationService;
-  let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
-  let loggerSpy: jasmine.SpyObj<LoggerService>;
+  let snackBarSpy: SpyObj<MatSnackBar>;
+  let loggerSpy: SpyObj<LoggerService>;
 
   beforeEach(() => {
-    const snackSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
-    const logSpy = jasmine.createSpyObj('LoggerService', [
-      'log',
-      'error',
-      'warn',
-    ]);
+    const snackSpy = createSpyObj<MatSnackBar>(['open']);
+    const logSpy = createSpyObj<LoggerService>(['log', 'error', 'warn']);
 
     TestBed.configureTestingModule({
       imports: [MatSnackBarModule],
@@ -26,8 +23,8 @@ describe('NotificationService', () => {
     });
 
     service = TestBed.inject(NotificationService);
-    snackBarSpy = TestBed.inject(MatSnackBar) as jasmine.SpyObj<MatSnackBar>;
-    loggerSpy = TestBed.inject(LoggerService) as jasmine.SpyObj<LoggerService>;
+    snackBarSpy = TestBed.inject(MatSnackBar) as unknown as typeof snackBarSpy;
+    loggerSpy = TestBed.inject(LoggerService) as unknown as typeof loggerSpy;
   });
 
   it('deve ser criado', () => {
@@ -45,7 +42,7 @@ describe('NotificationService', () => {
     expect(snackBarSpy.open).toHaveBeenCalledWith(
       message,
       'OK',
-      jasmine.objectContaining({ panelClass: ['snackbar-default'] }),
+      expect.objectContaining({ panelClass: ['snackbar-default'] }),
     );
   });
 
@@ -60,7 +57,7 @@ describe('NotificationService', () => {
     expect(snackBarSpy.open).toHaveBeenCalledWith(
       message,
       'Close',
-      jasmine.objectContaining({ panelClass: ['snackbar-error'] }),
+      expect.objectContaining({ panelClass: ['snackbar-error'] }),
     );
   });
 
@@ -75,7 +72,7 @@ describe('NotificationService', () => {
     expect(snackBarSpy.open).toHaveBeenCalledWith(
       message,
       'Close',
-      jasmine.objectContaining({ panelClass: ['snackbar-warning'] }),
+      expect.objectContaining({ panelClass: ['snackbar-warning'] }),
     );
   });
 
@@ -90,7 +87,7 @@ describe('NotificationService', () => {
     expect(snackBarSpy.open).toHaveBeenCalledWith(
       message,
       'Close',
-      jasmine.objectContaining({ panelClass: ['snackbar-success'] }),
+      expect.objectContaining({ panelClass: ['snackbar-success'] }),
     );
   });
 });

@@ -7,11 +7,12 @@ import { BeneficioService } from './beneficio.service';
 import { BeneficioType } from '../models/beneficio-type';
 import { NotificationService } from './notification.service';
 import { environment } from '../../environments/environment';
+import { firstValueFrom } from 'rxjs';
 
 describe('BeneficioService', () => {
   let service: BeneficioService;
   let httpMock: HttpTestingController;
-  let notificationSpy: jasmine.SpyObj<NotificationService>;
+  let notificationSpy: { showSuccess: ReturnType<typeof vi.fn>; showError: ReturnType<typeof vi.fn> };
 
   const mockBeneficio: BeneficioType = {
     id: 1,
@@ -22,10 +23,7 @@ describe('BeneficioService', () => {
   };
 
   beforeEach(() => {
-    notificationSpy = jasmine.createSpyObj('NotificationService', [
-      'showSuccess',
-      'showError',
-    ]);
+    notificationSpy = { showSuccess: vi.fn(), showError: vi.fn() };
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -60,46 +58,46 @@ describe('BeneficioService', () => {
     expect(notificationSpy.showSuccess).toHaveBeenCalled();
   });
 
-  it('deve buscar todos os beneficios com retorno booleano (getAllAndReturn)', (done) => {
-    service.getAllAndReturn().subscribe((result) => {
-      expect(result).toBeTrue();
-      expect(service.items().length).toBe(1);
-      done();
-    });
+  it('deve buscar todos os beneficios com retorno booleano (getAllAndReturn)', async () => {
+    const resultPromise = firstValueFrom(service.getAllAndReturn());
 
     const req = httpMock.expectOne(environment.beneficiosApi);
     expect(req.request.method).toBe('GET');
     req.flush([mockBeneficio]);
+
+    const result = await resultPromise;
+    expect(result).toBe(true);
+    expect(service.items().length).toBe(1);
   });
 
-  it('deve criar um novo beneficio (createOne)', (done) => {
-    service.createOne(mockBeneficio).subscribe((result) => {
-      expect(result).toBeTrue();
-      expect(service.items().length).toBe(1);
-      done();
-    });
+  it('deve criar um novo beneficio (createOne)', async () => {
+    const resultPromise = firstValueFrom(service.createOne(mockBeneficio));
 
     const req = httpMock.expectOne(environment.beneficiosApi);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockBeneficio);
     req.flush(mockBeneficio);
+
+    const result = await resultPromise;
+    expect(result).toBe(true);
+    expect(service.items().length).toBe(1);
   });
 
-  it('deve atualizar um beneficio existente (changeOne)', (done) => {
+  it('deve atualizar um beneficio existente (changeOne)', async () => {
     (service as any).beneficiosList.set([mockBeneficio]);
     const updated = { ...mockBeneficio, nome: 'VR Atualizado' };
 
-    service.changeOne(updated).subscribe((result) => {
-      expect(result).toBeTrue();
-      expect(service.items()[0].nome).toBe('VR Atualizado');
-      done();
-    });
+    const resultPromise = firstValueFrom(service.changeOne(updated));
 
     const req = httpMock.expectOne(
       `${environment.beneficiosApi}/${mockBeneficio.id}`,
     );
     expect(req.request.method).toBe('PUT');
     req.flush(updated);
+
+    const result = await resultPromise;
+    expect(result).toBe(true);
+    expect(service.items()[0].nome).toBe('VR Atualizado');
   });
 
   it('deve chamar endpoint ativar quando ativo for true', () => {
@@ -124,15 +122,8 @@ describe('BeneficioService', () => {
     req.flush(inativo);
   });
 
-  it('deve propagar erro em getOne', (done) => {
-    service.getOne(99).subscribe({
-      next: () => fail('nao deveria retornar sucesso'),
-      error: (err: Error) => {
-        expect(err.message).toContain('Erro interno');
-        expect(notificationSpy.showError).toHaveBeenCalled();
-        done();
-      },
-    });
+  it('deve propagar erro em getOne', async () => {
+    const errorPromise = firstValueFrom(service.getOne(99)).catch((err) => err);
 
     const req = httpMock.expectOne(`${environment.beneficiosApi}/associado/99`);
     expect(req.request.method).toBe('GET');
@@ -140,5 +131,9 @@ describe('BeneficioService', () => {
       { message: 'Erro interno' },
       { status: 500, statusText: 'Server Error' },
     );
+
+    const err = (await errorPromise) as Error;
+    expect(err.message).toContain('Erro interno');
+    expect(notificationSpy.showError).toHaveBeenCalled();
   });
 });

@@ -6,12 +6,13 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BeneficioType } from '../../models/beneficio-type';
 import { BeneficioService } from 'src/app/services/beneficio.service';
 import { of } from 'rxjs';
+import { createSpyObj, SpyObj } from '../../../test-helpers/spy-utils';
 
 describe('BeneficioDetails', () => {
   let component: BeneficioDetails;
   let fixture: ComponentFixture<BeneficioDetails>;
-  let dialogRefSpy: jasmine.SpyObj<MatDialogRef<BeneficioDetails>>;
-  let beneficioServiceSpy: jasmine.SpyObj<BeneficioService>;
+  let dialogRefSpy: SpyObj<MatDialogRef<BeneficioDetails>, 'close'>;
+  let beneficioServiceSpy: SpyObj<BeneficioService, 'createOne' | 'changeOne'>;
 
   const mockBeneficio: BeneficioType = {
     id: 1,
@@ -22,13 +23,13 @@ describe('BeneficioDetails', () => {
   };
 
   beforeEach(async () => {
-    dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
-    beneficioServiceSpy = jasmine.createSpyObj('BeneficioService', [
+    dialogRefSpy = createSpyObj<MatDialogRef<BeneficioDetails>>(['close']);
+    beneficioServiceSpy = createSpyObj<BeneficioService>([
       'createOne',
       'changeOne',
     ]);
-    beneficioServiceSpy.changeOne.and.returnValue(of(true));
-    beneficioServiceSpy.createOne.and.returnValue(of(true));
+    beneficioServiceSpy.changeOne.mockReturnValue(of(true));
+    beneficioServiceSpy.createOne.mockReturnValue(of(true));
 
     await TestBed.configureTestingModule({
       imports: [BeneficioDetails, ReactiveFormsModule, NoopAnimationsModule],
@@ -61,7 +62,7 @@ describe('BeneficioDetails', () => {
     component.formBeneficio.controls['nome'].setValue('');
     component.formBeneficio.controls['valor'].setValue(null);
 
-    expect(component.formBeneficio.valid).toBeFalse();
+    expect(component.formBeneficio.valid).toBe(false);
   });
 
   it('deve fechar o diálogo com true ao chamar onSubmit se válido', () => {

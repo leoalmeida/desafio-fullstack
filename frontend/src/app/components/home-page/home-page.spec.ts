@@ -2,14 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomePage } from './home-page';
 import { TitleService } from 'src/app/services/title.service';
+import { createSpyObj, SpyObj } from '../../../test-helpers/spy-utils';
 
 describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
-  let titleServiceSpy: jasmine.SpyObj<TitleService>;
+  let titleServiceSpy: SpyObj<TitleService>;
 
   beforeEach(async () => {
-    titleServiceSpy = jasmine.createSpyObj('TitleService', ['setTitle']);
+    titleServiceSpy = createSpyObj<TitleService>(['setTitle']);
 
     await TestBed.configureTestingModule({
       imports: [HomePage],

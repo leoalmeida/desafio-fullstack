@@ -7,11 +7,12 @@ import { TransferenciaService } from './transferencia.service';
 import { LoggerService } from './logger.service';
 import { TransferenciaType } from '../models/transferencia-type';
 import { environment } from '../../environments/environment';
+import { createSpyObj, SpyObj } from '../../test-helpers/spy-utils';
 
 describe('TransferenciaService', () => {
   let service: TransferenciaService;
   let httpMock: HttpTestingController;
-  let loggerSpy: jasmine.SpyObj<LoggerService>;
+  let loggerSpy: SpyObj<LoggerService>;
 
   const mockTransferencia: TransferenciaType = {
     fromId: 1,
@@ -20,7 +21,7 @@ describe('TransferenciaService', () => {
   };
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj('LoggerService', ['log', 'error']);
+    const spy = createSpyObj<LoggerService>(['log', 'error']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -31,7 +32,7 @@ describe('TransferenciaService', () => {
     });
     service = TestBed.inject(TransferenciaService);
     httpMock = TestBed.inject(HttpTestingController);
-    loggerSpy = TestBed.inject(LoggerService) as jasmine.SpyObj<LoggerService>;
+    loggerSpy = TestBed.inject(LoggerService) as unknown as typeof loggerSpy;
   });
 
   afterEach(() => {
@@ -44,7 +45,7 @@ describe('TransferenciaService', () => {
 
   it('deve realizar uma transferência com sucesso (transferValue)', () => {
     service.transferValue(mockTransferencia).subscribe((res) => {
-      expect(res).toBeFalse();
+      expect(res).toBe(false);
     });
 
     const req = httpMock.expectOne(`${environment.beneficiosApi}/transferir`);
@@ -53,7 +54,7 @@ describe('TransferenciaService', () => {
 
     req.flush(null);
     expect(loggerSpy.log).toHaveBeenCalledWith(
-      jasmine.stringMatching(
+      expect.stringMatching(
         /Transferindo valor 100.5 de benefício: 1 para benefício: 2/,
       ),
     );
@@ -63,7 +64,7 @@ describe('TransferenciaService', () => {
     const errorMsg = 'Saldo insuficiente';
 
     service.transferValue(mockTransferencia).subscribe({
-      next: () => fail('Deveria ter falhado'),
+      next: () => { throw new Error('Deveria ter falhado'); },
       error: (error) => {
         expect(error.message).toContain(errorMsg);
       },
@@ -76,7 +77,7 @@ describe('TransferenciaService', () => {
     );
 
     expect(loggerSpy.error).toHaveBeenCalledWith(
-      jasmine.stringMatching(/Erro na requisição:.*Saldo insuficiente/),
+      expect.stringMatching(/Erro na requisição:.*Saldo insuficiente/),
     );
   });
 });

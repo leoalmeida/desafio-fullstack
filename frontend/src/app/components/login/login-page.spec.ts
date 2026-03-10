@@ -6,22 +6,21 @@ import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { createSpyObj, SpyObj } from '../../../test-helpers/spy-utils';
 
 describe('LoginPage', () => {
   let component: LoginPage;
   let fixture: ComponentFixture<LoginPage>;
-  let authServiceSpy: jasmine.SpyObj<AuthService>;
-  let tokenStorageSpy: jasmine.SpyObj<TokenStorageService>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  let authServiceSpy: SpyObj<AuthService, 'login'>;
+  let tokenStorageSpy: SpyObj<TokenStorageService, 'isAuthenticated'>;
+  let routerSpy: SpyObj<Router, 'navigate'>;
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
-    tokenStorageSpy = jasmine.createSpyObj('TokenStorageService', [
-      'isAuthenticated',
-    ]);
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    authServiceSpy = createSpyObj<AuthService>(['login']);
+    tokenStorageSpy = createSpyObj<TokenStorageService>(['isAuthenticated']);
+    routerSpy = createSpyObj<Router>(['navigate']);
 
-    tokenStorageSpy.isAuthenticated.and.returnValue(false);
+    tokenStorageSpy.isAuthenticated.mockReturnValue(false);
 
     await TestBed.configureTestingModule({
       imports: [LoginPage, ReactiveFormsModule, NoopAnimationsModule],
@@ -42,7 +41,7 @@ describe('LoginPage', () => {
   });
 
   it('deve inicializar o formulário vazio e inválido', () => {
-    expect(component.formLogin.valid).toBeFalse();
+    expect(component.formLogin.valid).toBe(false);
     expect(component.formLogin.value).toEqual({ username: '', password: '' });
   });
 
@@ -59,7 +58,7 @@ describe('LoginPage', () => {
 
   it('deve chamar o serviço de login e navegar se bem-sucedido', () => {
     const mockUser = { id: 1, nome: 'Teste', username: 'teste' };
-    authServiceSpy.login.and.returnValue(of(mockUser as any));
+    authServiceSpy.login.mockReturnValue(of(mockUser as any));
 
     component.formLogin.setValue({ username: 'user', password: '123' });
     component.onSubmit();
@@ -74,17 +73,17 @@ describe('LoginPage', () => {
   });
 
   it('deve redirecionar no ngOnInit se já estiver autenticado', () => {
-    tokenStorageSpy.isAuthenticated.and.returnValue(true);
+    tokenStorageSpy.isAuthenticated.mockReturnValue(true);
     component.ngOnInit();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['beneficios']);
   });
 
   it('deve atualizar isLoggedIn no reloadPage quando não autenticado', () => {
-    tokenStorageSpy.isAuthenticated.and.returnValue(false);
+    tokenStorageSpy.isAuthenticated.mockReturnValue(false);
 
     component.reloadPage();
 
-    expect(component.isLoggedIn()).toBeFalse();
+  expect(component.isLoggedIn()).toBe(false);
     expect(routerSpy.navigate).not.toHaveBeenCalled();
   });
 });

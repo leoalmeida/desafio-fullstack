@@ -8,14 +8,15 @@ import { TransferenciaService } from 'src/app/services/transferencia.service';
 import { BeneficioService } from 'src/app/services/beneficio.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { of } from 'rxjs';
+import { createSpyObj, SpyObj } from '../../../test-helpers/spy-utils';
 
 describe('TransferDetails', () => {
   let component: TransferDetails;
   let fixture: ComponentFixture<TransferDetails>;
-  let dialogRefSpy: jasmine.SpyObj<MatDialogRef<TransferDetails>>;
-  let transferenciaServiceSpy: jasmine.SpyObj<TransferenciaService>;
-  let beneficioServiceSpy: jasmine.SpyObj<BeneficioService>;
-  let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
+  let dialogRefSpy: SpyObj<MatDialogRef<TransferDetails>, 'close'>;
+  let transferenciaServiceSpy: SpyObj<TransferenciaService, 'transferValue'>;
+  let beneficioServiceSpy: SpyObj<BeneficioService, 'getAll'>;
+  let notificationServiceSpy: SpyObj<NotificationService, 'showSuccess' | 'showError'>;
 
   const mockBeneficio: BeneficioType = {
     id: 1,
@@ -26,13 +27,13 @@ describe('TransferDetails', () => {
   };
 
   beforeEach(async () => {
-    dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
-    transferenciaServiceSpy = jasmine.createSpyObj('TransferenciaService', [
+    dialogRefSpy = createSpyObj<MatDialogRef<TransferDetails>>(['close']);
+    transferenciaServiceSpy = createSpyObj<TransferenciaService>([
       'transferValue',
     ]);
-    transferenciaServiceSpy.transferValue.and.returnValue(of(true));
-    beneficioServiceSpy = jasmine.createSpyObj('BeneficioService', ['getAll']);
-    notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
+    transferenciaServiceSpy.transferValue.mockReturnValue(of(true));
+    beneficioServiceSpy = createSpyObj<BeneficioService>(['getAll']);
+    notificationServiceSpy = createSpyObj<NotificationService>([
       'showSuccess',
       'showError',
     ]);
@@ -66,7 +67,7 @@ describe('TransferDetails', () => {
   it('deve invalidar o formulário se o ID de destino (toId) não for preenchido', () => {
     fixture.detectChanges();
     component.formTransferencia.controls['toId'].setValue('');
-    expect(component.formTransferencia.valid).toBeFalse();
+    expect(component.formTransferencia.valid).toBe(false);
   });
 
   it('deve fechar o diálogo ao chamar onSubmit se válido', () => {
@@ -81,7 +82,7 @@ describe('TransferDetails', () => {
     component.onSubmit();
 
     expect(transferenciaServiceSpy.transferValue).toHaveBeenCalledWith(
-      jasmine.objectContaining(transferData),
+      expect.objectContaining(transferData),
     );
     expect(dialogRefSpy.close).toHaveBeenCalledWith();
   });

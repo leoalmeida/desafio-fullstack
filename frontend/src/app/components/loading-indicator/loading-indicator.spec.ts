@@ -9,22 +9,20 @@ import {
 import { BehaviorSubject, Subject } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { createSpyObj, SpyObj } from '../../../test-helpers/spy-utils';
 
 describe('LoadingIndicator', () => {
   let component: LoadingIndicator;
   let fixture: ComponentFixture<LoadingIndicator>;
-  let loadingServiceSpy: jasmine.SpyObj<LoadingService>;
+  let loadingServiceSpy: SpyObj<LoadingService>;
   let routerEventsSubject: Subject<any>;
   let loadingSubject: BehaviorSubject<boolean>;
 
   beforeEach(async () => {
     loadingSubject = new BehaviorSubject<boolean>(false);
-    loadingServiceSpy = jasmine.createSpyObj(
-      'LoadingService',
+    loadingServiceSpy = createSpyObj<LoadingService>(
       ['loadingOn', 'loadingOff'],
-      {
-        loading$: loadingSubject.asObservable(),
-      },
+      { loading$: loadingSubject.asObservable() } as Partial<LoadingService>,
     );
     routerEventsSubject = new Subject<any>();
     const routerSpy = {

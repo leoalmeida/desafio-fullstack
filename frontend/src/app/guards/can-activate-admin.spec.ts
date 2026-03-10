@@ -10,31 +10,29 @@ import { TokenStorageService } from '../services/token-storage.service';
 import { signal } from '@angular/core';
 
 import { canActivateAdmin } from './can-activate-admin';
+import { createSpyObj, SpyObj } from '../../test-helpers/spy-utils';
 
 describe('canActivateAdmin', () => {
-  let tokenStorageSpy: jasmine.SpyObj<TokenStorageService>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  let tokenStorageSpy: SpyObj<TokenStorageService, 'hasRole'>;
+  let routerSpy: SpyObj<Router, 'parseUrl'>;
   const isAuthenticatedSignal = signal(false);
 
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => canActivateAdmin(...guardParameters));
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj('TokenStorageService', ['hasRole'], {
+    tokenStorageSpy = createSpyObj<TokenStorageService>(['hasRole'], {
       isAuthenticated: isAuthenticatedSignal.asReadonly(),
-    });
-    routerSpy = jasmine.createSpyObj('Router', ['parseUrl']);
+    } as Partial<TokenStorageService>);
+    routerSpy = createSpyObj<Router>(['parseUrl']);
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: TokenStorageService, useValue: spy },
+        { provide: TokenStorageService, useValue: tokenStorageSpy },
         { provide: Router, useValue: routerSpy },
       ],
     });
 
-    tokenStorageSpy = TestBed.inject(
-      TokenStorageService,
-    ) as jasmine.SpyObj<TokenStorageService>;
   });
 
   it('deve ser criado', () => {
@@ -43,20 +41,20 @@ describe('canActivateAdmin', () => {
 
   it('deve retornar true se o usuário estiver autenticado e for ADMIN', () => {
     isAuthenticatedSignal.set(true);
-    tokenStorageSpy.hasRole.and.returnValue(true);
+    tokenStorageSpy.hasRole.mockReturnValue(true);
 
     const result = executeGuard(
       {} as ActivatedRouteSnapshot,
       {} as RouterStateSnapshot,
     );
-    expect(result).toBeTrue();
+    expect(result).toBe(true);
   });
 
   it('deve redirecionar para acesso-negado se autenticado mas não for ADMIN', () => {
     isAuthenticatedSignal.set(true);
-    tokenStorageSpy.hasRole.and.returnValue(false);
+    tokenStorageSpy.hasRole.mockReturnValue(false);
     const mockUrlTree = {} as UrlTree;
-    routerSpy.parseUrl.and.returnValue(mockUrlTree);
+    routerSpy.parseUrl.mockReturnValue(mockUrlTree);
 
     const result = executeGuard(
       {} as ActivatedRouteSnapshot,
@@ -68,7 +66,7 @@ describe('canActivateAdmin', () => {
 
   it('deve redirecionar para acesso-negado se não estiver autenticado', () => {
     isAuthenticatedSignal.set(false);
-    routerSpy.parseUrl.and.returnValue({} as UrlTree);
+    routerSpy.parseUrl.mockReturnValue({} as UrlTree);
     executeGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
     expect(routerSpy.parseUrl).toHaveBeenCalledWith('/acesso-negado');
   });

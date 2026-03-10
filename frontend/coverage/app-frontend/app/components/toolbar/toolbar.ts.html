@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.33% </span>
+                <span class="strong">71.79% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/30</span>
+                <span class='fraction'>28/39</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">41.93% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>13/31</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">54.54% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/10</span>
+                <span class='fraction'>6/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.33% </span>
+                <span class="strong">69.44% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/30</span>
+                <span class='fraction'>25/36</span>
             </div>
         
             
@@ -171,11 +171,19 @@
 <a name='L106'></a><a href='#L106'>106</a>
 <a name='L107'></a><a href='#L107'>107</a>
 <a name='L108'></a><a href='#L108'>108</a>
-<a name='L109'></a><a href='#L109'>109</a>
-<a name='L110'></a><a href='#L110'>110</a>
-<a name='L111'></a><a href='#L111'>111</a>
-<a name='L112'></a><a href='#L112'>112</a>
-<a name='L113'></a><a href='#L113'>113</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L109'></a><a href='#L109'>109</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -197,23 +205,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -288,17 +280,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { MatButtonModule } from '@angular/material/button';
-import { AuthService } from 'src/app/services/auth.service';
-import { Component, inject, input, signal, AfterViewInit } from '@angular/core';
-import { Router, RouterLink, Routes, VERSION } from '@angular/router';
-import { routes } from '../../app.routes';
+import { Component, inject, signal, AfterViewInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { TokenStorageService } from '../../services/token-storage.service';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { AssociadoType } from 'src/app/models/associado-type';
-import { Title } from '@angular/platform-browser';
 import { TitleService } from 'src/app/services/title.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BeneficioDetails } from '../beneficio-details/beneficio-details';
@@ -326,13 +314,13 @@ interface RouteInfo {
   styleUrls: ['./toolbar.css'],
 })
 export class Toolbar implements AfterViewInit {
-  title = signal&lt;string&gt;(''); // Inicializa o título como uma string vazia
+  title = signal&lt;string&gt;(''<span class="branch-1 cbranch-no" title="branch not covered" >); // Inicializa o título como uma string vazia</span>
   routes: RouteInfo[] = [];
   opened = false;
   private tokenStorageService: TokenStorageService =
     inject(TokenStorageService);
-  protected isLoggedIn = signal(false);
-  protected loggedUser = signal({} as AssociadoType);
+  protected isLoggedIn = signal(false<span class="branch-1 cbranch-no" title="branch not covered" >);</span>
+  protected loggedUser = signal({} as AssociadoType<span class="branch-1 cbranch-no" title="branch not covered" >);</span>
   private titleService: TitleService = inject(TitleService);
   private router = inject(Router);
   private dialogAcao: MatDialog = inject(MatDialog);
@@ -354,8 +342,8 @@ export class Toolbar implements AfterViewInit {
     // Fetch the routes from the router
     const routesConf = this.router.config;
     for (const route of routesConf) {
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (route) {</span>
-<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (</span>
+<span class="cstat-no" title="statement not covered" >      if (route) {</span>
+<span class="cstat-no" title="statement not covered" >        if (</span>
           route.path !== '**' &amp;&amp;
           route.path !== 'login' &amp;&amp;
           route.path !== 'acesso-negado'
@@ -378,7 +366,7 @@ export class Toolbar implements AfterViewInit {
     });
     // Chama serviço para criar beneficio após fechamento do diálogo
 <span class="cstat-no" title="statement not covered" >    dialogRef.afterClosed().subscribe(<span class="fstat-no" title="function not covered" >(r</span>esult) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (result) {</span>
+<span class="cstat-no" title="statement not covered" >      if (result) {</span>
 <span class="cstat-no" title="statement not covered" >        this.notify.showSuccess('Benefício criado com sucesso!');</span>
       }
     });
@@ -393,7 +381,7 @@ export class Toolbar implements AfterViewInit {
     });
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    refOpen.afterClosed().subscribe(<span class="fstat-no" title="function not covered" >(r</span>esult) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (result) {</span>
+<span class="cstat-no" title="statement not covered" >      if (result) {</span>
 <span class="cstat-no" title="statement not covered" >        this.notify.showSuccess('Transferência realizada com sucesso!');</span>
       }
     });
@@ -406,7 +394,7 @@ export class Toolbar implements AfterViewInit {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-09T00:36:15.810Z
+                at 2026-03-10T22:36:44.916Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

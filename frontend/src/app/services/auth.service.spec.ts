@@ -5,14 +5,16 @@ import {
 } from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
 import { TokenStorageService } from './token-storage.service';
+import { firstValueFrom } from 'rxjs';
+import { createSpyObj, SpyObj } from '../../test-helpers/spy-utils';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  let tokenStorageSpy: jasmine.SpyObj<TokenStorageService>;
+  let tokenStorageSpy: SpyObj<TokenStorageService>;
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj('TokenStorageService', [
+    const spy = createSpyObj<TokenStorageService>([
       'saveJsonWebToken',
       'signOut',
     ]);
@@ -25,7 +27,7 @@ describe('AuthService', () => {
     httpMock = TestBed.inject(HttpTestingController);
     tokenStorageSpy = TestBed.inject(
       TokenStorageService,
-    ) as jasmine.SpyObj<TokenStorageService>;
+    ) as unknown as typeof tokenStorageSpy;
   });
 
   afterEach(() => {
@@ -36,12 +38,10 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('deve realizar login e salvar o token', (done) => {
-    service.login('jrrtolk', '123').subscribe((user) => {
-      expect(user).toBeDefined();
-      expect(tokenStorageSpy.saveJsonWebToken).toHaveBeenCalled();
-      done();
-    });
+  it('deve realizar login e salvar o token', async () => {
+    const user = await firstValueFrom(service.login('jrrtolk', '123'));
+    expect(user).toBeDefined();
+    expect(tokenStorageSpy.saveJsonWebToken).toHaveBeenCalled();
   });
 
   it('deve realizar logout e limpar o armazenamento', () => {
@@ -49,7 +49,7 @@ describe('AuthService', () => {
     expect(tokenStorageSpy.signOut).toHaveBeenCalled();
   });
 
-  it('deve registrar um novo usuário', (done) => {
+  it('deve registrar um novo usuário', async () => {
     const newUser = {
       username: 'Maria',
       nome: 'Maria',
@@ -58,26 +58,22 @@ describe('AuthService', () => {
       password: '100',
     };
 
-    service
-      .register(
+    const user = await firstValueFrom(
+      service.register(
         newUser.username,
         newUser.nome,
         newUser.email,
         newUser.telefone,
         newUser.password,
-      )
-      .subscribe((user) => {
-        expect(user.nome).toBe(newUser.nome);
-        expect(user.email).toBe(newUser.email);
-        done();
-      });
+      ),
+    );
+    expect(user.nome).toBe(newUser.nome);
+    expect(user.email).toBe(newUser.email);
   });
 
-  it('deve emitir o usuário logado através do observable loggedUser$', (done) => {
+  it('deve emitir o usuário logado através do observable loggedUser$', async () => {
     service.login('jrrtolk', '123');
-    service.loggedUser$.subscribe((user) => {
-      expect(user).toBeDefined();
-      done();
-    });
+    const user = await firstValueFrom(service.loggedUser$);
+    expect(user).toBeDefined();
   });
 });
