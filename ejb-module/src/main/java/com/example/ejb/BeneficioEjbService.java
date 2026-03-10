@@ -3,6 +3,7 @@ package com.example.ejb;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.annotation.Nonnull;
 
 import java.math.BigDecimal;
 import java.util.logging.Logger;
@@ -15,6 +16,11 @@ import com.example.ejb.exception.BusinessException;
 public class BeneficioEjbService {
 
     private static final Logger logger = Logger.getLogger(BeneficioEjbService.class.getName());
+
+    /* Construtor para injeção manual do EntityManager, utilizado na configuração do Spring. */
+    public BeneficioEjbService(@Nonnull final EntityManager em) {
+        this.em = em;
+    }
 
     @PersistenceContext
     private EntityManager em;
