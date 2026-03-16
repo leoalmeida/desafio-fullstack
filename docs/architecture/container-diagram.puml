@@ -1,0 +1,27 @@
+@startuml container_diagram
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Container Diagram
+
+Person(user, "User")
+
+System_Boundary(system, "Full Stack Application") {
+
+    Container(api_gateway, "API Gateway", "Spring Cloud Gateway", "Entry point")
+
+    Container(ms_agendamento, "Agendamento Service", "Spring Boot", "Gestão de Agendamento")
+
+    ContainerDb(mysql, "MySQL DB", "Relational Database")
+
+}
+
+Rel(user, api_gateway, "REST")
+
+Rel(api_gateway, ms_agendamento, "Routes")
+
+Rel(ms_agendamento, mysql, "Reads/Writes")
+
+Rel(ms_agendamento, rabbitmq, "Publishes events")
+
+@enduml

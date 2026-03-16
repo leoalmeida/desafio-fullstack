@@ -1,0 +1,63 @@
+@startuml voting_session_flow
+
+title Votacao Backend - Fluxo de Votação (Ciclo Completo)
+
+actor Associado
+
+participant "API Gateway\n:8082" as gateway
+participant "PautaController\n(ms-pautas)" as pauta_ctrl
+participant "PautaServiceImpl" as pauta_svc
+participant "SessaoClient\n(Feign → ms-sessoes)" as feign_pauta
+participant "SessaoController\n(ms-sessoes)" as sessao_ctrl
+participant "SessaoServiceImpl" as sessao_svc
+participant "PautaClient\n(Feign → ms-pautas)" as feign_sessao
+participant "VotosController\n(ms-sessoes)" as votos_ctrl
+participant "VotoServiceImpl" as voto_svc
+database "DB pautas" as db_p
+database "DB sessoes" as db_s
+
+== Criar Pauta e iniciar Sessão ==
+
+Associado -> gateway : POST /v1/pautas?iniciarSessao=true
+gateway -> pauta_ctrl : POST /v1/pautas?iniciarSessao=true
+pauta_ctrl -> pauta_svc : criarPauta(dto, iniciarSessao=true)
+pauta_svc -> db_p : INSERT pautas
+pauta_svc -> feign_pauta : POST /v1/sessoes?iniciarSessao=true\n(PautaDto)
+feign_pauta -> sessao_ctrl : POST /v1/sessoes?iniciarSessao=true
+sessao_ctrl -> sessao_svc : criarSessao(pautaDto, true)
+sessao_svc -> feign_sessao : GET /v1/pautas/{id} (verifica pauta)
+sessao_svc -> db_s : INSERT sessoes (status=STARTED)
+sessao_ctrl --> feign_pauta : SessaoDto (STARTED)
+feign_pauta --> pauta_svc : SessaoDto
+pauta_svc --> pauta_ctrl : PautaDto (com SessaoDto)
+pauta_ctrl --> gateway : 201 Created
+
+== Registrar Voto ==
+
+Associado -> gateway : POST /v1/votos \n{idAssociado, idSessao, opcao: SIM/NAO}
+gateway -> votos_ctrl : POST /v1/votos
+votos_ctrl -> voto_svc : criarVoto(VotoDto)
+voto_svc -> db_s : SELECT sessoes WHERE id=? AND status=STARTED
+voto_svc -> db_s : SELECT votos WHERE associado_id=? AND sessao_id=?
+note right: Validação: associado não\npode votar duas vezes na mesma sessão
+voto_svc -> db_s : INSERT votos (opcao, data_voto)
+voto_svc --> votos_ctrl : VotoDto
+votos_ctrl --> gateway : 201 Created
+
+== Finalizar Sessão ==
+
+Associado -> gateway : POST /v1/sessoes/{id}/finalizar
+gateway -> sessao_ctrl : POST /v1/sessoes/{id}/finalizar
+sessao_ctrl -> sessao_svc : finalizarSessao(idSessao)
+sessao_svc -> db_s : SELECT votos WHERE sessao_id=?
+sessao_svc -> sessao_svc : totaliza SIM x NAO, determina resultado
+sessao_svc -> db_s : UPDATE sessoes SET status=FINISHED, resultado=?
+sessao_ctrl --> gateway : SessaoDto (FINISHED + resultado)
+
+note right of sessao_svc
+    Ciclo de vida da Sessão:
+    CREATED → STARTED → FINISHED
+                  └→ CANCELLED
+end note
+
+@enduml

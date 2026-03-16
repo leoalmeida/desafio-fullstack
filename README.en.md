@@ -2,37 +2,65 @@
 
 [Português](README.md) | [English](README.en.md)
 
-![Angular](https://img.shields.io/badge/angular-21-red)
-![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-6DB33F)
-![Java](https://img.shields.io/badge/java-17-orange)
-![Status](https://img.shields.io/badge/status-active-brightgreen)
-
 Fullstack application with Angular frontend, Spring Boot backend, and an EJB module for benefit transfer business rules.
+
+## Executive Summary
+
+This repository delivers a fullstack benefits solution with clear separation between UI, REST API, and transfer business rules.
+
+Project goals:
+
+- provide REST APIs for benefits lifecycle operations
+- keep transfer rules centralized in the EJB module
+- integrate frontend and backend through stable contracts
+- maintain quality through tests and build standards
+
+Main scope:
+
+- `frontend`: Angular SPA for benefits operations
+- `backend-module`: Spring Boot REST API
+- `ejb-module`: transfer business rules
+- `db`: schema and seed scripts
+
+Architecture at a glance:
+
+Frontend
+    |
+Backend REST
+    |
+EJB
+    |
+Persistence
+
+## Stack
+
+- Java 17
+- Spring Boot 3.2.5
+- EJB
+- Angular 21
+- Maven multi-module
+- Docker Compose
+
+## Project Status
+
+- fullstack modular architecture established
+- multi-module Java build and frontend flow available
+- detailed roadmap available in [plano.md](plano.md)
 
 ## Table of Contents
 
-- [Overview](#overview)
+- [Executive Summary](#executive-summary)
+- [Stack](#stack)
+- [Project Status](#project-status)
 - [Requirements](#requirements)
 - [Structure](#structure)
 - [Configuration](#configuration)
-- [How to Run](#how-to-run)
+- [Quick Start](#quick-start)
 - [API](#api)
 - [Docker](#docker)
 - [Tests and Quality](#tests-and-quality)
 - [Troubleshooting](#troubleshooting)
-
-## Overview
-
-Solution layers:
-
-- `frontend`: Angular 21 SPA for benefit operations
-- `backend-module`: Spring Boot REST API (port `8081`)
-- `ejb-module`: EJB module with transfer rules
-
-Supporting folders:
-
-- `db`: database scripts (`schema.sql` and `seed.sql`)
-- `deployment`: deployment support files
+- [References](#references)
 
 ## Requirements
 
@@ -81,7 +109,14 @@ Local script serves on:
 
 - `http://localhost:4200`
 
-## How to Run
+## Quick Start
+
+### Essential local startup
+
+1. run Java build from repository root
+2. start backend
+3. start frontend
+4. validate API and transfer flow
 
 ### 1. Build Java modules from root
 
@@ -112,6 +147,12 @@ npm start
 ```
 
 Frontend available at `http://localhost:4200`.
+
+### Expected result
+
+- backend available at `http://localhost:8081`
+- frontend available at `http://localhost:4200`
+- benefits and transfer flow executable end-to-end
 
 ## API
 
@@ -185,3 +226,11 @@ Backend includes quality plugins such as Jacoco, Checkstyle, PMD, SpotBugs, and 
 - Port conflict: change Angular port in `frontend/package.json` or backend `server.port`.
 - Docker Compose variable errors: verify required variables in shell or `.env`.
 - Java build failures: verify `java -version` with Java 17.
+
+## References
+
+- roadmap and planning: [plano.md](plano.md)
+- executive portfolio backlog: [../votacao-backend/docs/portfolio/executive-backlog.md](../votacao-backend/docs/portfolio/executive-backlog.md)
+- challenge comparison matrix: [../votacao-backend/docs/portfolio/challenge-comparison.md](../votacao-backend/docs/portfolio/challenge-comparison.md)
+- operational backlog for Jira/GitHub Projects: [../votacao-backend/docs/portfolio/backlog-jira-github-projects.md](../votacao-backend/docs/portfolio/backlog-jira-github-projects.md)
+- executive one-page: [../votacao-backend/docs/portfolio/one-page-executiva.md](../votacao-backend/docs/portfolio/one-page-executiva.md)

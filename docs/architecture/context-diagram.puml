@@ -1,0 +1,17 @@
+@startuml context_diagram
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title System Context Diagram
+
+Person(user, "User", "Application user")
+
+System(system, "Full Stack Application", "Business platform")
+
+System_Ext(mysql, "MySQL DB", "Primary database")
+
+Rel(user, system, "Uses", "HTTPS")
+
+Rel(system, mysql, "Storess data")
+
+@enduml

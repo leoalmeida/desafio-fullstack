@@ -1,0 +1,31 @@
+@startuml component_diagram
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Service Component Diagram
+
+Container(service1, "Agendamento Service", "Spring Boot")
+
+Component(controller1, "AgendamentoController", "Spring Web", "REST endpoints")
+
+Component(service_layer1, "AgendamentoService", "Service", "Business rules")
+
+Component(repository1, "AgendamentoRepository", "Spring Data JPA", "Database access")
+
+Component(event_publisher, "EventPublisher", "Spring AMQP", "Publishes domain events")
+
+ComponentDb(mysql, "MySQL DB")
+
+ComponentQueue(rabbitmq, "RabbitMQ")
+
+Rel(controller1, service_layer1, "Calls")
+
+Rel(service_layer1, repository1, "Reads/Writes")
+
+Rel(repository1, mysql, "Stores data")
+
+Rel(service_layer1, event_publisher, "Triggers")
+
+Rel(event_publisher, rabbitmq, "Publishes event")
+
+@enduml

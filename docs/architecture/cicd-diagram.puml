@@ -1,0 +1,50 @@
+@startuml cicd_diagram
+
+title CI/CD Pipeline
+
+actor Developer
+
+rectangle GitHub {
+
+    Developer -> "Git Repository" : Push Code
+
+}
+
+rectangle "GitHub Actions" {
+
+    "Build Stage"
+    "Unit Tests"
+    "Integration Tests"
+    "Docker Build"
+
+}
+
+rectangle Registry {
+
+    "Docker Registry"
+
+}
+
+rectangle Environment {
+
+    "Dev"
+    "Staging"
+    "Production"
+
+}
+
+"Git Repository" --> "Build Stage"
+
+"Build Stage" --> "Unit Tests"
+
+"Unit Tests" --> "Integration Tests"
+
+"Integration Tests" --> "Docker Build"
+
+"Docker Build" --> "Docker Registry"
+
+"Docker Registry" --> Dev
+Dev --> Staging
+Staging --> Production
+
+@enduml

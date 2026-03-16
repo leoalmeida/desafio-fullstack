@@ -1,0 +1,39 @@
+@startuml deployment_diagram
+
+title Deployment Diagram
+
+node "Client Browser" {
+
+    component Frontend
+
+}
+
+node "Cloud Environment" {
+
+    node "API Layer" {
+
+        component "API Gateway"
+
+    }
+
+    node "Services Layer" {
+
+        component "Agendamento Service"
+
+    }
+
+    node "Data Layer" {
+
+        database MySqlDB
+
+    }
+
+}
+
+Frontend --> "API Gateway"
+
+"API Gateway" --> "Agendamento Service"
+
+"Agendamento Service" --> MySqlDB
+
+@enduml
